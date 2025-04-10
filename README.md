@@ -1,2 +1,1 @@
-# blog-template
-Blog project template
+# Fynn Hayton-Ruffner, Shekinah Ninziza, Kinglee Tham
