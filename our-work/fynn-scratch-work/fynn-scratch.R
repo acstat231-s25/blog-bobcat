@@ -1,6 +1,8 @@
+# for extracting reddit posts
 library(RedditExtractoR)
 library(pushshiftR)
 
+# for text analysis
 library(tidytext)
 library(tidyverse)
 library(wordcloud)
@@ -8,6 +10,10 @@ library(RColorBrewer)
 library(ggthemes)
 library(textdata)
 library(lubridate)
+
+
+
+
 
 # INITIAL CODE TO GET THE REDDIT DATA, NOW SAVED IN DATA FOLDER
 # amherst_posts_raw <- find_thread_urls(
@@ -32,6 +38,9 @@ all_posts <- rbind(amherst_posts_raw, umass_posts_raw, williams_posts_raw) |>
   mutate(content = paste0(title, ' ', text)) |>
   select(content, date_utc, comments, subreddit)
 
+
+
+
 amherst_posts <- all_posts |>
   filter(subreddit == 'amherstcollege')
 
@@ -41,21 +50,36 @@ umass_posts <- all_posts |>
 williams_posts <- all_posts |>
   filter(subreddit == 'WilliamsCollege')
 
+# WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 word_freq_by_subr  <- all_posts |>
+  # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
+  # group by subreddit
   group_by(subreddit) |>
+  # gets occurences of each word within each subreddit
   count(word)
 
 subr_tfidf <- word_freq_by_subr |>
+  # gets tf, idf, and tf-idf all in one
   bind_tf_idf(term = word, document = subreddit, n = n)
 
-top_tfidf <- subr_tfidf |>
+subr_top10_tfidf <- subr_tfidf |>
+  # arrange in descending order to get highest tf-dfs 
   arrange(desc(tf_idf)) |>
   group_by(subreddit) |>
+  # slices the top 10 from each subreddit
   slice(1:10) 
 
-
-data(stop_words)
+# visualize
+subr_top10_tfidf |>
+  ggplot(aes(x = fct_reorder(word, tf_idf), y = tf_idf, fill = as.factor(tf_idf))) +
+  geom_col() +
+  coord_flip() +
+  theme(legend.position = "none") +
+  facet_wrap(~subreddit, ncol=2, scales ="free") +
+  labs(x = NULL, 
+       y = "TF-IDF",
+       title = "Top 10 words by Tf-Idf for Each Subreddit")
 
 
 # example wrangling:
