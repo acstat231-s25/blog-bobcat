@@ -30,25 +30,40 @@ library(lubridate)
 #      umass_posts_raw,
 #      file = './data/college_posts_raw.Rdata')
 
-load('./data/college_posts_raw.Rdata')
+# raw data set including all 3 colleges
+# load('./data/college_posts_raw.Rdata')
 
 # since they all have the same cols we can stack into one big dataset of posts
-all_posts <- rbind(amherst_posts_raw, umass_posts_raw, williams_posts_raw) |>
-  # combining title and text into one string column
-  mutate(content = paste0(title, ' ', text)) |>
-  select(content, date_utc, comments, subreddit)
+#all_posts <- rbind(amherst_posts_raw, umass_posts_raw, williams_posts_raw) |>
+#   combining title and text into one string column
+#  mutate(content = paste0(title, ' ', text)) |>
+#  select(content, date_utc, comments, subreddit)
+
+# renaming each subreddit to human-readable names
+#all_posts <- all_posts |>
+#  mutate(subreddit = recode(subreddit,
+#                            "amherstcollege" = "Amherst College",
+#                            "umass" = "UMass Amherst",
+#                            "WilliamsCollege" = "Williams College"))
+
+# save the polished data set
+# save(all_posts,
+#    file = './data/all_college_posts.Rdata')
 
 
+# Final data set we will use
 
+load('./data/all_college_posts.Rdata')
 
+# Filter the "all college posts" data set to get posts specific to each college
 amherst_posts <- all_posts |>
-  filter(subreddit == 'amherstcollege')
+  filter(subreddit == 'Amherst College')
 
 umass_posts <- all_posts |>
-  filter(subreddit == 'umass')
+  filter(subreddit == 'UMass Amherst')
 
 williams_posts <- all_posts |>
-  filter(subreddit == 'WilliamsCollege')
+  filter(subreddit == 'Williams College')
 
 # WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 word_freq_by_subr  <- all_posts |>
@@ -81,6 +96,7 @@ subr_top10_tfidf |>
        y = "TF-IDF",
        title = "Top 10 words by Tf-Idf for Each Subreddit")
 
+# x200b apparently means "0 " 
 
 # example wrangling:
 
@@ -95,6 +111,8 @@ amherst_word_freqs <- amherst_words |>
 # now with word, date created, subreddit, frequency, & comment count
 amherst_words <- amherst_words |>
   left_join(amherst_word_freqs, by='word')
+
+
   
 
   
