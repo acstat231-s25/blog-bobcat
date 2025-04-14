@@ -44,7 +44,15 @@ library(lubridate)
 #  mutate(subreddit = recode(subreddit,
 #                            "amherstcollege" = "Amherst College",
 #                            "umass" = "UMass Amherst",
-#                            "WilliamsCollege" = "Williams College"))
+#                            "WilliamsCollege" = "Williams College")) 
+
+# Replace unicode \031s with actual apostrophes
+#all_posts$content <- all_posts$content |>
+#  gsub("\031", "'", x = _, fixed = TRUE) 
+
+
+  
+
 
 # save the polished data set
 # save(all_posts,
