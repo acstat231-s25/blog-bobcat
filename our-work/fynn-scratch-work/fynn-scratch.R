@@ -44,7 +44,9 @@ library(lubridate)
 #  mutate(subreddit = recode(subreddit,
 #                            "amherstcollege" = "Amherst College",
 #                            "umass" = "UMass Amherst",
-#                            "WilliamsCollege" = "Williams College")) 
+#                            "WilliamsCollege" = "Williams College"),
+#         # change dates to date format
+#         date_utc = as.Date(date_utc)) 
 
 # Replace unicode \031s with actual apostrophes
 #all_posts$content <- all_posts$content |>
@@ -81,6 +83,8 @@ stop_words <- bind_rows(
 
 # WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 word_freq_by_subr  <- all_posts |>
+  # filter results to include 2020 and later
+  filter(date_utc > 2020-01-01) |>
   # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
   # remove stop words
