@@ -51,9 +51,10 @@ library(lubridate)
 #    file = './data/all_college_posts.Rdata')
 
 
-# Final data set we will use
+# Final data set we will use + stop words data set
 
 load('./data/all_college_posts.Rdata')
+data(stop_words)
 
 # Filter the "all college posts" data set to get posts specific to each college
 amherst_posts <- all_posts |>
@@ -65,10 +66,17 @@ umass_posts <- all_posts |>
 williams_posts <- all_posts |>
   filter(subreddit == 'Williams College')
 
+# Add "x200b" to stop words (a unicode zero width space character)
+stop_words <- bind_rows(
+  stop_words, tibble(word = "x200b", lexicon = "custom")
+)
+
 # WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 word_freq_by_subr  <- all_posts |>
   # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
+  # remove stop words
+  anti_join(stop_words, by="word") |>
   # group by subreddit
   group_by(subreddit) |>
   # gets occurences of each word within each subreddit
@@ -76,7 +84,7 @@ word_freq_by_subr  <- all_posts |>
 
 subr_tfidf <- word_freq_by_subr |>
   # gets tf, idf, and tf-idf all in one
-  bind_tf_idf(term = word, document = subreddit, n = n)
+  bind_tf_idf(term = word, document = subreddit, n = n) 
 
 subr_top10_tfidf <- subr_tfidf |>
   # arrange in descending order to get highest tf-dfs 
@@ -95,8 +103,6 @@ subr_top10_tfidf |>
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 words by Tf-Idf for Each Subreddit")
-
-# x200b apparently means "0 " 
 
 # example wrangling:
 
