@@ -46,7 +46,8 @@ library(lubridate)
 #                            "umass" = "UMass Amherst",
 #                            "WilliamsCollege" = "Williams College"),
 #         # change dates to date format
-#         date_utc = as.Date(date_utc)) 
+#         date_utc = as.Date(date_utc)) |>
+#  filter(date_utc > "2020-01-01")
 
 # Replace unicode \031s with actual apostrophes
 #all_posts$content <- all_posts$content |>
