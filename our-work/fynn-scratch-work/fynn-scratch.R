@@ -94,7 +94,6 @@ stop_words <- bind_rows(
 # WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 # ===============================================================================
 
-
 word_freq_by_subr  <- all_posts |>
   # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
@@ -145,6 +144,27 @@ amherst_word_freqs <- amherst_words |>
 # now with word, date created, subreddit, frequency, & comment count
 amherst_words <- amherst_words |>
   left_join(amherst_word_freqs, by='word')
+
+afinn_lexicon <- get_sentiments('afinn')
+
+all_word_sentiments <- word_freq_by_subr |>
+  # get the sentiments for each word
+  left_join(afinn_lexicon, by="word") |>
+  group_by(subreddit, word) |>
+  summarize(
+    num_words = n(),
+    sentiment = sum(value, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+avg_sentiments_byAfinn <- all_word_sentiments |>
+  group_by(subreddit) |>
+  summarize(
+    total_words = sum(num_words),
+    avg_sentiment = mean(sentiment)
+  )
+  
+  
 
 
   
