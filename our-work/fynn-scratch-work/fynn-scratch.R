@@ -12,46 +12,54 @@ library(textdata)
 library(lubridate)
 
 
+# ===============================================================================
+# Scraping the subreddits 
+# ===============================================================================
 
 
-
-# INITIAL CODE TO GET THE REDDIT DATA, NOW SAVED IN DATA FOLDER
+# INITIAL CODE TO SCRAPE THE REDDIT DATA USING REDDITEXTRACTOR, 
+# NOW SAVED IN DATA FOLDER
 # amherst_posts_raw <- find_thread_urls(
 #   subreddit = "amherstcollege", sort_by = "new", period = "day")
 # 
-# umass_posts_raw <- find_thread_urls(
-#   subreddit = "umass", sort_by = "new", period = "day")
+# middlebury_posts_raw <- find_thread_urls(
+#   subreddit = 'middlebury', sort_by = 'new', period = 'day')
 # 
 # williams_posts_raw <- find_thread_urls(
 #   subreddit = 'WilliamsCollege', sort_by = "new", period = 'day')
 # 
 # save(amherst_posts_raw,
 #      williams_posts_raw,
-#      umass_posts_raw,
+#      middlebury_posts_raw,
 #      file = './data/college_posts_raw.Rdata')
 
+
+# ===============================================================================
+# WRANGLING
+# ===============================================================================
+
 # raw data set including all 3 colleges
-# load('./data/college_posts_raw.Rdata')
+load('./data/college_posts_raw.Rdata')
 
 # since they all have the same cols we can stack into one big dataset of posts
-#all_posts <- rbind(amherst_posts_raw, umass_posts_raw, williams_posts_raw) |>
-#   combining title and text into one string column
-#  mutate(content = paste0(title, ' ', text)) |>
-#  select(content, date_utc, comments, subreddit)
+all_posts <- rbind(amherst_posts_raw, middlebury_posts_raw, williams_posts_raw) |>
+# combining title and text into one string column
+ mutate(content = paste0(title, ' ', text)) |>
+ select(content, date_utc, comments, subreddit)
 
 # renaming each subreddit to human-readable names
-#all_posts <- all_posts |>
-#  mutate(subreddit = recode(subreddit,
-#                            "amherstcollege" = "Amherst College",
-#                            "umass" = "UMass Amherst",
-#                            "WilliamsCollege" = "Williams College"),
-#         # change dates to date format
-#         date_utc = as.Date(date_utc)) |>
-#  filter(date_utc > "2020-01-01")
+all_posts <- all_posts |>
+ mutate(subreddit = recode(subreddit,
+                           "amherstcollege" = "Amherst College",
+                           "middlebury" = "Middlebury College",
+                           "WilliamsCollege" = "Williams College"),
+        # change dates to date format
+        date_utc = as.Date(date_utc)) |>
+ filter(date_utc > "2020-01-01")
 
 # Replace unicode \031s with actual apostrophes
-#all_posts$content <- all_posts$content |>
-#  gsub("\031", "'", x = _, fixed = TRUE) 
+all_posts$content <- all_posts$content |>
+ gsub("\031", "'", x = _, fixed = TRUE)
 
 
   
@@ -69,10 +77,10 @@ data(stop_words)
 
 # Filter the "all college posts" data set to get posts specific to each college
 amherst_posts <- all_posts |>
-  filter(subreddit == 'Amherst College')
+  filter(subreddit == 'Amherst College') 
 
-umass_posts <- all_posts |>
-  filter(subreddit == 'UMass Amherst')
+middlebury_posts <- all_posts |>
+  filter(subreddit == 'Middlebury College')
 
 williams_posts <- all_posts |>
   filter(subreddit == 'Williams College')
@@ -84,8 +92,6 @@ stop_words <- bind_rows(
 
 # WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
 word_freq_by_subr  <- all_posts |>
-  # filter results to include 2020 and later
-  filter(date_utc > 2020-01-01) |>
   # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
   # remove stop words
