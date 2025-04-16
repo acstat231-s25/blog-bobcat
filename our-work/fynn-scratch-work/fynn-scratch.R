@@ -1,6 +1,5 @@
 # for extracting reddit posts
 library(RedditExtractoR)
-library(pushshiftR)
 
 # for text analysis
 library(tidytext)
@@ -13,25 +12,25 @@ library(lubridate)
 
 
 # ===============================================================================
-# Scraping the subreddits 
+# Scraping the sub-reddits 
 # ===============================================================================
 
 
 # INITIAL CODE TO SCRAPE THE REDDIT DATA USING REDDITEXTRACTOR, 
 # NOW SAVED IN DATA FOLDER
-# amherst_posts_raw <- find_thread_urls(
-#   subreddit = "amherstcollege", sort_by = "new", period = "day")
-# 
-# middlebury_posts_raw <- find_thread_urls(
-#   subreddit = 'middlebury', sort_by = 'new', period = 'day')
-# 
-# williams_posts_raw <- find_thread_urls(
-#   subreddit = 'WilliamsCollege', sort_by = "new", period = 'day')
-# 
-# save(amherst_posts_raw,
-#      williams_posts_raw,
-#      middlebury_posts_raw,
-#      file = './data/college_posts_raw.Rdata')
+amherst_posts_raw <- find_thread_urls(
+  subreddit = "amherstcollege", sort_by = "new", period = "day")
+
+middlebury_posts_raw <- find_thread_urls(
+  subreddit = 'middlebury', sort_by = 'new', period = 'day')
+
+williams_posts_raw <- find_thread_urls(
+  subreddit = 'WilliamsCollege', sort_by = "new", period = 'day')
+
+save(amherst_posts_raw,
+     williams_posts_raw,
+     middlebury_posts_raw,
+     file = './data/college_posts_raw.Rdata')
 
 
 # ===============================================================================
@@ -62,12 +61,9 @@ all_posts$content <- all_posts$content |>
  gsub("\031", "'", x = _, fixed = TRUE)
 
 
-  
-
-
 # save the polished data set
-# save(all_posts,
-#    file = './data/all_college_posts.Rdata')
+save(all_posts,
+   file = './data/all_college_posts.Rdata')
 
 
 # Final data set we will use + stop words data set
@@ -107,8 +103,8 @@ subr_tfidf <- word_freq_by_subr |>
 
 subr_top10_tfidf <- subr_tfidf |>
   # arrange in descending order to get highest tf-dfs 
-  arrange(desc(tf_idf)) |>
   group_by(subreddit) |>
+  arrange(desc(tf_idf)) |>
   # slices the top 10 from each subreddit
   slice(1:10) 
 
