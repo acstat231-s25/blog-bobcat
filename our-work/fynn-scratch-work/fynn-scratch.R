@@ -110,11 +110,12 @@ subr_top10_tfidf <- subr_tfidf |>
 
 # visualize
 subr_top10_tfidf |>
-  ggplot(aes(x = fct_reorder(word, tf_idf), y = tf_idf, fill = as.factor(tf_idf))) +
+  ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = as.factor(tf_idf))) +
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
-  facet_wrap(~subreddit, ncol=2, scales ="free") +
+  facet_wrap(~subreddit, ncol = 2, scales = "free") +
+  scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 words by Tf-Idf for Each Subreddit")
