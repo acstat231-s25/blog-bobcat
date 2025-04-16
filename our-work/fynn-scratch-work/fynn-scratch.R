@@ -18,19 +18,19 @@ library(lubridate)
 
 # INITIAL CODE TO SCRAPE THE REDDIT DATA USING REDDITEXTRACTOR, 
 # NOW SAVED IN DATA FOLDER
-amherst_posts_raw <- find_thread_urls(
-  subreddit = "amherstcollege", sort_by = "new", period = "day")
-
-middlebury_posts_raw <- find_thread_urls(
-  subreddit = 'middlebury', sort_by = 'new', period = 'day')
-
-williams_posts_raw <- find_thread_urls(
-  subreddit = 'WilliamsCollege', sort_by = "new", period = 'day')
-
-save(amherst_posts_raw,
-     williams_posts_raw,
-     middlebury_posts_raw,
-     file = './data/college_posts_raw.Rdata')
+# amherst_posts_raw <- find_thread_urls(
+#   subreddit = "amherstcollege", sort_by = "new", period = "day")
+# 
+# middlebury_posts_raw <- find_thread_urls(
+#   subreddit = 'middlebury', sort_by = 'new', period = 'day')
+# 
+# williams_posts_raw <- find_thread_urls(
+#   subreddit = 'WilliamsCollege', sort_by = "new", period = 'day')
+# 
+# save(amherst_posts_raw,
+#      williams_posts_raw,
+#      middlebury_posts_raw,
+#      file = './data/college_posts_raw.Rdata')
 
 
 # ===============================================================================
@@ -119,6 +119,11 @@ subr_top10_tfidf |>
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 words by Tf-Idf for Each Subreddit")
+
+# ===============================================================================
+# Sentiment Analysis
+# ===============================================================================
+
 
 # example wrangling:
 
