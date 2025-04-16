@@ -9,6 +9,7 @@ library(RColorBrewer)
 library(ggthemes)
 library(textdata)
 library(lubridate)
+library(viridis)
 
 
 # ===============================================================================
@@ -58,7 +59,10 @@ all_posts <- all_posts |>
 
 # Replace unicode \031s with actual apostrophes
 all_posts$content <- all_posts$content |>
- gsub("\031", "'", x = _, fixed = TRUE)
+ gsub("\031", "'", x = _, fixed = TRUE) |>
+ tolower() |>
+ gsub('https?://\\S+|www\\.\\S+', '', x=_)
+ 
 
 
 # save the polished data set
@@ -110,7 +114,7 @@ subr_top10_tfidf <- subr_tfidf |>
 
 # visualize
 subr_top10_tfidf |>
-  ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = as.factor(tf_idf))) +
+  ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
@@ -118,14 +122,13 @@ subr_top10_tfidf |>
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
-       title = "Top 10 words by Tf-Idf for Each Subreddit")
+       title = "Top 10 words by Tf-Idf for Each Subreddit") +
+  scale_fill_viridis('magma')
 
 # ===============================================================================
 # Sentiment Analysis
 # ===============================================================================
 
-
-# example wrangling:
 
 # get all word-level tokens
 amherst_words <- amherst_posts |>
