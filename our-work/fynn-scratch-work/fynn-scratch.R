@@ -232,10 +232,23 @@ subreddit_sentiment <- sentiment_posts |>
 # OVER TIME ANALYSIS
 # ===============================================================================
 # plot of all three colleges' posts with sentiment over time!
-sentiment_posts |>
-  ggplot(mapping=aes(x = date_utc, y = sentiment)) +
-  geom_point() +
-  facet_wrap(~subreddit, scales = "free")
+
+library(ggiraph)
+
+gg_point <- ggplot(data = sentiment_posts) +
+  geom_point_interactive(aes(x = date_utc, 
+                             y = sentiment, 
+                             tooltip = sentiment,
+                             color = comments)) + 
+  facet_wrap(~subreddit, scales = "free", ncol=1) +
+  labs(
+    x = 'Date',
+    y = 'Total Sentiment Score',
+    color = 'Comments'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point)
 
 
 # interactive table
@@ -250,6 +263,9 @@ sentiment_posts_clean <- sentiment_posts |>
                 ~ stri_enc_toutf8(.x)))
 
 datatable(sentiment_posts_clean)
+
+
+
 
 
 
