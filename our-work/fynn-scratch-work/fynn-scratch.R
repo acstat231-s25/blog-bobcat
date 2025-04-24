@@ -11,6 +11,9 @@ library(textdata)
 library(lubridate)
 library(viridis)
 
+# interactive experimentation
+library(DT)
+
 
 # ===============================================================================
 # Scraping the sub-reddits 
@@ -91,10 +94,11 @@ stop_words <- bind_rows(
 )
 
 # ===============================================================================
-# WHAT ARE THE MOST IMPORTANT WORDS TO EACH SUBREDDIT? -TF-IDF
+# WHAT ARE THE MOST IMPORTANT WORDS/BIGRAMS TO EACH SUBREDDIT? -TF-IDF
 # ===============================================================================
 
-word_freq_by_subr  <- all_posts |>
+# token frequencies
+word_freqs  <- all_posts |>
   # get all tokens from the content
   unnest_tokens(output = word, input = content) |>
   # remove stop words
@@ -104,11 +108,31 @@ word_freq_by_subr  <- all_posts |>
   # gets occurences of each word within each subreddit
   count(word)
 
-subr_tfidf <- word_freq_by_subr |>
+bigram_freqs <- all_posts |>
+  unnest_tokens(output = bigram, input = content, token="ngrams", n=2) |>
+  separate(bigram, into = c("w1","w2"), sep = " ") |>
+  filter(!w1 %in% stop_words$word,
+         !w2 %in% stop_words$word) |>
+  # 3. Re-unite into a single bigram string
+  unite(bigram, w1, w2, sep = " ") |>
+  count(subreddit, bigram, sort = TRUE)
+
+# tfidf calculation
+word_tfidf <- word_freqs |>
   # gets tf, idf, and tf-idf all in one
   bind_tf_idf(term = word, document = subreddit, n = n) 
 
-subr_top10_tfidf <- subr_tfidf |>
+bigram_tfidf <- bigram_freqs |>
+  bind_tf_idf(term = bigram, document = subreddit, n = n)
+
+top_word_tfidf <- word_tfidf |>
+  # arrange in descending order to get highest tf-dfs 
+  group_by(subreddit) |>
+  arrange(desc(tf_idf)) |>
+  # slices the top 10 from each subreddit
+  slice(1:10) 
+
+top_bigram_tfidf <- bigram_tfidf |>
   # arrange in descending order to get highest tf-dfs 
   group_by(subreddit) |>
   arrange(desc(tf_idf)) |>
@@ -116,7 +140,7 @@ subr_top10_tfidf <- subr_tfidf |>
   slice(1:10) 
 
 # visualize
-subr_top10_tfidf |>
+plot_word_tfidf <- top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
   geom_col() +
   coord_flip() +
@@ -128,42 +152,125 @@ subr_top10_tfidf |>
        title = "Top 10 words by Tf-Idf for Each Subreddit") +
   scale_fill_viridis('magma')
 
+plot_bigram_tfidf <- top_bigram_tfidf |>
+  ggplot(aes(x = reorder_within(bigram, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
+  geom_col() +
+  coord_flip() +
+  theme(legend.position = "none") +
+  facet_wrap(~subreddit, ncol = 2, scales = "free") +
+  scale_x_reordered() +
+  labs(x = NULL, 
+       y = "TF-IDF",
+       title = "Top 10 Bigrams by Tf-Idf for Each Subreddit") +
+  scale_fill_viridis('magma')
+
 # ===============================================================================
 # Sentiment Analysis
 # ===============================================================================
 
 
-# get all word-level tokens
-amherst_words <- amherst_posts |>
-  unnest_tokens(output = word, input=content)
-
-# get word frequencies and sort in descending order
-amherst_word_freqs <- amherst_words |>
-  count(word)
-
-# now with word, date created, subreddit, frequency, & comment count
-amherst_words <- amherst_words |>
-  left_join(amherst_word_freqs, by='word')
-
 afinn_lexicon <- get_sentiments('afinn')
 
-all_word_sentiments <- word_freq_by_subr |>
+# two different methods to get the total sentiment for each subreddit,
+# I like having two to not only confirm, but to see the data in a two different
+# ways
+all_word_sentiments <- all_posts |>
+  # get all tokens from the content
+  unnest_tokens(output = word, input = content) |>
+  # group by subreddit
+  group_by(subreddit) |>
+  # gets occurences of each word within each subreddit
+  count(word) |>
   # get the sentiments for each word
   left_join(afinn_lexicon, by="word") |>
   group_by(subreddit, word) |>
   summarize(
-    num_words = n(),
-    sentiment = sum(value, na.rm = TRUE),
+    num_words = n,
+    value = value,
+    sentiment = sum(value, na.rm = TRUE) * n,
     .groups = "drop"
   )
 
-avg_sentiments_byAfinn <- all_word_sentiments |>
+# total sentiment scores for each subreddit
+subreddit_sentiments <- all_word_sentiments |>
   group_by(subreddit) |>
   summarize(
-    total_words = sum(num_words),
-    avg_sentiment = mean(sentiment)
+    score = sum(sentiment)
   )
+
+# table visualization
+
+# helpful method that calcs afinn lex sentiment for a given string
+get_sentiment <- function(content) {
+  # convert char vec to table
+  tbl_sentiment <- tibble(content) |>
+    # unnest the tokens
+    unnest_tokens(output = word, input = content) |>
+    # join with sentiments
+    left_join(afinn_lexicon, by="word")
   
+  # returns the sum of the value col which representing the total sentiment
+  # score for the string (char vec)
+  sum(tbl_sentiment$value, na.rm = TRUE)
+  
+}
+
+# I like this one, we could have it as a interactive table in the blog
+# adds a sentiment column to every post in our dataset
+sentiment_posts <- all_posts |>
+  mutate(sentiment = map_dbl(content, get_sentiment))
+
+# table comparing total summed score for each subreddit
+subreddit_sentiment <- sentiment_posts |>
+  group_by(subreddit)|>
+  summarize(
+    total_sent = sum(sentiment)
+  )
+
+
+# ===============================================================================
+# OVER TIME ANALYSIS
+# ===============================================================================
+# plot of all three colleges' posts with sentiment over time!
+
+library(ggiraph)
+
+gg_point <- ggplot(data = sentiment_posts) +
+  geom_point_interactive(aes(x = date_utc, 
+                             y = sentiment, 
+                             tooltip = sentiment,
+                             color = comments)) + 
+  facet_wrap(~subreddit, scales = "free", ncol=1) +
+  labs(
+    x = 'Date',
+    y = 'Total Sentiment Score',
+    color = 'Comments'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point)
+
+
+# interactive table
+library(stringi)
+rownames(sentiment_posts) <- NULL
+
+sentiment_posts_clean <- sentiment_posts |>
+  # convert factors → character
+  mutate(across(where(is.factor), as.character)) |>
+  # force every character vector into valid UTF-8
+  mutate(across(where(is.character),
+                ~ stri_enc_toutf8(.x)))
+
+datatable(sentiment_posts_clean)
+
+
+
+
+
+
+
+
   
 
 
