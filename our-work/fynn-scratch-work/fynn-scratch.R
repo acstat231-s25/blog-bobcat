@@ -133,27 +133,17 @@ subr_top10_tfidf |>
 # ===============================================================================
 
 
-# get all word-level tokens
-amherst_words <- amherst_posts |>
-  unnest_tokens(output = word, input=content)
-
-# get word frequencies and sort in descending order
-amherst_word_freqs <- amherst_words |>
-  count(word)
-
-# now with word, date created, subreddit, frequency, & comment count
-amherst_words <- amherst_words |>
-  left_join(amherst_word_freqs, by='word')
-
 afinn_lexicon <- get_sentiments('afinn')
 
 all_word_sentiments <- word_freq_by_subr |>
   # get the sentiments for each word
   left_join(afinn_lexicon, by="word") |>
+
   group_by(subreddit, word) |>
   summarize(
-    num_words = n(),
-    sentiment = sum(value, na.rm = TRUE),
+    num_words = n,
+    value = value,
+    sentiment = sum(value, na.rm = TRUE) * n,
     .groups = "drop"
   )
 
@@ -162,7 +152,7 @@ avg_sentiments_byAfinn <- all_word_sentiments |>
   summarize(
     total_words = sum(num_words),
     avg_sentiment = mean(sentiment)
-  )
+)
   
   
 
