@@ -135,10 +135,18 @@ subr_top10_tfidf |>
 
 afinn_lexicon <- get_sentiments('afinn')
 
-all_word_sentiments <- word_freq_by_subr |>
+# two different methods to get the total sentiment for each subreddit,
+# I like having two to not only confirm, but to see the data in a two different
+# ways
+all_word_sentiments <- all_posts |>
+  # get all tokens from the content
+  unnest_tokens(output = word, input = content) |>
+  # group by subreddit
+  group_by(subreddit) |>
+  # gets occurences of each word within each subreddit
+  count(word) |>
   # get the sentiments for each word
   left_join(afinn_lexicon, by="word") |>
-
   group_by(subreddit, word) |>
   summarize(
     num_words = n,
@@ -147,13 +155,55 @@ all_word_sentiments <- word_freq_by_subr |>
     .groups = "drop"
   )
 
-avg_sentiments_byAfinn <- all_word_sentiments |>
+# total sentiment scores for each subreddit
+subreddit_sentiments <- all_word_sentiments |>
   group_by(subreddit) |>
   summarize(
-    total_words = sum(num_words),
-    avg_sentiment = mean(sentiment)
-)
+    score = sum(sentiment)
+  )
+
+# table visualization
+
+# helpful method that calcs afinn lex sentiment for a given string
+get_sentiment <- function(content) {
+  # convert char vec to table
+  tbl_sentiment <- tibble(content) |>
+    # unnest the tokens
+    unnest_tokens(output = word, input = content) |>
+    # join with sentiments
+    left_join(afinn_lexicon, by="word")
   
+  # returns the sum of the value col which representing the total sentiment
+  # score for the string (char vec)
+  sum(tbl_sentiment$value, na.rm = TRUE)
+  
+}
+
+# adds a sentiment column to every post in our dataset
+sentiment_posts <- all_posts |>
+  mutate(sentiment = map_dbl(content, get_sentiment))
+
+# table comparing total summed score for each subreddit
+subreddit_sentiment <- sentiment_posts |>
+  group_by(subreddit)|>
+  summarize(
+    total_sent = sum(sentiment)
+  )
+
+
+# ===============================================================================
+# OVER TIME ANALYSIS
+# ===============================================================================
+# plot of all three colleges' posts with sentiment over time!
+sentiment_posts |>
+  ggplot(mapping=aes(x = date_utc, y = sentiment)) +
+  geom_point() +
+  facet_wrap(~subreddit, scales = "free")
+
+
+
+
+
   
 
 
