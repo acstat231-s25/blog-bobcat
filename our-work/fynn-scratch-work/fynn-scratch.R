@@ -11,6 +11,9 @@ library(textdata)
 library(lubridate)
 library(viridis)
 
+# interactive experimentation
+library(DT)
+
 
 # ===============================================================================
 # Scraping the sub-reddits 
@@ -233,6 +236,20 @@ sentiment_posts |>
   ggplot(mapping=aes(x = date_utc, y = sentiment)) +
   geom_point() +
   facet_wrap(~subreddit, scales = "free")
+
+
+# interactive table
+library(stringi)
+rownames(sentiment_posts) <- NULL
+
+sentiment_posts_clean <- sentiment_posts |>
+  # convert factors → character
+  mutate(across(where(is.factor), as.character)) |>
+  # force every character vector into valid UTF-8
+  mutate(across(where(is.character),
+                ~ stri_enc_toutf8(.x)))
+
+datatable(sentiment_posts_clean)
 
 
 
