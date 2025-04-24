@@ -104,6 +104,10 @@ word_freq_by_subr  <- all_posts |>
   # gets occurences of each word within each subreddit
   count(word)
 
+bigram_freqs <- all_posts |>
+  unnest_tokens(output = bigram, input = content, ngram=2) |>
+  
+
 subr_tfidf <- word_freq_by_subr |>
   # gets tf, idf, and tf-idf all in one
   bind_tf_idf(term = word, document = subreddit, n = n) 
@@ -179,6 +183,7 @@ get_sentiment <- function(content) {
   
 }
 
+# I like this one, we could have it as a interactive table in the blog
 # adds a sentiment column to every post in our dataset
 sentiment_posts <- all_posts |>
   mutate(sentiment = map_dbl(content, get_sentiment))
