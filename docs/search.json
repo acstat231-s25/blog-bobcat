@@ -96,5 +96,26 @@
     "title": "Website title",
     "section": "A note",
     "text": "A note\nNotice that you can also modify the YAML headings at the top of each page as I did in the first subpage or completely delete them, as I did here."
+  },
+  {
+    "objectID": "our-work/scraping.html",
+    "href": "our-work/scraping.html",
+    "title": "scraping",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "our-work/scraping.html#quarto",
+    "href": "our-work/scraping.html#quarto",
+    "title": "scraping",
+    "section": "",
+    "text": "Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see https://quarto.org."
+  },
+  {
+    "objectID": "our-work/scraping.html#running-code",
+    "href": "our-work/scraping.html#running-code",
+    "title": "scraping",
+    "section": "Running Code",
+    "text": "Running Code\nWhen you click the Render button a document will be generated that includes both content and the output of embedded code. You can embed code like this:\n\n\nparsing URLs on page 1...\nparsing URLs on page 2...\nparsing URLs on page 3...\nparsing URLs on page 4...\nparsing URLs on page 5...\nparsing URLs on page 6...\nparsing URLs on page 7...\nparsing URLs on page 8...\nparsing URLs on page 9...\nparsing URLs on page 10...\n\n\nYou can add options to executable code like this\n\n\n[1] 4\n\n\nThe echo: false option disables the printing of code (onlyndefined output is displayed)."
   }
 ]
