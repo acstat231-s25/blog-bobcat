@@ -164,6 +164,9 @@ plot_bigram_tfidf <- top_bigram_tfidf |>
        title = "Top 10 Bigrams by Tf-Idf for Each Subreddit") +
   scale_fill_viridis('magma')
 
+save(top_word_tfidf, file='./data/top_word_tfidf.Rdata')
+save(top_bigram_tfidf, file='./data/top_bigram_tfidf.Rdata')
+
 # ===============================================================================
 # Sentiment Analysis
 # ===============================================================================
@@ -227,6 +230,9 @@ subreddit_sentiment <- sentiment_posts |>
     total_sent = sum(sentiment)
   )
 
+# save total sentiments
+save(subreddit_sentiment, file='./data/subreddit_sents.Rdata')
+
 
 # ===============================================================================
 # OVER TIME ANALYSIS
@@ -262,6 +268,7 @@ sentiment_posts_clean <- sentiment_posts |>
   mutate(across(where(is.character),
                 ~ stri_enc_toutf8(.x)))
 
+save(sentiment_posts_clean, file='./data/posts_with_sentiment.Rdata')
 datatable(sentiment_posts_clean)
 
 

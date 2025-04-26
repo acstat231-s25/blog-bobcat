@@ -1,5 +1,5 @@
 ---
-title: "Title"
+title: "Our title"
 subtitle: "Optional subtitle"
 author: 
 - "Fynn Hayton-Ruffner"
@@ -19,6 +19,19 @@ options(scipen = 1, knitr.kable.NA = "")
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+
+# for text analysis
+library(tidytext)
+library(tidyverse)
+library(wordcloud)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+
+# interactive table
+library(DT)
 ```
 
 # Getting started
