@@ -177,11 +177,11 @@ avg_sentiments_byAfinn <- all_word_sentiments |>
 # ===============================================================================
 
 amherst_posts2 <- amherst_posts |>
-  mutate(post_id = str_to_lower(content)) |>
-  mutate(post_id = str_remove(post_id, "\\.\\d+$")) |>
   rename(comments_num = comments) |>
-  select(comments_num, post_id) 
-            
+  select(comments_num) |>
+  slice(-384) |> # this one for some reason just messes up
+  mutate(n_idx = 1:n()) # adding index to keep track
+
 wide_amherst_words <- amherst_words |>
   # make row names into post id columns
   rownames_to_column("post_id") |>
@@ -190,57 +190,35 @@ wide_amherst_words <- amherst_words |>
     post_id = tolower(post_id),
     present = 1 # adding a marker if the word is present
   ) |>
-  anti_join(stop_words, by="word") |> # removing stop words from the list of words
+  #  anti_join(stop_words, by="word") |> # removing stop words from the list of words
   distinct(post_id, word, .keep_all = TRUE) |>  # removing duplicate words from each unique post id
   select(post_id, word, present) |>
   pivot_wider(
     names_from = word,
     values_from = present,
     values_fill = list(present = 0)
-  ) 
+  ) |>
+  mutate(n_idx = 1:n()) # adding index to keep track
+
 
 wide_amherst_words$post_id <- wide_amherst_words$post_id |> #replacing weird unicode
   gsub("\031", "'", x = _, fixed = TRUE) |>
   tolower() |>
-  gsub('https?://\\S+|www\\.\\S+', '', x=_)
+  gsub('https?://\\S+|www\\.\\S+', '', x=_) 
 
 wide_amherst_words <- wide_amherst_words |>
-  left_join(select(amherst_posts2, post_id, comments_num), by = "post_id") |>
-  select(post_id, comments_num.y, everything())
+  left_join(select(amherst_posts2, n_idx, comments_num), by = "n_idx") |>
+  select(post_id, comments_num, everything())
 
-# df2 is your dummy-coded DTM
-  
-str(wide_amherst)
-str(amherst_posts)
+model <- wide_amherst_words |>
+  select(-post_id) |> # exclude post_id
+  lm(comments_num ~ ., data = _)
 
+summary(model)
 
-# reate consistent post_id in amherst_posts
-amherst_posts <- amherst_posts |>
-  mutate(post_id = str_to_lower(content)) |>
-  mutate(post_id = str_remove(post_id, "\\.\\d+$"))
+tidy(model) |>
+  arrange(desc(estimate)) |>
+  print(n=100)
 
-# what
-wide_amherst_words <- amherst_words |>
-  rownames_to_column("post_id") |>
-  mutate(
-    post_id = str_remove(post_id, "\\.\\d+$"),
-    post_id = tolower(post_id),
-    present = 1
-  ) |>
-  anti_join(stop_words, by = "word") |>
-  distinct(post_id, word, .keep_all = TRUE) |>
-  select(post_id, word, present) |>
-  pivot_wider(
-    names_from = word,
-    values_from = present,
-    values_fill = list(present = 0)
-  ) |>
-  left_join(select(amherst_posts, post_id, comments), by = "post_id")
-
-anti_join(
-  rownames_to_column(amherst_words, "post_id") |> 
-    mutate(post_id = str_remove(post_id, "\\.\\d+$"),
-           post_id = tolower(post_id)),
-  amherst_posts2,
-  by = "post_id"
-) |> View()
+nrow(wide_amherst_words)
+nrow(amherst_posts2)
