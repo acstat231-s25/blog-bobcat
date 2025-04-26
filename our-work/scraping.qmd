@@ -22,7 +22,45 @@ You can add options to executable code like this
 
 ```{r}
 #| echo: false
-2 * 2
+# Shekinah's scratch 
+college_sentiments <- all_word_sentiments |>
+  group_by(subreddit) |>
+  summarize(
+    total_sentiment = sum(sentiment, na.rm = TRUE),
+    .groups = "drop"
+  )
+college_sentiments |>
+  gt() |>
+  tab_header(title = "Total Sentiment by College") |>
+  cols_label(
+    subreddit = "College",
+    total_sentiment = "Total Sentiment Score"
+  )
+ggplot(college_sentiments, aes(x = reorder(subreddit, total_sentiment), y = total_sentiment, fill = total_sentiment)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Total Sentiment by College",
+    x = "College",
+    y = "Total Sentiment Score"
+  ) +
+  theme_minimal()
+
+anova_result <- aov(sentiment ~ subreddit, data = all_word_sentiments)
+anova_table <- tidy(anova_result)
+anova_table |>
+  gt() |>
+  tab_header(
+    title = "ANOVA: Sentiment Differences by College"
+  ) |>
+  cols_label(
+    term = "Source",
+    df = "DF",
+    sumsq = "Sum of Squares",
+    meansq = "Mean Square",
+    statistic = "F-value",
+    p.value = "p-value"
+  )
 ```
 
 The `echo: false` option disables the printing of code (onlyndefined output is displayed).
