@@ -10,6 +10,7 @@ library(ggthemes)
 library(textdata)
 library(lubridate)
 library(viridis)
+library(ggiraph)
 
 # interactive experimentation
 library(DT)
@@ -285,6 +286,7 @@ keyword_posts <- keyword_counts |>
          year, month_name, month_num,
          keywords)
 
+# monthly summary
 keyword_posts_monthly <- keyword_posts |>
   mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
   # so that we can average using month as a unit
@@ -293,6 +295,12 @@ keyword_posts_monthly <- keyword_posts |>
   # making sure to round to 2 decimal points
   summarize(avg_keywords = round(mean(keywords), 2))
 
+# quarterly summary
+keyword_posts_quarterly <- keyword_posts |>
+  mutate(quarter = floor_date(date_utc, unit = "quarter")) |>   # round down to first date of the quarter
+  group_by(subreddit, quarter) |>
+  summarise(
+    avg_keywords = round(mean(keywords), 2))      # average for the quarter
 # ===============================================================================
 # OVER TIME ANALYSIS
 # ===============================================================================
@@ -362,6 +370,27 @@ gg_point_keywords_monthly <- ggplot(data = keyword_posts_monthly) +
   theme_minimal() 
 
 girafe(ggobj = gg_point_keywords_monthly)
+
+# Over time analysis for QUARTERLY admissions keywords per subreddit
+
+gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
+  geom_point_interactive(aes(x = quarter, 
+                             y = avg_keywords, 
+                             tooltip = avg_keywords)) + 
+  geom_line(aes(x = quarter, 
+                y = avg_keywords)) +
+  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+  scale_x_date(
+    date_breaks  = "1 year", # one tick on the x per year
+    date_labels  = "%Y" # just showing the year, not month or days
+  ) +
+  labs(
+    x = 'Date',
+    y = 'Quarterly Average Keywords per Post'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point_keywords_quarterly)
 
 # interactive table
 library(stringi)
