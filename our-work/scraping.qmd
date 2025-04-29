@@ -23,12 +23,14 @@ You can add options to executable code like this
 ```{r}
 #| echo: false
 # Shekinah's scratch 
+
 college_sentiments <- all_word_sentiments |>
   group_by(subreddit) |>
   summarize(
     total_sentiment = sum(sentiment, na.rm = TRUE),
     .groups = "drop"
   )
+#summary table of total sentiments by colleges
 college_sentiments |>
   gt() |>
   tab_header(title = "Total Sentiment by College") |>
@@ -36,6 +38,7 @@ college_sentiments |>
     subreddit = "College",
     total_sentiment = "Total Sentiment Score"
   )
+# Bar chart of total sentiment Vs Colleges(subreddit) 
 ggplot(college_sentiments, aes(x = reorder(subreddit, total_sentiment), y = total_sentiment, fill = total_sentiment)) +
   geom_col() +
   coord_flip() +
@@ -45,7 +48,7 @@ ggplot(college_sentiments, aes(x = reorder(subreddit, total_sentiment), y = tota
     y = "Total Sentiment Score"
   ) +
   theme_minimal()
-
+# Anove test and anova table 
 anova_result <- aov(sentiment ~ subreddit, data = all_word_sentiments)
 anova_table <- tidy(anova_result)
 anova_table |>
@@ -61,6 +64,13 @@ anova_table |>
     statistic = "F-value",
     p.value = "p-value"
   )
+
+# Word clouds for the three colleges 
+set.seed(43)
+ggplot(word_tfidf, aes(label = word, size = tf_idf)) +
+  geom_text_wordcloud() +
+  facet_wrap(~ college) + 
+  theme_minimal()
 ```
 
 The `echo: false` option disables the printing of code (onlyndefined output is displayed).

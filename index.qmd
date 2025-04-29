@@ -1,11 +1,14 @@
 ---
-title: "(some catchy title): An Analysis of All Posts in the Amherst College, Williams College, and Middlebury College Subreddits (2020-2025)"
-subtitle: "Using methods of sentiment analysis, "
+title: "(some catchy title): An Analysis of All Posts in the Amherst College, Williams College, and Middlebury College Subreddits (2020-2025) or Exploring the Emotional Patterns of College Life Through Reddit"
+subtitle: "Using methods of sentiment analysis, or Analyzing Student Sentiment in the Reddit Communities of Amherst, Williams, and Middlebury from 2020 to 2025"
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
 - "Kinglee Tham"
-abstract: "A brief abstract summarizing your project is required here. This abstract, along with the first image or figure in your blog, will be used as a preview to your blog on the course's landing page for all the blogs."
+abstract: |
+  How does sentiment flow through the online communities of college students? What topics are most important to each group, and how have these conditions fluctuated with time?
+  In this project, we dive into the world of Reddit, analyzing the emotional tone, engagement, and content of posts across three NESCAC college subreddits: Amherst, Williams, and Middlebury. By obtaining data in real-time using the @rivera_ivan RedditExtractoR scraping package, we examine positive negative valence, comment count, and content themes both over time and as a totality across the three forums. The goal is to explore within and cross subreddit patterns together to see if any discrepancies or global similarities emerge. Through text analysis and statistical modeling, we study how the words of students manifest the sentiment and thematic spectrum of their communities and how sentiment translates to engagement, with a particular focus on dicussions surrounding the admissions process.
+
 ---
 
 ```{r}
@@ -32,7 +35,64 @@ library(viridis)
 
 # interactive table
 library(DT)
+# interactive graph
+library(ggiraph)
+
+load('./data/sentiment_posts.Rdata')
 ```
+
+
+# What's going on here?
+
+If you are unfamiliar with [Reddit.com](https://www.reddit.com/), we may have to begin by inquiring about the rock you've been living under for nigh-on two decades. In all seriousness (don't stop reading we're sorry), along with X, the forum-based social media platform is a primary hub for raw, unadulterated commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: [Amherst College](https://www.reddit.com/r/amherstcollege/), [Williams College](https://www.reddit.com/r/WilliamsCollege/), and [Middlebury College](https://www.reddit.com/r/middlebury/). Specifically, we aim to meaningfully compare the sentiments (again how positive and negative they are) of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, track mentions of the admissions process.
+
+Now, you may be wondering why these specific subreddits, and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to some of our least favorite sister schools in the NESCAC. Also, on a more practical basis, these three subreddits were founded around similar times and were young enough for us to be able to scrape their entire contents with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and priortized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be particularly interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective). With that out of the way, lets talk about how we got the data. 
+
+# RedditExtractoR
+
+Web scraping is a notoriously error-laden path, as websites increasingly deploy dynamically rendered data and IP-Address blocking it has never been harder to get the data you want. Luckily, we found a tool that was able to scrape every single post that has ever been made to each of our subreddits of interest. The @rivera_ivan RedditExtractoR scraping package gives you a post's content, title, number of comments, and date, all in as little as 3 lines of R code:
+
+```{r}
+#| echo: true 
+#| eval: false
+#| label: scrape-demo
+
+library(RedditExtractoR)
+amherst_posts_raw <- find_thread_urls(
+  subreddit = "amherstcollege", sort_by = "new", period = "day")
+```
+
+Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information see @Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be layed out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used thoughout the project, see @fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data! 
+
+# What's engagement and sentiment like across subreddits?
+
+```{r}
+#| label: anova-results
+#| tbl-cap: "Subreddit Sentiment & Engagement"
+#| tbl-subcap: 
+#|   - "First three rows of cars dataset"
+#|   - "First three rows of pressure dataset"
+#| layout: [[1,1], [1,1]] 
+
+
+load('./data/subreddit_summaries.Rdata')
+load('./data/aov_tukey_results.Rdata')
+
+aov_sent_res |> 
+  kable()
+
+tukey_sent |>
+  kable()
+
+aov_comments_res |> 
+  kable()
+
+tukey_comments |>
+  kable()
+```
+
+# TF-IDF: Each subreddit's most important words and bigrams
+
 
 # Getting started
 
@@ -236,4 +296,24 @@ ggplot(pressure, aes(temperature, pressure)) +
 
 ggplot(mtcars, aes(hp, mpg)) +
   geom_point()
+```
+
+# Raw data reference
+
+```{r}
+#| label: fig-raw-data
+#| fig-cap: "Our scraped data: all subreddit posts"
+
+sentiment_posts |>
+  select(-month_num) |>
+datatable(
+          escape=FALSE, options = list(pageLength = 2, columnDefs = list(list(
+  targets = 1,
+  render = JS(
+    "function(data, type, row, meta) {",
+    "return type === 'display' && data.length > 200 ?",
+    "'<span title=\"' + data + '\">' + data.substr(0, 200) + '...</span>' : data;",
+    "}")
+))), callback = JS('table.page(0).draw(false);'),
+colnames = c('Content', 'Date', 'Comments', 'Subreddit', 'Year', 'Month','Sentiment Score'))
 ```

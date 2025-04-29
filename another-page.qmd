@@ -1,8 +1,14 @@
 ---
-title: "Another page"
-author: "Kat Correia"
+title: "References"
+author: 
+- "Fynn Hayton-Ruffner"
+- "Shekinah Ninziza"
+- "Kinglee Tham"
 ---
 
 This is just another page that can be linked! You are not required to include more than just *index.qmd*, but you are welcome to make content on different pages, if desired. This may help with managing GitHub commits, as well. 
+
+How to use RedditExtractoR [@Ant _2023]
+
 
 Each page can have it's own list of references based on what you cite. For example, did you know that good graphs "have a clear purpose, show the data clearly, and make the message obvious"? [@vandem2019].

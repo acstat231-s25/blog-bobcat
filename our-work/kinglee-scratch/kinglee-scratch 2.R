@@ -309,16 +309,23 @@ keyword_posts_quarterly <- keyword_posts |>
 library(ggiraph)
 
 # Over time analysis for ALL posts per subreddit
-gg_point <- ggplot(data = sentiment_posts) +
-  geom_point_interactive(aes(x = date_utc, 
-                             y = sentiment, 
-                             tooltip = sentiment,
-                             color = comments)) + 
+avg_sent_per_day_per_subreddit <- sentiment_posts |>
+  group_by(subreddit, date_utc) |>
+  summarize(
+    avg_sentiment = mean(sentiment),
+    avg_comments = mean(comments)
+  )
+
+gg_point <- ggplot(data = avg_sent_per_day_per_subreddit) +
+  geom_line_interactive(aes(x = date_utc, 
+                             y = avg_sentiment, 
+                             tooltip = avg_sentiment,
+                             color = avg_comments)) + 
   facet_wrap(~subreddit, scales = "free", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Total Sentiment Score',
-    color = 'Comments'
+    y = 'Avg Daily Sentiment Score',
+    color = 'Avg Comments'
   ) +
   theme_minimal() 
 
@@ -326,7 +333,7 @@ girafe(ggobj = gg_point)
 
 # Over time analysis for MONTHLY sentiment average per subreddit
 gg_point_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
-  geom_point_interactive(aes(x = month, 
+  geom_line_interactive(aes(x = month, 
                              y = avg_sentiment, 
                              tooltip = avg_sentiment,
                              color = avg_comments)) + 
@@ -342,7 +349,7 @@ girafe(ggobj = gg_point_sentiment_monthly)
 
 # Over time analysis for MONTHLY comment average per subreddit
 gg_point_comments_monthly <- ggplot(data = sentiment_posts_monthly) +
-  geom_point_interactive(aes(x = month, 
+  geom_line_interactive(aes(x = month, 
                              y = avg_comments, 
                              tooltip = avg_comments,
                              color = avg_sentiment)) + 
@@ -359,7 +366,7 @@ girafe(ggobj = gg_point_comments_monthly)
 # Over time analysis for MONTHLY admissions keywords per subreddit
 
 gg_point_keywords_monthly <- ggplot(data = keyword_posts_monthly) +
-  geom_point_interactive(aes(x = month, 
+  geom_line_interactive(aes(x = month, 
                              y = avg_keywords, 
                              tooltip = avg_keywords)) + 
   facet_wrap(~subreddit, scales = "fixed", ncol=1) +
@@ -405,19 +412,6 @@ sentiment_posts_clean <- sentiment_posts |>
 
 save(sentiment_posts_clean, file='./data/posts_with_sentiment.Rdata')
 datatable(sentiment_posts_clean)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
