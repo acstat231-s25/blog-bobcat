@@ -91,6 +91,8 @@ sentiment_posts_daily <- sentiment_posts |>
 save(sentiment_posts_monthly, file='.././data/sentiment_posts_monthly.Rdata')
 save(sentiment_posts_daily, file='.././data/sentiment_posts_daily.Rdata')
 
+cor(sentiment_posts$sentiment, sentiment_posts$comments)
+
 # ===============================================================================
 # Sentiment Analysis visualizations (to put in index.qmd)
 # ===============================================================================
