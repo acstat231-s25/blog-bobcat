@@ -50,20 +50,21 @@ sentiment_posts <- sentiment_posts |>
 subreddit_summaries <- sentiment_posts |>
   group_by(subreddit)|>
   summarize(
-    total_posts = n()
+    total_posts = n(),
     total_sent = sum(sentiment),
     total_comments = sum(comments)
   )
 
 # save to publishable data folder
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
-save(sentiment_posts, file='.././data/posts_with_sentiment.Rdata')
+save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
 
 # ===============================================================================
 # Over time analysis
 # ===============================================================================
 
-load('.././data/posts_with_sentiment.Rdata')
+# just in case you clear environment
+load('.././data/sentiment_posts.Rdata')
 
 # Make a new data set of average sentiment in each subreddit by MONTH
 sentiment_posts_monthly <- sentiment_posts |>
@@ -146,6 +147,7 @@ girafe(ggobj = gg_point_comments_monthly)
 
 # Over time analysis for MONTHLY admissions keywords per subreddit
 
+load('.././data/keyword_posts_monthly.Rdata')
 gg_point_keywords_monthly <- ggplot(data = keyword_posts_monthly) +
   geom_line_interactive(aes(x = month, 
                             y = avg_keywords, 

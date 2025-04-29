@@ -15,8 +15,6 @@ library(viridis)
 # Scraping the sub-reddits 
 # ===============================================================================
 
-setwd('wrangling_scripts')
-getwd()
 # INITIAL CODE TO SCRAPE THE REDDIT DATA USING REDDITEXTRACTOR, 
 
 amherst_posts_raw <- find_thread_urls(

@@ -12,6 +12,7 @@ library(viridis)
 # Application keywords
 # ===============================================================================
 
+load('.././raw_data/all_college_posts.Rdata')
 # Calculating college-application related posts
 # define a vector of application related keywords
 
