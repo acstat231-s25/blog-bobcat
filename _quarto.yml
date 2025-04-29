@@ -12,9 +12,9 @@ website:
         text: "About"
         icon: house # Get icon names: https://icons.getbootstrap.com/?q=home
       # Add or remove additional pages below in desired order of appearance
-      - another-page.qmd
-        icon: textarea-t 
+      - href: another-page.qmd
         text: "TF-IDF"
+        icon: textarea-t 
       - href: yet-another-page.qmd
         text: "Time Series Analysis"
         icon: graph-up

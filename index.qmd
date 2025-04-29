@@ -44,7 +44,7 @@ load('./data/sentiment_posts.Rdata')
 
 If you are unfamiliar with[ Reddit.com](https://www.reddit.com/), we may have to begin by inquiring about the rock you've been living under for nigh-on two decades. In all seriousness (don't stop reading, we're sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits:[ Amherst College](https://www.reddit.com/r/amherstcollege/),[ Williams College](https://www.reddit.com/r/WilliamsCollege/), and[ Middlebury College](https://www.reddit.com/r/middlebury/). Specifically, we aim to compare the sentiments meaningfully of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, and track mentions of the admissions process.
 
-You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective). 
+You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective).
 
 # RedditExtractoR
 
@@ -62,7 +62,7 @@ amherst_posts_raw <- find_thread_urls(
 
 # Methods for sentiment analysis
 
-Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see \@Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see \@fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!
+Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see @Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see @fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!
 
 # What's engagement and sentiment like across subreddits?
 
@@ -78,7 +78,8 @@ load('./data/aov_tukey_results.Rdata')
 subreddit_summaries |>
   kable(digits=2, 
         col.names = c('Subreddit', 'Post Count','Score (tot)', 
-                      'Comments (tot)', 'Score (avg)', 'Comments (avg)'))
+                      'Comments (tot)', 'Score (avg)', 'Comments (avg)'),
+        caption="Summary statistics for cross subreddit comparison")
 
 aov_sent_res |> 
   kable(col.names = c('Factor', 'df', 'SST','MSE', 'F', 'p'), 
@@ -90,6 +91,8 @@ aov_comments_res |>
         caption="ANOVA: average comments across subreddit",
         digits=2) 
 ```
+
+Let's compare the subreddits! 
 
 # TF-IDF: Each subreddit's most important words and bigrams
 
