@@ -49,15 +49,23 @@ keyword_posts <- keyword_counts |>
          year, month_name, month_num,
          keywords)
 
-keyword_posts_monthly <- keyword_posts |>
-  mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
+# monthly summary data set
+# keyword_posts_monthly <- keyword_posts |>
+#  mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
   # so that we can average using month as a unit
-  group_by(subreddit, month) |> 
+#  group_by(subreddit, month) |> 
   # calculating average sentiment and comments in each month
   # making sure to round to 2 decimal points
-  summarize(avg_keywords = round(mean(keywords), 2))
+#  summarize(avg_keywords = round(mean(keywords), 2))
 
-save(keyword_posts_monthly, file='.././data/keyword_posts_monthly.Rdata')
+# quarterly summary data set
+keyword_posts_quarterly <- keyword_posts |>
+  mutate(quarter = floor_date(date_utc, unit = "quarter")) |>   # round down to first date of the quarter
+  group_by(subreddit, quarter) |>
+  summarise(
+    avg_keywords = round(mean(keywords), 2))      # average for the quarter
+
+save(keyword_posts_quarterly, file='.././data/keyword_posts_quarterly.Rdata')
 
 
 
