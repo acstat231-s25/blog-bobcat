@@ -1,5 +1,15 @@
+# for text analysis
+library(tidytext)
+library(tidyverse)
+library(wordcloud)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+
 # ===============================================================================
-# Sentiment Analysis
+# General Sentiment Analysis
 # ===============================================================================
 
 load('.././raw_data/all_college_posts.Rdata')
@@ -21,10 +31,39 @@ get_sentiment <- function(content) {
   
 }
 
-# I like this one, we could have it as a interactive table in reference section
-# adds a sentiment column to every post in our dataset
+# add sentiment score to every post
 sentiment_posts <- all_posts |>
   mutate(sentiment = map_dbl(content, get_sentiment)) 
+
+# force every character into valid UTF-8, needed for datatable display
+library(stringi)
+rownames(sentiment_posts) <- NULL
+
+sentiment_posts <- sentiment_posts |>
+  # convert factors → character
+  mutate(across(where(is.factor), as.character)) |>
+  # force every character vector into valid UTF-8
+  mutate(across(where(is.character),
+              ~ stri_enc_toutf8(.x)))
+
+# table comparing total summed score/comments for each subreddit
+subreddit_summaries <- sentiment_posts |>
+  group_by(subreddit)|>
+  summarize(
+    total_posts = n()
+    total_sent = sum(sentiment),
+    total_comments = sum(comments)
+  )
+
+# save to publishable data folder
+save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
+save(sentiment_posts, file='.././data/posts_with_sentiment.Rdata')
+
+# ===============================================================================
+# Over time analysis
+# ===============================================================================
+
+load('.././data/posts_with_sentiment.Rdata')
 
 # Make a new data set of average sentiment in each subreddit by MONTH
 sentiment_posts_monthly <- sentiment_posts |>
@@ -36,76 +75,29 @@ sentiment_posts_monthly <- sentiment_posts |>
   summarize(avg_sentiment = round(mean(sentiment), 2),
             avg_comments = round(mean(comments), 2))
 
-# table comparing total summed score for each subreddit
-subreddit_sentiment <- sentiment_posts |>
-  group_by(subreddit)|>
-  summarize(
-    total_sent = sum(sentiment),
-  )
-
-# save total sentiments
-save(subreddit_sentiment, file='.././data/subreddit_sents.Rdata')
-
-# Calculating college-application related posts
-# define a vector of application related keywords
-
-application_keywords <- c(
-  "waitlist",  "waitlisted", "waitlisting",
-  "accept",    "accepted",   "acceptance",
-  "apply",     "applied",    "applying", 
-  "application", "admission", "admissions",
-  "defer",     "deferred",   "deferral",
-  "reject",    "rejected",   "rejection",
-  "enroll",    "enrolled",   "enrollment",  
-  "matriculate", "matriculated", "stats"
-)
-
-# calculate # of keyword occurrences for each subreddit
-keyword_counts <- all_posts |>
-  mutate(post_id = row_number()) |> # dummy counter so we can join later
-  # get all tokens from the content
-  unnest_tokens(word, content) |> # one row per word
-  filter(word %in% application_keywords) |> # keep only admission terms
-  group_by(post_id) |>            
-  summarise(keywords = n())
-
-# adding dummy counter to original data set
-all_posts <- all_posts |>
-  mutate(post_id = row_number())
-
-# joining counts back to orignal data set
-keyword_posts <- keyword_counts |>
-  right_join(all_posts, by = "post_id") |>
-  # fill all posts with no keywords with 0
-  mutate(keywords = replace_na(keywords, 0)) |>
-  select(content, date_utc, comments, subreddit,
-         year, month_name, month_num,
-         keywords)
-
-keyword_posts_monthly <- keyword_posts |>
-  mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
-  # so that we can average using month as a unit
-  group_by(subreddit, month) |> 
-  # calculating average sentiment and comments in each month
-  # making sure to round to 2 decimal points
-  summarize(avg_keywords = round(mean(keywords), 2))
-
-# ===============================================================================
-# OVER TIME ANALYSIS
-# ===============================================================================
-# plot of all three colleges' posts with sentiment over time!
-
-library(ggiraph)
-
-# Over time analysis for ALL posts per subreddit
+# Daily avg sentiment & comments
 sentiment_posts_daily <- sentiment_posts |>
   group_by(subreddit, date_utc) |>
   summarize(
-    avg_sentiment = mean(sentiment),
-    avg_comments = mean(comments)
+    avg_sentiment = round(mean(sentiment), 2),
+    avg_comments = round(mean(comments), 2)
   )
 
-gg_point <- ggplot(data = avg_sent_per_day_per_subreddit) +
+# save to publishable data folder
+save(sentiment_posts_monthly, file='.././data/sentiment_posts_monthly.Rdata')
+save(sentiment_posts_daily, file='.././data/sentiment_posts_daily.Rdata')
+
+# ===============================================================================
+# Sentiment Analysis visualizations (to put in index.qmd)
+# ===============================================================================
+
+library(ggiraph)
+
+# load in necessary data files
+load('.././data/sentiment_posts_monthly.Rdata')
+load('.././data/sentiment_posts_daily.Rdata')
+
+gg_daily <- ggplot(data = sentiment_posts_daily) +
   geom_line_interactive(aes(x = date_utc, 
                             y = avg_sentiment, 
                             tooltip = avg_sentiment,
@@ -113,15 +105,15 @@ gg_point <- ggplot(data = avg_sent_per_day_per_subreddit) +
   facet_wrap(~subreddit, scales = "free", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Avg Daily Sentiment Score',
-    color = 'Avg Comments'
+    y = 'Daily Average Sentiment Score',
+    color = 'Average Comments'
   ) +
   theme_minimal() 
 
-girafe(ggobj = gg_point)
+girafe(ggobj = gg_daily)
 
 # Over time analysis for MONTHLY sentiment average per subreddit
-gg_point_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
+gg_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
   geom_line_interactive(aes(x = month, 
                             y = avg_sentiment, 
                             tooltip = avg_sentiment,
@@ -134,7 +126,7 @@ gg_point_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
   ) +
   theme_minimal() 
 
-girafe(ggobj = gg_point_sentiment_monthly)
+girafe(ggobj = gg_sentiment_monthly)
 
 # Over time analysis for MONTHLY comment average per subreddit
 gg_point_comments_monthly <- ggplot(data = sentiment_posts_monthly) +
@@ -167,17 +159,11 @@ gg_point_keywords_monthly <- ggplot(data = keyword_posts_monthly) +
 
 girafe(ggobj = gg_point_keywords_monthly)
 
-# interactive table
-library(stringi)
-rownames(sentiment_posts) <- NULL
-
-sentiment_posts_clean <- sentiment_posts |>
-  # convert factors → character
-  mutate(across(where(is.factor), as.character)) |>
-  # force every character vector into valid UTF-8
-  mutate(across(where(is.character),
-                ~ stri_enc_toutf8(.x)))
-
-save(sentiment_posts_clean, file='.././data/posts_with_sentiment.Rdata')
 datatable(sentiment_posts_clean)
+
+
+
+
+
+
 

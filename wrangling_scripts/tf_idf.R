@@ -1,3 +1,13 @@
+# for text analysis
+library(tidytext)
+library(tidyverse)
+library(wordcloud)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+
 # ===============================================================================
 # WHAT ARE THE MOST IMPORTANT WORDS/BIGRAMS TO EACH SUBREDDIT? -TF-IDF
 # ===============================================================================

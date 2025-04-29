@@ -1,5 +1,15 @@
+# for text analysis
+library(tidytext)
+library(tidyverse)
+library(wordcloud)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+
 # ===============================================================================
-# WRANGLING
+# MORE INITIAL WRANGLING
 # ===============================================================================
 
 # raw data set including all 3 colleges
