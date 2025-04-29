@@ -68,27 +68,27 @@ Once we scraped each subreddit, we joined all the posts into one big dataset and
 
 ```{r}
 #| label: anova-results
-#| tbl-cap: "Subreddit Sentiment & Engagement"
-#| tbl-subcap: 
-#|   - "First three rows of cars dataset"
-#|   - "First three rows of pressure dataset"
-#| layout: [[1,1], [1,1]] 
+#| tbl-cap: "Subreddit Sentiment & Engagement: ANOVA"
+#| layout: [[1], [4, -1, 4]] 
 
 
 load('./data/subreddit_summaries.Rdata')
 load('./data/aov_tukey_results.Rdata')
 
-aov_sent_res |> 
-  kable()
+subreddit_summaries |>
+  kable(digits=2, 
+        col.names = c('Subreddit', 'Post Count','Score (tot)', 
+                      'Comments (tot)', 'Score (avg)', 'Comments (avg)'))
 
-tukey_sent |>
-  kable()
+aov_sent_res |> 
+  kable(col.names = c('Factor', 'df', 'SST','MSE', 'F', 'p'), 
+        caption = "ANOVA: average sentiment across subreddit",
+        digits=2)
 
 aov_comments_res |> 
-  kable()
-
-tukey_comments |>
-  kable()
+  kable(col.names = c('Factor', 'df', 'SST','MSE', 'F', 'p'),
+        caption="ANOVA: average comments across subreddit",
+        digits=2) 
 ```
 
 # TF-IDF: Each subreddit's most important words and bigrams
