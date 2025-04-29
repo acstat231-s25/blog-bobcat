@@ -46,6 +46,7 @@ sentiment_posts <- sentiment_posts |>
   mutate(across(where(is.character),
               ~ stri_enc_toutf8(.x)))
 
+
 # table comparing total summed score/comments for each subreddit
 subreddit_summaries <- sentiment_posts |>
   group_by(subreddit)|>
@@ -57,6 +58,19 @@ subreddit_summaries <- sentiment_posts |>
     avg_comments_per_post = round(mean(comments), 2)
     
   )
+
+# now lets see if these differences are significant
+aov_sent <- aov(sentiment~subreddit, data = sentiment_posts)
+summary(aov_sent)
+
+aov_comments <- aov(comments~subreddit, data=sentiment_posts)
+summary(aov_comments)
+
+tukey_sent <- TukeyHSD(aov_sent)
+tukey_sent
+
+tukey_comments <- TukeyHSD(aov_comments)
+tukey_comments
 
 # save to publishable data folder
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
