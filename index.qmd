@@ -1,6 +1,6 @@
 ---
-title: "(some catchy title): An Analysis of All Posts in the Amherst College, Williams College, and Middlebury College Subreddits"
-subtitle: "Optional subtitle"
+title: "(some catchy title): An Analysis of All Posts in the Amherst College, Williams College, and Middlebury College Subreddits (2011-2025)"
+subtitle: "Using methods of sentiment analysis, "
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
