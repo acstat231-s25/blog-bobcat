@@ -52,7 +52,10 @@ subreddit_summaries <- sentiment_posts |>
   summarize(
     total_posts = n(),
     total_sent = sum(sentiment),
-    total_comments = sum(comments)
+    total_comments = sum(comments),
+    avg_post_sent = round(mean(sentiment), 2),
+    avg_comments_per_post = round(mean(comments), 2)
+    
   )
 
 # save to publishable data folder
