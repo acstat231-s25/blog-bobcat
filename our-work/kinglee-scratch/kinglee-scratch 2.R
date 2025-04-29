@@ -58,7 +58,12 @@ all_posts <- all_posts |>
                             "WilliamsCollege" = "Williams College"),
          # change dates to date format
          date_utc = as.Date(date_utc)) |>
-  filter(date_utc > "2020-01-01")
+  filter(date_utc > "2020-01-01") |>
+  mutate(
+    year  = year(date_utc),                     
+    month_name = month(date_utc, label = TRUE),    
+    month_num = month(date_utc)                  
+  )
 
 # Replace unicode \031s with actual apostrophes
 all_posts$content <- all_posts$content |>
@@ -221,13 +226,23 @@ get_sentiment <- function(content) {
 # I like this one, we could have it as a interactive table in the blog
 # adds a sentiment column to every post in our dataset
 sentiment_posts <- all_posts |>
-  mutate(sentiment = map_dbl(content, get_sentiment))
+  mutate(sentiment = map_dbl(content, get_sentiment)) 
+
+# Make a new data set of average sentiment in each subreddit by MONTH
+sentiment_posts_monthly <- sentiment_posts |>
+  mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
+  # so that we can average using month as a unit
+  group_by(subreddit, month) |> 
+  # calculating average sentiment and comments in each month
+  # making sure to round to 2 decimal points
+  summarize(avg_sentiment = round(mean(sentiment), 2),
+            avg_comments = round(mean(comments), 2))
 
 # table comparing total summed score for each subreddit
 subreddit_sentiment <- sentiment_posts |>
   group_by(subreddit)|>
   summarize(
-    total_sent = sum(sentiment)
+    total_sent = sum(sentiment),
   )
 
 # save total sentiments
@@ -241,6 +256,7 @@ save(subreddit_sentiment, file='./data/subreddit_sents.Rdata')
 
 library(ggiraph)
 
+# Over time analysis for ALL posts per subreddit
 gg_point <- ggplot(data = sentiment_posts) +
   geom_point_interactive(aes(x = date_utc, 
                              y = sentiment, 
@@ -256,6 +272,38 @@ gg_point <- ggplot(data = sentiment_posts) +
 
 girafe(ggobj = gg_point)
 
+# Over time analysis for MONTHLY sentiment average per subreddit
+gg_point_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
+  geom_point_interactive(aes(x = month, 
+                             y = avg_sentiment, 
+                             tooltip = avg_sentiment,
+                             color = avg_comments)) + 
+  facet_wrap(~subreddit, scales = "free", ncol=1) +
+  labs(
+    x = 'Date',
+    y = 'Monthly Average Sentiment Score',
+    color = 'Average Comments'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point_sentiment_monthly)
+
+# Over time analysis for MONTHLY comment average per subreddit
+gg_point_comments_monthly <- ggplot(data = sentiment_posts_monthly) +
+  geom_point_interactive(aes(x = month, 
+                             y = avg_comments, 
+                             tooltip = avg_comments,
+                             color = avg_sentiment)) + 
+  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+  labs(
+    x = 'Date',
+    y = 'Monthly Average Comments',
+    color = 'Average Sentiment'
+  ) +
+  # i need to make these the same axes
+  theme_minimal() 
+
+girafe(ggobj = gg_point_comments_monthly)
 
 # interactive table
 library(stringi)
