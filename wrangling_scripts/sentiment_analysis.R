@@ -59,21 +59,22 @@ subreddit_summaries <- sentiment_posts |>
     
   )
 
+library(broom)
 # now lets see if these differences are significant
 aov_sent <- aov(sentiment~subreddit, data = sentiment_posts)
-aov_sent_sum <- summary(aov_sent)
+aov_sent_res <- tidy(aov_sent)
 
 aov_comments <- aov(comments~subreddit, data=sentiment_posts)
-aov_comments_sum <- summary(aov_comments)
+aov_comments_res <- tidy(aov_comments)
 
-tukey_sent <- TukeyHSD(aov_sent)
+tukey_sent <- tidy(TukeyHSD(aov_sent))
 
-tukey_comments <- TukeyHSD(aov_comments)
+tukey_comments <- tidy(TukeyHSD(aov_comments))
 tukey_comments
 
 
 # save to publishable data folder
-save(aov_sent_sum, aov_comments_sum, tukey_sent, tukey_comments,
+save(aov_sent_res, aov_comments_res, tukey_sent, tukey_comments,
      file='.././data/aov_tukey_results.Rdata')
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
 save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
