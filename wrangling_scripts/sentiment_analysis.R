@@ -6,35 +6,6 @@ load('.././raw_data/all_college_posts.Rdata')
 
 afinn_lexicon <- get_sentiments('afinn')
 
-# two different methods to get the total sentiment for each subreddit,
-# I like having two to not only confirm, but to see the data in a two different
-# ways
-all_word_sentiments <- all_posts |>
-  # get all tokens from the content
-  unnest_tokens(output = word, input = content) |>
-  # group by subreddit
-  group_by(subreddit) |>
-  # gets occurences of each word within each subreddit
-  count(word) |>
-  # get the sentiments for each word
-  left_join(afinn_lexicon, by="word") |>
-  group_by(subreddit, word) |>
-  summarize(
-    num_words = n,
-    value = value,
-    sentiment = sum(value, na.rm = TRUE) * n,
-    .groups = "drop"
-  )
-
-# total sentiment scores for each subreddit
-subreddit_sentiments <- all_word_sentiments |>
-  group_by(subreddit) |>
-  summarize(
-    score = sum(sentiment)
-  )
-
-# table visualization
-
 # helpful method that calcs afinn lex sentiment for a given string
 get_sentiment <- function(content) {
   # convert char vec to table
@@ -50,7 +21,7 @@ get_sentiment <- function(content) {
   
 }
 
-# I like this one, we could have it as a interactive table in the blog
+# I like this one, we could have it as a interactive table in reference section
 # adds a sentiment column to every post in our dataset
 sentiment_posts <- all_posts |>
   mutate(sentiment = map_dbl(content, get_sentiment)) 
