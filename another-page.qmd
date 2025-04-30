@@ -9,7 +9,7 @@ author:
 ```{r}
 #| include: false
 
-
+# Packages
 library(ggplot2)
 library(tidytext)
 library(tidyverse)
@@ -19,6 +19,10 @@ library(textdata)
 library(lubridate)
 library(viridis)
 library(ggiraph)
+
+# Data 
+load('./data/top_word_tfidf.Rdata')
+load('./data/top_bigram_tfidf.Rdata')
 
 ```
 
@@ -30,15 +34,14 @@ Term Frequency - Inverse Document Frequency (TF-IDF) is a measure of how importa
 #| label: fig-word_tfidf
 
 
-load('./data/top_word_tfidf.Rdata')
-load('./data/top_bigram_tfidf.Rdata')
+
 
 top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
-  facet_wrap(~subreddit, ncol = 3, scales = "fixed") +
+  facet_wrap(~subreddit, ncol = 3, scales = "free") +
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
@@ -71,7 +74,7 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
-  facet_wrap(~subreddit, ncol = 3, scales = "fixed") +
+  facet_wrap(~subreddit, ncol = 3, scales = "free") +
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
@@ -87,7 +90,3 @@ Middlebury's subreddit deals with student life concerning student engagement wit
 The Williams subreddit appears to be about academic rigors, particularly in the humanities. The bigrams "optional writing", "writing supplement," and "academic paper" suggest a serious push for written assignments, whether in terms of admissions or in courses. This is a reflection of a student body that seems deeply invested in writing heavy fields and the working of a liberal arts curriculum.
 
 The appearance of “amherst hey” and “williams hey” in both subreddits is likely tied to recurring informal or pinned threads titled “Hey Amherst!” or “Hey Williams!”
-
-How to use RedditExtractoR [@Ant_2023]
-
-Each page can have it's own list of references based on what you cite. For example, did you know that good graphs "have a clear purpose, show the data clearly, and make the message obvious"? [@vandem2019].
