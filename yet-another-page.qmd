@@ -1,7 +1,27 @@
+---
+title: "Time Series Analysis"
+author: 
+- "Fynn Hayton-Ruffner"
+- "Shekinah Ninziza"
+- "Kinglee Tham"
+---
 
-This is *yet* another page that can be linked! You are not required to include more than just *index.qmd*, but you are welcome to make content on different pages, if desired. This may help with managing GitHub commits, as well. 
+```{r}
+#| include: false
 
-## A note {#sec-note} 
+# Packages
+library(ggplot2)
+library(tidytext)
+library(tidyverse)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+library(ggiraph)
 
-Notice that you can also modify the YAML headings at the top of each page as I did in the [first subpage](another-page.qmd) or completely delete them, as I did here.
+# Data 
+load('./data/top_word_tfidf.Rdata')
+load('./data/top_bigram_tfidf.Rdata')
 
+```
