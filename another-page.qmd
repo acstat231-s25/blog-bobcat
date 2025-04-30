@@ -1,5 +1,5 @@
 ---
-title: "More Visualizations"
+title: "Term Frequency - Inverse Document Frequency Analysis"
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
@@ -22,6 +22,9 @@ library(ggiraph)
 
 ```
 
+Term Frequency - Inverse Document Frequency (TF-IDF) is a measure of how important a word is in a document, adjusted for the fact that some words appear more frequently in general. In colloquial terms, the TF-IDF of a word is high when it appears frequently in a document but rarely in the corpus (collection of all documents).
+
+# Word Analysis
 
 ```{r}
 #| label: fig-word_tfidf
@@ -35,29 +38,29 @@ top_word_tfidf |>
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
-  facet_wrap(~subreddit, ncol = 2, scales = "free") +
+  facet_wrap(~subreddit, ncol = 3, scales = "fixed") +
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
-       title = "Top 10 words by Tf-Idf for Each Subreddit") +
+       title = "Top 10 Words by Tf-Idf for Each Subreddit") +
   scale_fill_viridis('magma')
 
 
 ```
 
-Amherst College 
+## Amherst College
 
-The most important TF-IDF keyword is "amherst's", as it stands for the strong link that such posts share with the local institutional discussions. Other important ones as "umass," "statistics," and "sem" (probably an abbreviation of "seminar") imply that academic conversations are key. Terms such as "soccer" and "paper" refer both to co-curricular and to course-related subjects. Thus, this combination of academic and student life language demonstrates full engagement with the integral and daily aspects of Amherst as one institution. 
+The most important TF-IDF keyword is "amherst's", as it stands for the strong link that such posts share with the local institutional discussions. Other important ones such as "umass," "statistics," and "sem" (probably an abbreviation of "seminar" or "semester") imply that academic conversations are key. Terms such as "soccer" and "paper" refer both to co-curricular and to course-related subjects. Thus, this combination of academic and student life language demonstrates full engagement with the integral and daily aspects of Amherst as one institution.
 
-Middlebury College 
+## Middlebury College
 
-The notable term in this context is "midd," an abbreviation for Middlebury known by its community; its high TF-IDF suggests great internal use of the term that could not be so much outside the school. Other terms such as "Vermont," "MIIS" (Middlebury Institute of International Studies), and "immersion" point toward the institution's linguistic offerings and geographical flavor. These terms, therefore, become important to denote a subreddit that is exploring local culture, international academic ventures, and even the branding of the university. 
+The notable term in this context is "midd," an abbreviation for Middlebury known by its community; its high TF-IDF suggests great internal use of the term that could not be so much outside the school. Other terms such as "Vermont," "MIIS" (Middlebury Institute of International Studies), and "immersion" point toward the institution's linguistic offerings and geographical flavor. These terms, therefore, become important to denote a subreddit that is exploring local culture, international academic ventures, and even the branding of the university.
 
-Williams College 
+## Williams College
 
-The Williams subreddit is about "williamstown," the town of Williams, so it is likely they talk much more about its location. Terms such as "loci" (probably an abbreviation for "Letter of Continued Interest"), "supplement," and "previews" indicate a high level of involvement with the admissions procedure. The existence of "ephs" (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs. 
+The Williams subreddit is about "williamstown," the town of Williams, so it is likely they talk much more about its location. Terms such as "loci" (probably an abbreviation for "Letter of Continued Interest"), "supplement," and "previews" indicate a high level of involvement with the admissions procedure. The existence of "ephs" (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs.
 
-
+# Bigram Analysis
 
 ```{r}
 #| label: fig-bigram_tfidf
@@ -68,24 +71,23 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
   geom_col() +
   coord_flip() +
   theme(legend.position = "none") +
-  facet_wrap(~subreddit, ncol = 2, scales = "free") +
+  facet_wrap(~subreddit, ncol = 3, scales = "fixed") +
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
-       title = "Top 10 Bigrams by Tf-Idf for Each Subreddit") +
+       title = "Top 10 Bigrams by TF-IDF for Each Subreddit") +
   scale_fill_viridis('magma')
 
 ```
 
 The Amherst subreddit is all about three things really: student life, the admissions process of the college, and its relationship with the Five College Consortium. Bigrams such as "amherst students," "amherst ed," and "sat scores" refer to application and admission discussions, while the phrases "umass amherst" and "5 college" reflect cross-campus ties and shared resources among consortium schools.
 
-Middlebury's subreddit deals with student life concerning student engagement with signature programs like study abroad and language immersion and writing-heavy programs. High-ranking bigrams "middlebury institute," "schools abroad," and "immersion program" indicate that people in the community talk often about Middlebury's global learning opportunities and its well-known language programs. Terms like "bread loaf" and "language school" indicate that a strong literary-academic culture exists in this community. 
+Middlebury's subreddit deals with student life concerning student engagement with signature programs like study abroad and language immersion and writing-heavy programs. High-ranking bigrams "middlebury institute," "schools abroad," and "immersion program" indicate that people in the community talk often about Middlebury's global learning opportunities and its well-known language programs. Terms like "bread loaf" and "language school" indicate that a strong literary-academic culture exists in this community.
 
 The Williams subreddit appears to be about academic rigors, particularly in the humanities. The bigrams "optional writing", "writing supplement," and "academic paper" suggest a serious push for written assignments, whether in terms of admissions or in courses. This is a reflection of a student body that seems deeply invested in writing heavy fields and the working of a liberal arts curriculum.
 
-The appearance of “amherst hey” and “williams hey” in both subreddits is likely tied to recurring informal or pinned threads titled “Hey Amherst!” or “Hey Williams!” 
+The appearance of “amherst hey” and “williams hey” in both subreddits is likely tied to recurring informal or pinned threads titled “Hey Amherst!” or “Hey Williams!”
 
 How to use RedditExtractoR [@Ant_2023]
-
 
 Each page can have it's own list of references based on what you cite. For example, did you know that good graphs "have a clear purpose, show the data clearly, and make the message obvious"? [@vandem2019].
