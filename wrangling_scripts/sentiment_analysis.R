@@ -99,7 +99,7 @@ save(sentiment_posts_quarterly, file='.././data/sentiment_posts_quarterly.Rdata'
 cor(sentiment_posts$sentiment, sentiment_posts$comments)
 
 # ===============================================================================
-# Sentiment Analysis visualizations (to put in time series analysis)
+#  Analysis visualizations (to put in time series analysis)
 # ===============================================================================
 
 library(ggiraph)
