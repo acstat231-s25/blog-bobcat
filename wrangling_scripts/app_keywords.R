@@ -67,6 +67,28 @@ keyword_posts_quarterly <- keyword_posts |>
 
 save(keyword_posts_quarterly, file='.././data/keyword_posts_quarterly.Rdata')
 
+# ===============================================================================
+#  Analysis visualizations (to put in time series analysis)
+# ===============================================================================
 
 
+# Over time analysis for QUARTERLY admissions keywords per subreddit
 
+gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
+  geom_point_interactive(aes(x = quarter, 
+                             y = avg_keywords, 
+                             tooltip = avg_keywords)) + 
+  geom_line(aes(x = quarter, 
+                y = avg_keywords)) +
+  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+  scale_x_date(
+    date_breaks  = "1 year", # one tick on the x per year
+    date_labels  = "%Y" # just showing the year, not month or days
+  ) +
+  labs(
+    x = 'Date',
+    y = 'Quarterly Average Keywords per Post'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point_keywords_quarterly)
