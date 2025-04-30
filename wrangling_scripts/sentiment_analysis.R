@@ -1,12 +1,10 @@
 # for text analysis
 library(tidytext)
 library(tidyverse)
-library(wordcloud)
-library(RColorBrewer)
-library(ggthemes)
 library(textdata)
 library(lubridate)
 library(viridis)
+library(DT)
 
 # ===============================================================================
 # General Sentiment Analysis
@@ -86,105 +84,61 @@ save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
 # just in case you clear environment
 load('.././data/sentiment_posts.Rdata')
 
-# Make a new data set of average sentiment in each subreddit by MONTH
-sentiment_posts_monthly <- sentiment_posts |>
-  mutate(month = floor_date(date_utc, unit = "month")) |> # round each date down to the first of the month
-  # so that we can average using month as a unit
-  group_by(subreddit, month) |> 
-  # calculating average sentiment and comments in each month
+# Make a new data set of average sentiment and comments in each subreddit by QUARTER
+sentiment_posts_quarterly <- sentiment_posts |>
+mutate(quarter = floor_date(date_utc, unit = "quarter")) |> # round each date down to the first of the month
+  # so that we can average using quarter as a unit
+  group_by(subreddit, quarter) |> 
+  # calculating average sentiment and comments in each quarter
   # making sure to round to 2 decimal points
   summarize(avg_sentiment = round(mean(sentiment), 2),
             avg_comments = round(mean(comments), 2))
 
-# Daily avg sentiment & comments
-sentiment_posts_daily <- sentiment_posts |>
-  group_by(subreddit, date_utc) |>
-  summarize(
-    avg_sentiment = round(mean(sentiment), 2),
-    avg_comments = round(mean(comments), 2)
-  )
-
 # save to publishable data folder
-save(sentiment_posts_monthly, file='.././data/sentiment_posts_monthly.Rdata')
-save(sentiment_posts_daily, file='.././data/sentiment_posts_daily.Rdata')
-
+save(sentiment_posts_quarterly, file='.././data/sentiment_posts_quarterly.Rdata')
 cor(sentiment_posts$sentiment, sentiment_posts$comments)
 
 # ===============================================================================
-# Sentiment Analysis visualizations (to put in index.qmd)
+# Sentiment Analysis visualizations (to put in time series analysis)
 # ===============================================================================
 
 library(ggiraph)
 
 # load in necessary data files
-load('.././data/sentiment_posts_monthly.Rdata')
-load('.././data/sentiment_posts_daily.Rdata')
+load('.././data/sentiment_posts_quarterly.Rdata')
 
-gg_daily <- ggplot(data = sentiment_posts_daily) +
-  geom_line_interactive(aes(x = date_utc, 
+# Over time analysis for QUARTERLY sentiment average per subreddit
+gg_sentiment_quarterly <- ggplot(data = sentiment_posts_quarterly) +
+  geom_line_interactive(aes(x = quarter, 
                             y = avg_sentiment, 
                             tooltip = avg_sentiment,
                             color = avg_comments)) + 
   facet_wrap(~subreddit, scales = "free", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Daily Average Sentiment Score',
+    y = 'Quarterly Average Sentiment Score',
     color = 'Average Comments'
   ) +
   theme_minimal() 
 
-girafe(ggobj = gg_daily)
+girafe(ggobj = gg_sentiment_quarterly)
 
-# Over time analysis for MONTHLY sentiment average per subreddit
-gg_sentiment_monthly <- ggplot(data = sentiment_posts_monthly) +
-  geom_line_interactive(aes(x = month, 
-                            y = avg_sentiment, 
-                            tooltip = avg_sentiment,
-                            color = avg_comments)) + 
-  facet_wrap(~subreddit, scales = "free", ncol=1) +
-  labs(
-    x = 'Date',
-    y = 'Monthly Average Sentiment Score',
-    color = 'Average Comments'
-  ) +
-  theme_minimal() 
 
-girafe(ggobj = gg_sentiment_monthly)
-
-# Over time analysis for MONTHLY comment average per subreddit
-gg_point_comments_monthly <- ggplot(data = sentiment_posts_monthly) +
-  geom_line_interactive(aes(x = month, 
+# Over time analysis for QUARTERLY comment average per subreddit
+gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
+  geom_line_interactive(aes(x = quarter, 
                             y = avg_comments, 
                             tooltip = avg_comments,
                             color = avg_sentiment)) + 
   facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Monthly Average Comments',
+    y = 'Quarterly Average Comments',
     color = 'Average Sentiment'
   ) +
   theme_minimal() 
 
-girafe(ggobj = gg_point_comments_monthly)
-
-# Over time analysis for MONTHLY admissions keywords per subreddit
-
-load('.././data/keyword_posts_monthly.Rdata')
-gg_point_keywords_monthly <- ggplot(data = keyword_posts_monthly) +
-  geom_line_interactive(aes(x = month, 
-                            y = avg_keywords, 
-                            tooltip = avg_keywords)) + 
-  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
-  labs(
-    x = 'Date',
-    y = 'Monthly Average Keywords per Post'
-  ) +
-  theme_minimal() 
-
-girafe(ggobj = gg_point_keywords_monthly)
-
-datatable(sentiment_posts_clean)
-
+girafe(ggobj = gg_point_comments_quarterly)
 
 
 
