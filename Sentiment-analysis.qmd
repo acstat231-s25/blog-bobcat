@@ -1,0 +1,22 @@
+---
+title: "Sentiment Analysis"
+author: 
+- "Fynn Hayton-Ruffner"
+- "Shekinah Ninziza"
+- "Kinglee Tham"
+---
+
+## Anova table
+
+```{r}
+
+```
+
+
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
