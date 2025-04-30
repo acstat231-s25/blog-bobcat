@@ -18,6 +18,9 @@ website:
       - href: yet-another-page.qmd
         text: "Time Series Analysis"
         icon: graph-up
+      - href: Sentiment-analysis.qmd
+        text: "Sentiment Analysis"
+        icon: emoji-smile
         
 format:
   html:
