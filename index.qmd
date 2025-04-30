@@ -48,7 +48,7 @@ You may be wondering why we picked these specific subreddits and what this proje
 
 # RedditExtractoR
 
-Web scraping is a notoriously error-laden path. As websites increasingly deploy dynamically rendered data and IP address blocking, it has never been harder to get the data you want. Luckily, we found a tool that could scrape up to 1000 posts per request. The @ivan-rivera RedditExtractoR scraping package gives a post's title, content, number of comments, and date, all in as little as 3 lines of R code:
+Web scraping is a notoriously error-laden path. As websites increasingly deploy dynamically rendered data and IP address blocking, it has never been harder to get the data you want. Luckily, we found a tool that could scrape up to 1000 posts per request. The @rivera_ivan RedditExtractoR scraping package gives a post's title, content, number of comments, and date, all in as little as 3 lines of R code:
 
 ```{r}
 #| echo: true 
