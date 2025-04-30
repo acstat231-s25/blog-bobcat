@@ -1,6 +1,6 @@
 ---
-title: "(some catchy title): An Analysis of All Posts in the Amherst College, Williams College, and Middlebury College Subreddits (2020-2025) or Exploring the Emotional Patterns of College Life Through Reddit"
-subtitle: "Using methods of sentiment analysis, or Analyzing Student Sentiment in the Reddit Communities of Amherst, Williams, and Middlebury from 2020 to 2025"
+title: "Which NESCAC Reigns Supreme?"
+subtitle: "Assessing the sentiments, egagementm and prominent themes of the Amherst, Williams, and Middlebury College subreddits"
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
