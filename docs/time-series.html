@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fynn Hayton-Ruffner">
+<meta name="author" content="Shekinah Ninziza">
+<meta name="author" content="Kinglee Tham">
+<meta name="dcterms.date" content="2025-04-29">
+
+<title>Time Series Analysis – Bobcat</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/d3-bundle-5.16.0/d3-bundle.min.js"></script>
+<script src="site_libs/d3-lasso-0.0.5/d3-lasso.min.js"></script>
+<script src="site_libs/save-svg-as-png-1.4.17/save-svg-as-png.min.js"></script>
+<script src="site_libs/flatbush-4.4.0/flatbush.min.js"></script>
+<link href="site_libs/ggiraphjs-0.8.10/ggiraphjs.min.css" rel="stylesheet">
+<script src="site_libs/ggiraphjs-0.8.10/ggiraphjs.min.js"></script>
+<script src="site_libs/girafe-binding-0.8.13/girafe.js"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bobcat</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> <i class="bi bi-house" role="img">
+</i> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tf-idf.html"> <i class="bi bi-textarea-t" role="img">
+</i> 
+<span class="menu-text">TF-IDF</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./time-series.html" aria-current="page"> <i class="bi bi-graph-up" role="img">
+</i> 
+<span class="menu-text">Time Series Analysis</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./Sentiment-analysis.html"> <i class="bi bi-emoji-smile" role="img">
+</i> 
+<span class="menu-text">Sentiment Analysis</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Time Series Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fynn Hayton-Ruffner </p>
+             <p>Shekinah Ninziza </p>
+             <p>Kinglee Tham </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 29, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="cell-output-display">
+<div class="girafe html-widget html-fill-item" id="htmlwidget-fe1e57f3e517ab71925c" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-fe1e57f3e517ab71925c">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='ggiraph-svg' role='graphics-document' id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597' viewBox='0 0 504 360'>\n <defs id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_defs'>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c1'>\n   <rect x='0' y='0' width='504' height='360'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c2'>\n   <rect x='28.37' y='22.5' width='470.15' height='78.12'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c3'>\n   <rect x='28.37' y='136.32' width='470.15' height='78.12'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c4'>\n   <rect x='28.37' y='250.14' width='470.15' height='78.12'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c5'>\n   <rect x='28.37' y='233.12' width='470.15' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c6'>\n   <rect x='28.37' y='119.3' width='470.15' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c7'>\n   <rect x='28.37' y='5.48' width='470.15' height='17.03'/>\n  <\/clipPath>\n <\/defs>\n <g id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_rootg' class='ggiraph-svg-rootg'>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c1)'>\n   <rect x='0' y='0' width='504' height='360' fill='#FFFFFF' fill-opacity='1' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round' class='ggiraph-svg-bg'/>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c2)'>\n   <polyline points='28.37,98.43 498.52,98.43' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,75.86 498.52,75.86' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,53.29 498.52,53.29' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,30.72 498.52,30.72' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,100.63 131.23,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,100.63 294.10,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,100.63 456.97,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,87.15 498.52,87.15' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,64.58 498.52,64.58' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,42.01 498.52,42.01' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,100.63 49.74,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,100.63 212.72,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,100.63 375.48,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e1' cx='49.74' cy='88.05' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.88'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e2' cx='70.03' cy='26.06' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='11.12'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e3' cx='90.32' cy='71.05' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.14'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e4' cx='110.83' cy='74.66' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.66'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e5' cx='131.34' cy='69.32' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.37'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e6' cx='151.41' cy='42.23' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='8.97'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e7' cx='171.7' cy='70.67' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.19'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e8' cx='192.21' cy='73.98' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.75'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e9' cx='212.72' cy='77.14' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.33'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e10' cx='232.79' cy='76.76' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.38'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e11' cx='253.08' cy='93.17' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.2'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e12' cx='273.59' cy='89.63' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.67'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e13' cx='294.1' cy='85.57' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.21'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e14' cx='314.17' cy='82.63' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.6'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e15' cx='334.46' cy='70.67' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.19'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e16' cx='354.97' cy='97.08' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.68'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e17' cx='375.48' cy='75.26' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.58'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e18' cx='395.77' cy='73.15' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.86'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e19' cx='416.06' cy='69.17' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.39'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e20' cx='436.57' cy='76.24' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.45'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e21' cx='457.08' cy='59.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.72'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e22' cx='477.15' cy='33.2' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='10.17'/>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c3)'>\n   <polyline points='28.37,197.13 498.52,197.13' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,178.26 498.52,178.26' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,159.40 498.52,159.40' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,140.53 498.52,140.53' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,214.45 131.23,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,214.45 294.10,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,214.45 456.97,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,206.56 498.52,206.56' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,187.69 498.52,187.69' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,168.83 498.52,168.83' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,149.97 498.52,149.97' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,214.45 49.74,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,214.45 212.72,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,214.45 375.48,136.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e23' cx='49.74' cy='210.9' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='-0.46'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e24' cx='70.03' cy='193.92' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.34'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e25' cx='90.32' cy='180.71' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.74'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e26' cx='110.83' cy='185.24' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.26'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e27' cx='131.34' cy='172.51' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.61'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e28' cx='151.41' cy='160.72' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.86'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e29' cx='171.7' cy='188.26' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.94'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e30' cx='192.21' cy='195.71' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.15'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e31' cx='212.72' cy='172.79' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.58'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e32' cx='232.79' cy='184.58' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.33'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e33' cx='253.08' cy='174.4' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.41'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e34' cx='273.59' cy='198.35' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.87'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e35' cx='294.1' cy='188.83' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.88'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e36' cx='314.17' cy='186.94' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.08'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e37' cx='334.46' cy='189.3' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.83'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e38' cx='354.97' cy='176.66' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.17'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e39' cx='375.48' cy='179.68' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.85'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e40' cx='395.77' cy='165.81' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.32'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e41' cx='416.06' cy='176.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.22'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e42' cx='436.57' cy='143.18' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.72'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e43' cx='457.08' cy='140.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.04'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e44' cx='477.15' cy='139.87' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.07'/>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c4)'>\n   <polyline points='28.37,312.84 498.52,312.84' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,290.44 498.52,290.44' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,268.03 498.52,268.03' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,328.27 131.23,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,328.27 294.10,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,328.27 456.97,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,324.04 498.52,324.04' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,301.64 498.52,301.64' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,279.23 498.52,279.23' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,256.83 498.52,256.83' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,328.27 49.74,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,328.27 212.72,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,328.27 375.48,250.14' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e45' cx='49.74' cy='316.54' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.67'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e46' cx='70.03' cy='291' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.95'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e47' cx='90.32' cy='324.72' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.94'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e48' cx='110.83' cy='297.94' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.33'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e49' cx='131.34' cy='294.13' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.67'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e50' cx='151.41' cy='303.65' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.82'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e51' cx='171.7' cy='263.55' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.4'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e52' cx='192.21' cy='253.69' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='8.28'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e53' cx='212.72' cy='264' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.36'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e54' cx='232.79' cy='313.18' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.97'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e55' cx='253.08' cy='308.92' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.35'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e56' cx='273.59' cy='292.23' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.84'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e57' cx='294.1' cy='275.54' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.33'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e58' cx='314.17' cy='259.07' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.8'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e59' cx='334.46' cy='303.54' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.83'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e60' cx='354.97' cy='308.58' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.38'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e61' cx='375.48' cy='295.25' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.57'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e62' cx='395.77' cy='295.93' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.51'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e63' cx='416.06' cy='297.49' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.37'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e64' cx='436.57' cy='284.72' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.51'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e65' cx='457.08' cy='312.62' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.02'/>\n   <circle id='svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_e66' cx='477.15' cy='260.53' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.67'/>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c5)'>\n   <text x='230.94' y='244.78' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Williams College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c6)'>\n   <text x='225.79' y='130.96' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Middlebury College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c7)'>\n   <text x='230.93' y='17.15' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Amherst College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_b8549aa1_5f66_4107_a25e_34af4b0bd597_c1)'>\n   <text x='39.95' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2020<\/text>\n   <text x='202.93' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2022<\/text>\n   <text x='365.69' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2024<\/text>\n   <text x='39.95' y='225.69' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2020<\/text>\n   <text x='202.93' y='225.69' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2022<\/text>\n   <text x='365.69' y='225.69' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2024<\/text>\n   <text x='39.95' y='111.87' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2020<\/text>\n   <text x='202.93' y='111.87' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2022<\/text>\n   <text x='365.69' y='111.87' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2024<\/text>\n   <text x='18.54' y='90.3' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>3<\/text>\n   <text x='18.54' y='67.73' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='45.16' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>9<\/text>\n   <text x='18.54' y='209.71' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0<\/text>\n   <text x='18.54' y='190.85' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2<\/text>\n   <text x='18.54' y='171.98' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>4<\/text>\n   <text x='18.54' y='153.12' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='327.2' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2<\/text>\n   <text x='18.54' y='304.79' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>4<\/text>\n   <text x='18.54' y='282.39' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='259.98' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>8<\/text>\n   <text x='251.83' y='352.09' font-size='8.25pt' font-family='Helvetica'>Date<\/text>\n   <text transform='translate(13.37,262.21) rotate(-90.00)' font-size='8.25pt' font-family='Helvetica'>Quarterly Average Sentiment Score<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_b8549aa1_5f66_4107_a25e_34af4b0bd597","ratio":1.4,"settings":{"tooltip":{"css":".tooltip_SVGID_ { padding:5px;background:black;color:white;border-radius:2px;text-align:left; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","opacity":0.9,"offx":10,"offy":10,"use_cursor_pos":true,"use_fill":false,"use_stroke":false,"delay_over":200,"delay_out":500},"hover":{"css":".hover_data_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_data_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_data_SVGID_ { fill:orange;stroke:black; }\nline.hover_data_SVGID_, polyline.hover_data_SVGID_ { fill:none;stroke:orange; }\nrect.hover_data_SVGID_, polygon.hover_data_SVGID_, path.hover_data_SVGID_ { fill:orange;stroke:none; }\nimage.hover_data_SVGID_ { stroke:orange; }","reactive":true,"nearest_distance":null},"hover_inv":{"css":""},"hover_key":{"css":".hover_key_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_key_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_key_SVGID_ { fill:orange;stroke:black; }\nline.hover_key_SVGID_, polyline.hover_key_SVGID_ { fill:none;stroke:orange; }\nrect.hover_key_SVGID_, polygon.hover_key_SVGID_, path.hover_key_SVGID_ { fill:orange;stroke:none; }\nimage.hover_key_SVGID_ { stroke:orange; }","reactive":true},"hover_theme":{"css":".hover_theme_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_theme_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_theme_SVGID_ { fill:orange;stroke:black; }\nline.hover_theme_SVGID_, polyline.hover_theme_SVGID_ { fill:none;stroke:orange; }\nrect.hover_theme_SVGID_, polygon.hover_theme_SVGID_, path.hover_theme_SVGID_ { fill:orange;stroke:none; }\nimage.hover_theme_SVGID_ { stroke:orange; }","reactive":true},"select":{"css":".select_data_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_data_SVGID_ { stroke:none;fill:red; }\ncircle.select_data_SVGID_ { fill:red;stroke:black; }\nline.select_data_SVGID_, polyline.select_data_SVGID_ { fill:none;stroke:red; }\nrect.select_data_SVGID_, polygon.select_data_SVGID_, path.select_data_SVGID_ { fill:red;stroke:none; }\nimage.select_data_SVGID_ { stroke:red; }","type":"multiple","only_shiny":true,"selected":[]},"select_inv":{"css":""},"select_key":{"css":".select_key_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_key_SVGID_ { stroke:none;fill:red; }\ncircle.select_key_SVGID_ { fill:red;stroke:black; }\nline.select_key_SVGID_, polyline.select_key_SVGID_ { fill:none;stroke:red; }\nrect.select_key_SVGID_, polygon.select_key_SVGID_, path.select_key_SVGID_ { fill:red;stroke:none; }\nimage.select_key_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"select_theme":{"css":".select_theme_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_theme_SVGID_ { stroke:none;fill:red; }\ncircle.select_theme_SVGID_ { fill:red;stroke:black; }\nline.select_theme_SVGID_, polyline.select_theme_SVGID_ { fill:none;stroke:red; }\nrect.select_theme_SVGID_, polygon.select_theme_SVGID_, path.select_theme_SVGID_ { fill:red;stroke:none; }\nimage.select_theme_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"zoom":{"min":1,"max":1,"duration":300},"toolbar":{"position":"topright","pngname":"diagram","tooltips":null,"fixed":false,"hidden":[],"delay_over":200,"delay_out":500},"sizing":{"rescale":true,"width":1}}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="girafe html-widget html-fill-item" id="htmlwidget-58187b24f0de04f5e8f6" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-58187b24f0de04f5e8f6">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='ggiraph-svg' role='graphics-document' id='svg_e1820414_12d4_4ee8_b190_da945b792593' viewBox='0 0 504 360'>\n <defs id='svg_e1820414_12d4_4ee8_b190_da945b792593_defs'>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c1'>\n   <rect x='0' y='0' width='504' height='360'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c2'>\n   <rect x='28.37' y='22.5' width='470.15' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c3'>\n   <rect x='28.37' y='131.93' width='470.15' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c4'>\n   <rect x='28.37' y='241.35' width='470.15' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c5'>\n   <rect x='28.37' y='224.32' width='470.15' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c6'>\n   <rect x='28.37' y='114.9' width='470.15' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_e1820414_12d4_4ee8_b190_da945b792593_c7'>\n   <rect x='28.37' y='5.48' width='470.15' height='17.03'/>\n  <\/clipPath>\n <\/defs>\n <g id='svg_e1820414_12d4_4ee8_b190_da945b792593_rootg' class='ggiraph-svg-rootg'>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c1)'>\n   <rect x='0' y='0' width='504' height='360' fill='#FFFFFF' fill-opacity='1' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round' class='ggiraph-svg-bg'/>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c2)'>\n   <polyline points='28.37,97.95 498.52,97.95' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,75.37 498.52,75.37' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,52.79 498.52,52.79' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,30.22 498.52,30.22' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,109.42 131.23,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,109.42 294.10,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,109.42 456.97,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,109.23 498.52,109.23' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,86.66 498.52,86.66' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,64.08 498.52,64.08' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,41.51 498.52,41.51' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,109.42 49.74,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,109.42 212.72,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,109.42 375.48,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e1' cx='49.74' cy='91.32' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.38'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e2' cx='70.03' cy='63.18' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.12'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e3' cx='90.32' cy='56.56' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e4' cx='110.83' cy='93.66' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.07'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e5' cx='131.34' cy='83.5' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.42'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e6' cx='151.41' cy='71.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.06'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e7' cx='171.7' cy='85.91' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.1'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e8' cx='192.21' cy='86.06' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.08'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e9' cx='212.72' cy='87.49' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.89'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e10' cx='232.79' cy='83.8' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.38'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e11' cx='253.08' cy='94.18' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e12' cx='273.59' cy='87.49' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.89'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e13' cx='294.1' cy='92.6' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.21'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e14' cx='314.17' cy='74.62' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.6'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e15' cx='334.46' cy='81.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.73'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e16' cx='354.97' cy='84.63' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.27'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e17' cx='375.48' cy='70.33' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.17'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e18' cx='395.77' cy='82.59' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.54'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e19' cx='416.06' cy='79.73' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.92'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e20' cx='436.57' cy='68.22' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.45'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e21' cx='457.08' cy='52.34' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.56'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e22' cx='477.15' cy='58.66' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.72'/>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c3)'>\n   <polyline points='28.37,207.37 498.52,207.37' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,184.79 498.52,184.79' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,162.22 498.52,162.22' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,139.64 498.52,139.64' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,218.84 131.23,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,218.84 294.10,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,218.84 456.97,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,218.66 498.52,218.66' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,196.08 498.52,196.08' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,173.50 498.52,173.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,150.93 498.52,150.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,218.84 49.74,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,218.84 212.72,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,218.84 375.48,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e23' cx='49.74' cy='212.86' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.77'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e24' cx='70.03' cy='214.89' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.5'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e25' cx='90.32' cy='213.92' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.63'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e26' cx='110.83' cy='208.65' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.33'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e27' cx='131.34' cy='199.47' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.55'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e28' cx='151.41' cy='206.31' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.64'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e29' cx='171.7' cy='213.99' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.62'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e30' cx='192.21' cy='208.5' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.35'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e31' cx='212.72' cy='204.28' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.91'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e32' cx='232.79' cy='213.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.73'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e33' cx='253.08' cy='204.96' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.82'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e34' cx='273.59' cy='212.86' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.77'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e35' cx='294.1' cy='214.29' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.58'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e36' cx='314.17' cy='206.01' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.68'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e37' cx='334.46' cy='191.04' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.67'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e38' cx='354.97' cy='209.85' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.17'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e39' cx='375.48' cy='198.79' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.64'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e40' cx='395.77' cy='165.15' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.11'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e41' cx='416.06' cy='196.08' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e42' cx='436.57' cy='170.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.44'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e43' cx='457.08' cy='170.27' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.43'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e44' cx='477.15' cy='167.48' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.8'/>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c4)'>\n   <polyline points='28.37,316.79 498.52,316.79' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,294.21 498.52,294.21' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,271.64 498.52,271.64' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,249.06 498.52,249.06' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='131.23,328.27 131.23,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='294.10,328.27 294.10,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='456.97,328.27 456.97,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,328.08 498.52,328.08' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,305.50 498.52,305.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,282.93 498.52,282.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='28.37,260.35 498.52,260.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='49.74,328.27 49.74,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='212.72,328.27 212.72,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='375.48,328.27 375.48,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e45' cx='49.74' cy='294.21' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.5'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e46' cx='70.03' cy='280.52' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.32'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e47' cx='90.32' cy='280.59' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.31'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e48' cx='110.83' cy='304.15' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.18'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e49' cx='131.34' cy='295.87' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.28'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e50' cx='151.41' cy='306.86' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='2.82'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e51' cx='171.7' cy='292.93' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.67'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e52' cx='192.21' cy='295.87' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.28'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e53' cx='212.72' cy='295.27' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.36'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e54' cx='232.79' cy='304.07' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.19'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e55' cx='253.08' cy='294.06' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.52'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e56' cx='273.59' cy='297.07' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='4.12'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e57' cx='294.1' cy='260.8' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='8.94'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e58' cx='314.17' cy='286.54' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.52'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e59' cx='334.46' cy='302.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='3.44'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e60' cx='354.97' cy='270.74' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.62'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e61' cx='375.48' cy='268.1' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.97'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e62' cx='395.77' cy='246.65' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='10.82'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e63' cx='416.06' cy='286.09' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='5.58'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e64' cx='436.57' cy='274.27' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='7.15'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e65' cx='457.08' cy='278.71' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='6.56'/>\n   <circle id='svg_e1820414_12d4_4ee8_b190_da945b792593_e66' cx='477.15' cy='245.3' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='11'/>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c5)'>\n   <text x='230.94' y='235.99' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Williams College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c6)'>\n   <text x='225.79' y='126.57' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Middlebury College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c7)'>\n   <text x='230.93' y='17.15' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Amherst College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_e1820414_12d4_4ee8_b190_da945b792593_c1)'>\n   <text x='39.95' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2020<\/text>\n   <text x='202.93' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2022<\/text>\n   <text x='365.69' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2024<\/text>\n   <text x='18.54' y='112.39' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0<\/text>\n   <text x='18.54' y='89.81' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>3<\/text>\n   <text x='18.54' y='67.24' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='44.66' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>9<\/text>\n   <text x='18.54' y='221.81' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0<\/text>\n   <text x='18.54' y='199.23' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>3<\/text>\n   <text x='18.54' y='176.66' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='154.08' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>9<\/text>\n   <text x='18.54' y='331.23' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0<\/text>\n   <text x='18.54' y='308.66' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>3<\/text>\n   <text x='18.54' y='286.08' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>6<\/text>\n   <text x='18.54' y='263.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>9<\/text>\n   <text x='251.83' y='352.09' font-size='8.25pt' font-family='Helvetica'>Date<\/text>\n   <text transform='translate(13.37,248.14) rotate(-90.00)' font-size='8.25pt' font-family='Helvetica'>Quarterly Average Comments<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_e1820414_12d4_4ee8_b190_da945b792593","ratio":1.4,"settings":{"tooltip":{"css":".tooltip_SVGID_ { padding:5px;background:black;color:white;border-radius:2px;text-align:left; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","opacity":0.9,"offx":10,"offy":10,"use_cursor_pos":true,"use_fill":false,"use_stroke":false,"delay_over":200,"delay_out":500},"hover":{"css":".hover_data_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_data_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_data_SVGID_ { fill:orange;stroke:black; }\nline.hover_data_SVGID_, polyline.hover_data_SVGID_ { fill:none;stroke:orange; }\nrect.hover_data_SVGID_, polygon.hover_data_SVGID_, path.hover_data_SVGID_ { fill:orange;stroke:none; }\nimage.hover_data_SVGID_ { stroke:orange; }","reactive":true,"nearest_distance":null},"hover_inv":{"css":""},"hover_key":{"css":".hover_key_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_key_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_key_SVGID_ { fill:orange;stroke:black; }\nline.hover_key_SVGID_, polyline.hover_key_SVGID_ { fill:none;stroke:orange; }\nrect.hover_key_SVGID_, polygon.hover_key_SVGID_, path.hover_key_SVGID_ { fill:orange;stroke:none; }\nimage.hover_key_SVGID_ { stroke:orange; }","reactive":true},"hover_theme":{"css":".hover_theme_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_theme_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_theme_SVGID_ { fill:orange;stroke:black; }\nline.hover_theme_SVGID_, polyline.hover_theme_SVGID_ { fill:none;stroke:orange; }\nrect.hover_theme_SVGID_, polygon.hover_theme_SVGID_, path.hover_theme_SVGID_ { fill:orange;stroke:none; }\nimage.hover_theme_SVGID_ { stroke:orange; }","reactive":true},"select":{"css":".select_data_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_data_SVGID_ { stroke:none;fill:red; }\ncircle.select_data_SVGID_ { fill:red;stroke:black; }\nline.select_data_SVGID_, polyline.select_data_SVGID_ { fill:none;stroke:red; }\nrect.select_data_SVGID_, polygon.select_data_SVGID_, path.select_data_SVGID_ { fill:red;stroke:none; }\nimage.select_data_SVGID_ { stroke:red; }","type":"multiple","only_shiny":true,"selected":[]},"select_inv":{"css":""},"select_key":{"css":".select_key_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_key_SVGID_ { stroke:none;fill:red; }\ncircle.select_key_SVGID_ { fill:red;stroke:black; }\nline.select_key_SVGID_, polyline.select_key_SVGID_ { fill:none;stroke:red; }\nrect.select_key_SVGID_, polygon.select_key_SVGID_, path.select_key_SVGID_ { fill:red;stroke:none; }\nimage.select_key_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"select_theme":{"css":".select_theme_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_theme_SVGID_ { stroke:none;fill:red; }\ncircle.select_theme_SVGID_ { fill:red;stroke:black; }\nline.select_theme_SVGID_, polyline.select_theme_SVGID_ { fill:none;stroke:red; }\nrect.select_theme_SVGID_, polygon.select_theme_SVGID_, path.select_theme_SVGID_ { fill:red;stroke:none; }\nimage.select_theme_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"zoom":{"min":1,"max":1,"duration":300},"toolbar":{"position":"topright","pngname":"diagram","tooltips":null,"fixed":false,"hidden":[],"delay_over":200,"delay_out":500},"sizing":{"rescale":true,"width":1}}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="girafe html-widget html-fill-item" id="htmlwidget-2e736b82d831707a7e86" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-2e736b82d831707a7e86">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='ggiraph-svg' role='graphics-document' id='svg_12cbca48_4175_4461_ad87_ab7c211a5639' viewBox='0 0 504 360'>\n <defs id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_defs'>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c1'>\n   <rect x='0' y='0' width='504' height='360'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c2'>\n   <rect x='35.71' y='22.5' width='462.81' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c3'>\n   <rect x='35.71' y='131.93' width='462.81' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c4'>\n   <rect x='35.71' y='241.35' width='462.81' height='86.92'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c5'>\n   <rect x='35.71' y='224.32' width='462.81' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c6'>\n   <rect x='35.71' y='114.9' width='462.81' height='17.03'/>\n  <\/clipPath>\n  <clipPath id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_c7'>\n   <rect x='35.71' y='5.48' width='462.81' height='17.03'/>\n  <\/clipPath>\n <\/defs>\n <g id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_rootg' class='ggiraph-svg-rootg'>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c1)'>\n   <rect x='0' y='0' width='504' height='360' fill='#FFFFFF' fill-opacity='1' stroke='#FFFFFF' stroke-opacity='1' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round' class='ggiraph-svg-bg'/>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c2)'>\n   <polyline points='35.71,90.62 498.52,90.62' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,60.91 498.52,60.91' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,31.21 498.52,31.21' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='96.91,109.42 96.91,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='177.13,109.42 177.13,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='257.24,109.42 257.24,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='337.35,109.42 337.35,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='417.57,109.42 417.57,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='497.79,109.42 497.79,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,105.47 498.52,105.47' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,75.77 498.52,75.77' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,46.06 498.52,46.06' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='56.75,109.42 56.75,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.07,109.42 137.07,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='217.18,109.42 217.18,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='297.29,109.42 297.29,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='377.40,109.42 377.40,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='457.73,109.42 457.73,22.50' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e1' cx='56.75' cy='98.34' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.12'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e2' cx='76.72' cy='75.77' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.5'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e3' cx='96.69' cy='41.9' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.07'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e4' cx='116.88' cy='72.8' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.55'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e5' cx='137.07' cy='71.01' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.58'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e6' cx='156.83' cy='90.02' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.26'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e7' cx='176.8' cy='86.46' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.32'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e8' cx='196.99' cy='26.46' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.33'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e9' cx='217.18' cy='65.67' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.67'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e10' cx='236.94' cy='90.62' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.25'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e11' cx='256.91' cy='85.87' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.33'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e12' cx='277.1' cy='79.33' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.44'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e13' cx='297.29' cy='79.92' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.43'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e14' cx='317.05' cy='43.09' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.05'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e15' cx='337.02' cy='75.77' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.5'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e16' cx='357.21' cy='51.41' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.91'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e17' cx='377.4' cy='68.64' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.62'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e18' cx='397.37' cy='66.85' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.65'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e19' cx='417.35' cy='60.32' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.76'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e20' cx='437.54' cy='45.47' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.01'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e21' cx='457.73' cy='56.75' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.82'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e22' cx='477.48' cy='74.58' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.52'/>\n   <polyline points='56.75,98.34 76.72,75.77 96.69,41.90 116.88,72.80 137.07,71.01 156.83,90.02 176.80,86.46 196.99,26.46 217.18,65.67 236.94,90.62 256.91,85.87 277.10,79.33 297.29,79.92 317.05,43.09 337.02,75.77 357.21,51.41 377.40,68.64 397.37,66.85 417.35,60.32 437.54,45.47 457.73,56.75 477.48,74.58' fill='none' stroke='#000000' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c3)'>\n   <polyline points='35.71,200.04 498.52,200.04' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,170.34 498.52,170.34' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,140.63 498.52,140.63' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='96.91,218.84 96.91,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='177.13,218.84 177.13,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='257.24,218.84 257.24,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='337.35,218.84 337.35,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='417.57,218.84 417.57,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='497.79,218.84 497.79,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,214.89 498.52,214.89' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,185.19 498.52,185.19' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,155.48 498.52,155.48' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='56.75,218.84 56.75,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.07,218.84 137.07,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='217.18,218.84 217.18,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='297.29,218.84 297.29,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='377.40,218.84 377.40,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='457.73,218.84 457.73,131.93' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e23' cx='56.75' cy='205.98' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.15'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e24' cx='76.72' cy='207.76' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.12'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e25' cx='96.69' cy='199.45' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.26'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e26' cx='116.88' cy='197.07' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.3'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e27' cx='137.07' cy='180.44' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.58'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e28' cx='156.83' cy='187.56' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.46'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e29' cx='176.8' cy='192.32' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.38'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e30' cx='196.99' cy='208.95' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.1'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e31' cx='217.18' cy='188.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.45'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e32' cx='236.94' cy='206.58' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.14'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e33' cx='256.91' cy='197.66' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.29'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e34' cx='277.1' cy='210.14' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.08'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e35' cx='297.29' cy='211.92' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.05'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e36' cx='317.05' cy='210.73' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.07'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e37' cx='337.02' cy='214.89' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e38' cx='357.21' cy='185.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.5'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e39' cx='377.4' cy='176.87' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.64'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e40' cx='397.37' cy='183.41' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.53'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e41' cx='417.35' cy='201.82' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.22'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e42' cx='437.54' cy='148.35' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.12'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e43' cx='457.73' cy='170.93' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.74'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e44' cx='477.48' cy='195.29' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.33'/>\n   <polyline points='56.75,205.98 76.72,207.76 96.69,199.45 116.88,197.07 137.07,180.44 156.83,187.56 176.80,192.32 196.99,208.95 217.18,188.16 236.94,206.58 256.91,197.66 277.10,210.14 297.29,211.92 317.05,210.73 337.02,214.89 357.21,185.19 377.40,176.87 397.37,183.41 417.35,201.82 437.54,148.35 457.73,170.93 477.48,195.29' fill='none' stroke='#000000' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c4)'>\n   <polyline points='35.71,309.46 498.52,309.46' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,279.76 498.52,279.76' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,250.05 498.52,250.05' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='96.91,328.27 96.91,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='177.13,328.27 177.13,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='257.24,328.27 257.24,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='337.35,328.27 337.35,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='417.57,328.27 417.57,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='497.79,328.27 497.79,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,324.32 498.52,324.32' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,294.61 498.52,294.61' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.71,264.91 498.52,264.91' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='56.75,328.27 56.75,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.07,328.27 137.07,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='217.18,328.27 217.18,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='297.29,328.27 297.29,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='377.40,328.27 377.40,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='457.73,328.27 457.73,241.35' fill='none' stroke='#EBEBEB' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e45' cx='56.75' cy='275' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.83'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e46' cx='76.72' cy='305.3' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.32'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e47' cx='96.69' cy='276.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.81'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e48' cx='116.88' cy='279.16' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.76'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e49' cx='137.07' cy='277.98' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.78'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e50' cx='156.83' cy='266.69' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.97'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e51' cx='176.8' cy='276.79' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.8'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e52' cx='196.99' cy='264.91' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e53' cx='217.18' cy='252.43' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.21'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e54' cx='236.94' cy='313.03' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.19'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e55' cx='256.91' cy='293.42' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.52'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e56' cx='277.1' cy='291.05' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.56'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e57' cx='297.29' cy='284.51' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.67'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e58' cx='317.05' cy='295.8' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.48'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e59' cx='337.02' cy='314.22' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.17'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e60' cx='357.21' cy='276.19' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.81'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e61' cx='377.4' cy='290.45' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.57'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e62' cx='397.37' cy='274.41' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.84'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e63' cx='417.35' cy='291.05' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.56'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e64' cx='437.54' cy='257.18' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='1.13'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e65' cx='457.73' cy='274.41' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.84'/>\n   <circle id='svg_12cbca48_4175_4461_ad87_ab7c211a5639_e66' cx='477.48' cy='279.76' r='1.47pt' fill='#000000' fill-opacity='1' stroke='#000000' stroke-opacity='1' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='0.75'/>\n   <polyline points='56.75,275.00 76.72,305.30 96.69,276.19 116.88,279.16 137.07,277.98 156.83,266.69 176.80,276.79 196.99,264.91 217.18,252.43 236.94,313.03 256.91,293.42 277.10,291.05 297.29,284.51 317.05,295.80 337.02,314.22 357.21,276.19 377.40,290.45 397.37,274.41 417.35,291.05 437.54,257.18 457.73,274.41 477.48,279.76' fill='none' stroke='#000000' stroke-opacity='1' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c5)'>\n   <text x='234.61' y='235.99' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Williams College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c6)'>\n   <text x='229.45' y='126.57' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Middlebury College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c7)'>\n   <text x='234.6' y='17.15' font-size='6.6pt' font-family='Helvetica' fill='#1A1A1A' fill-opacity='1'>Amherst College<\/text>\n  <\/g>\n  <g clip-path='url(#svg_12cbca48_4175_4461_ad87_ab7c211a5639_c1)'>\n   <text x='46.95' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2020<\/text>\n   <text x='127.28' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2021<\/text>\n   <text x='207.39' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2022<\/text>\n   <text x='287.5' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2023<\/text>\n   <text x='367.61' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2024<\/text>\n   <text x='447.94' y='339.5' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>2025<\/text>\n   <text x='18.54' y='108.62' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.0<\/text>\n   <text x='18.54' y='78.92' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.5<\/text>\n   <text x='18.54' y='49.21' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>1.0<\/text>\n   <text x='18.54' y='218.05' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.0<\/text>\n   <text x='18.54' y='188.34' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.5<\/text>\n   <text x='18.54' y='158.64' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>1.0<\/text>\n   <text x='18.54' y='327.47' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.0<\/text>\n   <text x='18.54' y='297.76' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>0.5<\/text>\n   <text x='18.54' y='268.06' font-size='6.6pt' font-family='Helvetica' fill='#4D4D4D' fill-opacity='1'>1.0<\/text>\n   <text x='255.5' y='352.09' font-size='8.25pt' font-family='Helvetica'>Date<\/text>\n   <text transform='translate(13.37,267.71) rotate(-90.00)' font-size='8.25pt' font-family='Helvetica'>Quarterly Average Keywords per Post<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_12cbca48_4175_4461_ad87_ab7c211a5639","ratio":1.4,"settings":{"tooltip":{"css":".tooltip_SVGID_ { padding:5px;background:black;color:white;border-radius:2px;text-align:left; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","opacity":0.9,"offx":10,"offy":10,"use_cursor_pos":true,"use_fill":false,"use_stroke":false,"delay_over":200,"delay_out":500},"hover":{"css":".hover_data_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_data_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_data_SVGID_ { fill:orange;stroke:black; }\nline.hover_data_SVGID_, polyline.hover_data_SVGID_ { fill:none;stroke:orange; }\nrect.hover_data_SVGID_, polygon.hover_data_SVGID_, path.hover_data_SVGID_ { fill:orange;stroke:none; }\nimage.hover_data_SVGID_ { stroke:orange; }","reactive":true,"nearest_distance":null},"hover_inv":{"css":""},"hover_key":{"css":".hover_key_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_key_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_key_SVGID_ { fill:orange;stroke:black; }\nline.hover_key_SVGID_, polyline.hover_key_SVGID_ { fill:none;stroke:orange; }\nrect.hover_key_SVGID_, polygon.hover_key_SVGID_, path.hover_key_SVGID_ { fill:orange;stroke:none; }\nimage.hover_key_SVGID_ { stroke:orange; }","reactive":true},"hover_theme":{"css":".hover_theme_SVGID_ { fill:orange;stroke:black;cursor:pointer; }\ntext.hover_theme_SVGID_ { stroke:none;fill:orange; }\ncircle.hover_theme_SVGID_ { fill:orange;stroke:black; }\nline.hover_theme_SVGID_, polyline.hover_theme_SVGID_ { fill:none;stroke:orange; }\nrect.hover_theme_SVGID_, polygon.hover_theme_SVGID_, path.hover_theme_SVGID_ { fill:orange;stroke:none; }\nimage.hover_theme_SVGID_ { stroke:orange; }","reactive":true},"select":{"css":".select_data_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_data_SVGID_ { stroke:none;fill:red; }\ncircle.select_data_SVGID_ { fill:red;stroke:black; }\nline.select_data_SVGID_, polyline.select_data_SVGID_ { fill:none;stroke:red; }\nrect.select_data_SVGID_, polygon.select_data_SVGID_, path.select_data_SVGID_ { fill:red;stroke:none; }\nimage.select_data_SVGID_ { stroke:red; }","type":"multiple","only_shiny":true,"selected":[]},"select_inv":{"css":""},"select_key":{"css":".select_key_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_key_SVGID_ { stroke:none;fill:red; }\ncircle.select_key_SVGID_ { fill:red;stroke:black; }\nline.select_key_SVGID_, polyline.select_key_SVGID_ { fill:none;stroke:red; }\nrect.select_key_SVGID_, polygon.select_key_SVGID_, path.select_key_SVGID_ { fill:red;stroke:none; }\nimage.select_key_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"select_theme":{"css":".select_theme_SVGID_ { fill:red;stroke:black;cursor:pointer; }\ntext.select_theme_SVGID_ { stroke:none;fill:red; }\ncircle.select_theme_SVGID_ { fill:red;stroke:black; }\nline.select_theme_SVGID_, polyline.select_theme_SVGID_ { fill:none;stroke:red; }\nrect.select_theme_SVGID_, polygon.select_theme_SVGID_, path.select_theme_SVGID_ { fill:red;stroke:none; }\nimage.select_theme_SVGID_ { stroke:red; }","type":"single","only_shiny":true,"selected":[]},"zoom":{"min":1,"max":1,"duration":300},"toolbar":{"position":"topright","pngname":"diagram","tooltips":null,"fixed":false,"hidden":[],"delay_over":200,"delay_out":500},"sizing":{"rescale":true,"width":1}}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
