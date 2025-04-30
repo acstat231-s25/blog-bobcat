@@ -1,0 +1,26 @@
+---
+title: "Time Series Analysis"
+author: 
+- "Fynn Hayton-Ruffner"
+- "Shekinah Ninziza"
+- "Kinglee Tham"
+---
+
+```{r}
+#| include: false
+
+# Packages
+library(ggplot2)
+library(tidytext)
+library(tidyverse)
+library(RColorBrewer)
+library(ggthemes)
+library(textdata)
+library(lubridate)
+library(viridis)
+library(ggiraph)
+
+# Data 
+
+
+```
