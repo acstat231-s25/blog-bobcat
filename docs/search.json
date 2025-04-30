@@ -2,9 +2,9 @@
   {
     "objectID": "another-page.html",
     "href": "another-page.html",
-    "title": "More Visualizations",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
     "section": "",
-    "text": "Visualizations of the top 10 bigrams and single words\n\n\n\n\n\n\n\n\nFigure 1: Top 10 words by Tf_Idf\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Bigram plot\n\n\n\n\n\nHow to use RedditExtractoR (Ant_2023?)\nEach page can have it’s own list of references based on what you cite. For example, did you know that good graphs “have a clear purpose, show the data clearly, and make the message obvious”? (Vandemeulebroecke et al. 2019).\n\n\n\n\nReferences\n\nVandemeulebroecke, M., Baillie, M., Carr, D., Kanitra, L., Margolskee, A., Wright, A., and Magnusson, B. (2019), “How can we make better graphs? An initiative to increase the graphical expertise and productivity of quantitative scientists,” Pharmaceutical Statistics, 18, 106–114. https://doi.org/10.1002/pst.1912."
+    "text": "Term Frequency - Inverse Document Frequency (TF-IDF) is a measure of how important a word is in a document, adjusted for the fact that some words appear more frequently in general. In colloquial terms, the TF-IDF of a word is high when it appears frequently in a document but rarely in the corpus (collection of all documents)."
   },
   {
     "objectID": "index.html",
@@ -124,5 +124,26 @@
     "title": "What’s engagement and sentiment like across subreddits?",
     "section": "",
     "text": "What’s engagement and sentiment like across subreddits?\n\n\n\n\n\n\n\nSummary statistics for cross subreddit comparison\n\n\n\n\n\n\n\n\n\n\nSubreddit\nPost Count\nScore (tot)\nComments (tot)\nScore (avg)\nComments (avg)\n\n\n\n\nAmherst College\n521\n2740\n2290\n5.26\n4.40\n\n\nMiddlebury College\n675\n1988\n1594\n2.95\n2.36\n\n\nWilliams College\n622\n2991\n3908\n4.81\n6.28\n\n\n\n\n\n\n\n\nANOVA: average sentiment across subreddit\n\n\nFactor\ndf\nSST\nMSE\nF\np\n\n\n\n\nsubreddit\n2\n1873.87\n936.93\n17.06\n0\n\n\nResiduals\n1815\n99677.22\n54.92\n\n\n\n\n\n\n\n \n\n\n\nANOVA: average comments across subreddit\n\n\nFactor\ndf\nSST\nMSE\nF\np\n\n\n\n\nsubreddit\n2\n4986.72\n2493.36\n56.18\n0\n\n\nResiduals\n1815\n80554.55\n44.38\n\n\n\n\n\n\n\n\n\nANOVA report: subreddit sentiment & engagement\n\n\n \n\n\n\nLet’s compare the subreddits! The first table above shows the summary statistics for each subreddit. The total post counts were comparable, which is what we expected given their similar ages. For sentiment, Middlebury clearly stands out more negative (2.95/post) compared to Amherst (5.26) and Williams (4.81). Amherst and Williams also tended to have higher engagement with 4.40 and 6.28 respectively relative to Midd. However, to assess the statistical significance of these potential differences, we had to go a few steps further.\nWe fit a two one way ANOVA models to our dataset, one to test for significant differences between the average sentiment score of each subreddit, and one to compare the average comment count per post. The results, see TABLE, indicated there was a least one pairwise difference between subreddit post sentiment average (p &lt; 0.001) and comment count (p &lt; 0.001). The logical follow up was to conduct a post-hoc Tukey’s Honestly Significant Difference (HSD), which assess differences between each pair of means.\n\n\n\n\n\n\n\nTukey’s HSD: subreddit sentiment\n\n\nSubreddit Pair\nest\nlow\nhigh\np\n\n\n\n\nMiddlebury College-Amherst College\n-2.31\n-3.33\n-1.30\n0.00\n\n\nWilliams College-Amherst College\n-0.45\n-1.48\n0.58\n0.56\n\n\nWilliams College-Middlebury College\n1.86\n0.90\n2.83\n0.00\n\n\n\n\n\n\nTukey’s HSD: subreddit comment count\n\n\nSubreddit Pair\nest\nlow\nhigh\np\n\n\n\n\nMiddlebury College-Amherst College\n-2.03\n-2.95\n-1.12\n0\n\n\nWilliams College-Amherst College\n1.89\n0.96\n2.82\n0\n\n\nWilliams College-Middlebury College\n3.92\n3.05\n4.79\n0\n\n\n\n\n\n\n\nTukey's HSD: Pairwise differences across subreddits\n\n\n\nThe results, see TABLE, were conclusive! Both Amherst (p &lt; 0.001) and Williams (p &lt; 0.001) held a significantly higher average sentiment score per post over Middlebury. Notably, Amherst and Williams did not differ signifcantly by this same metric (p = 0.56). As far as engagement goes, Amherst (p &lt; 0.001) and Williams (p &lt; 0.001) yet again out performed Middlebury in average comments per post, while Williams convincingly exceeded the mean of Amherst as well (p &lt; 0.001)."
+  },
+  {
+    "objectID": "another-page.html#amherst-college",
+    "href": "another-page.html#amherst-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Amherst College",
+    "text": "Amherst College\nThe most important TF-IDF keyword is “amherst’s”, as it stands for the strong link that such posts share with the local institutional discussions. Other important ones such as “umass,” “statistics,” and “sem” (probably an abbreviation of “seminar” or “semester”) imply that academic conversations are key. Terms such as “soccer” and “paper” refer both to co-curricular and to course-related subjects. Thus, this combination of academic and student life language demonstrates full engagement with the integral and daily aspects of Amherst as one institution."
+  },
+  {
+    "objectID": "another-page.html#middlebury-college",
+    "href": "another-page.html#middlebury-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Middlebury College",
+    "text": "Middlebury College\nThe notable term in this context is “midd,” an abbreviation for Middlebury known by its community; its high TF-IDF suggests great internal use of the term that could not be so much outside the school. Other terms such as “Vermont,” “MIIS” (Middlebury Institute of International Studies), and “immersion” point toward the institution’s linguistic offerings and geographical flavor. These terms, therefore, become important to denote a subreddit that is exploring local culture, international academic ventures, and even the branding of the university."
+  },
+  {
+    "objectID": "another-page.html#williams-college",
+    "href": "another-page.html#williams-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Williams College",
+    "text": "Williams College\nThe Williams subreddit is about “williamstown,” the town of Williams, so it is likely they talk much more about its location. Terms such as “loci” (probably an abbreviation for “Letter of Continued Interest”), “supplement,” and “previews” indicate a high level of involvement with the admissions procedure. The existence of “ephs” (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs."
   }
 ]
