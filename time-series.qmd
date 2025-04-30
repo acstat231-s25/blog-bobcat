@@ -32,6 +32,8 @@ gg_sentiment_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                             y = avg_sentiment, 
                             tooltip = avg_sentiment)) + 
+  geom_line(aes(x = quarter, 
+                y = avg_sentiment)) +
   facet_wrap(~subreddit, scales = "free", ncol=1) +
   labs(
     x = 'Date',
@@ -47,6 +49,8 @@ gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                             y = avg_comments, 
                             tooltip = avg_comments)) + 
+  geom_line(aes(x = quarter, 
+                y = avg_comments)) +
   facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   labs(
     x = 'Date',
