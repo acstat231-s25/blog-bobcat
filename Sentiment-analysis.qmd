@@ -1,22 +1,70 @@
----
-title: "Sentiment Analysis"
-author: 
-- "Fynn Hayton-Ruffner"
-- "Shekinah Ninziza"
-- "Kinglee Tham"
----
+```{r}
+#| label: setup
+#| include: false
 
-## Anova table
+# Improve digit display and NA display for kable tables
+options(scipen = 1, knitr.kable.NA = "")
+
+# Load necessary packages
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+# for text analysis
+library(tidytext)
+library(tidyverse)
+```
+
+# What's engagement and sentiment like across subreddits?
 
 ```{r}
+#| label: anova-results
+#| tbl-cap: "ANOVA report: subreddit sentiment & engagement"
+#| layout: [[1], [4, -1, 4]] 
+
+
+load('./data/subreddit_summaries.Rdata')
+load('./data/aov_tukey_results.Rdata')
+
+subreddit_summaries |>
+  kable(digits=2, 
+        col.names = c('Subreddit', 'Post Count','Score (tot)', 
+                      'Comments (tot)', 'Score (avg)', 'Comments (avg)'),
+        caption="Summary statistics for cross subreddit comparison")
+
+aov_sent_res |> 
+  kable(col.names = c('Factor', 'df', 'SST','MSE', 'F', 'p'), 
+        caption = "ANOVA: average sentiment across subreddit",
+        digits=2)
+
+aov_comments_res |> 
+  kable(col.names = c('Factor', 'df', 'SST','MSE', 'F', 'p'),
+        caption="ANOVA: average comments across subreddit",
+        digits=2) 
+```
+
+Let's compare the subreddits! The first table above shows the summary statistics for each subreddit. The total post counts were comparable, which is what we expected given their similar ages. For sentiment, Middlebury clearly stands out more negative (2.95/post) compared to Amherst (5.26) and Williams (4.81). Amherst and Williams also tended to have higher engagement with 4.40 and 6.28 respectively relative to Midd. However, to assess the statistical significance of these potential differences, we had to go a few steps further.
+
+We fit a two one way ANOVA models to our dataset, one to test for significant differences between the average sentiment score of each subreddit, and one to compare the average comment count per post. The results, see TABLE, indicated there was a least one pairwise difference between subreddit post sentiment average (p < 0.001) and comment count (p < 0.001). The logical follow up was to conduct a post-hoc Tukey's Honestly Significant Difference (HSD), which assess differences between each pair of means. 
+
+```{r}
+#| label: tukey-results
+#| tbl-cap: "Tukey's HSD: Pairwise differences across subreddits"
+#| layout: [[1,1]] 
+
+
+tukey_sent |>
+  select(-term, -null.value) |>
+  kable(digits=2, 
+        col.names = c('Subreddit Pair', 'est', 'low','high', 'p'),
+        caption="Tukey's HSD: subreddit sentiment")
+
+tukey_comments |> 
+  select(-term, -null.value) |>
+  kable(col.names = c('Subreddit Pair', 'est', 'low','high', 'p'), 
+        caption = "Tukey's HSD: subreddit comment count",
+        digits=2)
 
 ```
 
-
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+The results, see TABLE, were conclusive! Both Amherst (p < 0.001) and Williams (p < 0.001) held a significantly higher average sentiment score per post over Middlebury. Notably, Amherst and Williams did not differ signifcantly by this same metric (p = 0.56). As far as engagement goes, Amherst (p < 0.001) and Williams (p < 0.001) yet again out performed Middlebury in average comments per post, while Williams convincingly exceeded the mean of Amherst as well (p < 0.001). 
