@@ -92,7 +92,8 @@ mutate(quarter = floor_date(date_utc, unit = "quarter")) |> # round each date do
   # calculating average sentiment and comments in each quarter
   # making sure to round to 2 decimal points
   summarize(avg_sentiment = round(mean(sentiment), 2),
-            avg_comments = round(mean(comments), 2))
+            avg_comments = round(mean(comments), 2),
+            total_comments = round(sum(comments), 2))
 
 # save to publishable data folder
 save(sentiment_posts_quarterly, file='.././data/sentiment_posts_quarterly.Rdata')

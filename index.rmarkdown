@@ -40,6 +40,8 @@ library(ggiraph)
 load('./data/sentiment_posts.Rdata')
 ```
 
+
+
 # What's going on here?
 
 If you are unfamiliar with [Reddit.com](https://www.reddit.com/), we may have to begin by inquiring about the rock you've been living under for nigh-on two decades. In all seriousness (don't stop reading, we're sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: [Amherst College](https://www.reddit.com/r/amherstcollege/), [Williams College](https://www.reddit.com/r/WilliamsCollege/), and [Middlebury College](https://www.reddit.com/r/middlebury/). Specifically, we aim to compare the sentiments meaningfully of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, and track mentions of the admissions process.
@@ -50,6 +52,8 @@ You may be wondering why we picked these specific subreddits and what this proje
 
 Web scraping is a notoriously error-laden path. As websites increasingly deploy dynamically rendered data and IP address blocking, it has never been harder to get the data you want. Luckily, we found a tool that could scrape up to 1000 posts per request. The @ivan-rivera RedditExtractoR scraping package gives a post's title, content, number of comments, and date, all in as little as 3 lines of R code:
 
+
+
 ```{r}
 #| echo: true 
 #| eval: false
@@ -59,6 +63,8 @@ library(RedditExtractoR)
 amherst_posts_raw <- find_thread_urls(
   subreddit = "amherstcollege", sort_by = "new", period = "day")
 ```
+
+
 
 # Methods for sentiment analysis
 
@@ -171,6 +177,8 @@ Focus on completing the blog content first! You can play with features and custo
 
 I would strongly recommend using **knitr**'s `include_graphics()` functions within code chunks to include images or gifs within your blog. This makes it easier to modify figures, add captions and links, and visually find the code for figures quickly if you need to modify something about the output. There is also [markdown syntax to display or embed images](https://quarto.org/docs/authoring/figures.html), but I would typically not recommend it.
 
+
+
 ```{r}
 #| fig-cap: "Image courtesy of giphy.com"
 #| fig-align: center
@@ -179,6 +187,8 @@ I would strongly recommend using **knitr**'s `include_graphics()` functions with
 
 include_graphics("https://i.giphy.com/3og0IT6sIWd1eh7bJm.webp")
 ```
+
+
 
 Either approach will take either a filepath to a stored file or a URL to an image or gif. Width can be specified as a percentage of the width of the page (0% to 100%; my preferred approach) or as a fixed number of units (e.g. 400px, 3in, 10cm).
 
@@ -232,6 +242,8 @@ The same syntax shown across the linked examples can be used to create subtables
 
 Two examples in @tbl-layout and @fig-layout below are borrowed and slightly modified from the linked sections.
 
+
+
 ```{r}
 #| label: tbl-layout
 #| tbl-cap: "Two tables side-by-side"
@@ -268,7 +280,11 @@ ggplot(mtcars, aes(hp, mpg)) +
   geom_point()
 ```
 
+
+
 # Raw data reference
+
+
 
 ```{r}
 #| label: fig-raw-data
@@ -287,3 +303,4 @@ datatable(
 ))), callback = JS('table.page(0).draw(false);'),
 colnames = c('Content', 'Date', 'Comments', 'Subreddit', 'Year', 'Month','Sentiment Score'))
 ```
+

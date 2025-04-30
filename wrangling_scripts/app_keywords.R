@@ -63,7 +63,8 @@ keyword_posts_quarterly <- keyword_posts |>
   mutate(quarter = floor_date(date_utc, unit = "quarter")) |>   # round down to first date of the quarter
   group_by(subreddit, quarter) |>
   summarise(
-    avg_keywords = round(mean(keywords), 2))      # average for the quarter
+    avg_keywords = round(mean(keywords), 2),
+    total_keywords = round(sum(keywords), 2))     # average for the quarter
 
 save(keyword_posts_quarterly, file='.././data/keyword_posts_quarterly.Rdata')
 

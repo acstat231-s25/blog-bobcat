@@ -1,5 +1,5 @@
 ---
-title: "Time Series Analysis"
+title: "Time Series"
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
@@ -26,6 +26,14 @@ load('./data/keyword_posts_quarterly.Rdata')
 
 ```
 
+# How do sentiments, engagement, and topics change over each calendar quarter?
+
+For this analysis, we categorized posts by their date into four quarters: Q1 (January, February, March), Q2 (April, May, June), Q3 (July, August, September) and Q4 (October, November, December)
+
+(we might change quarters to better match the school year if there is a way to make custom quarters in R)
+
+## Sentiments
+
 ```{r}
 # Over time analysis for QUARTERLY sentiment average per subreddit
 gg_sentiment_quarterly <- ggplot(data = sentiment_posts_quarterly) +
@@ -37,14 +45,40 @@ gg_sentiment_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   facet_wrap(~subreddit, scales = "free", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Quarterly Average Sentiment Score') +
+    y = 'Sentiment Score',
+    title = 'Quarterly Average Sentiment Score') +
   theme_minimal() 
 
 girafe(ggobj = gg_sentiment_quarterly)
 ```
 
+# Engagement Through Comments
+
+::: panel-tabset
+### Total
+
 ```{r}
-# Over time analysis for QUARTERLY comment average per subreddit
+# Over time analysis for QUARTERLY comment total per subreddit
+gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
+  geom_point_interactive(aes(x = quarter, 
+                            y = total_comments, 
+                            tooltip = total_comments)) + 
+  geom_line(aes(x = quarter, 
+                y = total_comments)) +
+  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+  labs(
+    x = 'Date',
+    y = 'Comments',
+    title = 'Quarterly Total Comments') +
+  theme_minimal() 
+
+girafe(ggobj = gg_point_comments_quarterly)
+```
+
+### Average
+
+```{r}
+# Over time analysis for QUARTERLY avg comment total on posts per subreddit
 gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                             y = avg_comments, 
@@ -54,14 +88,72 @@ gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   labs(
     x = 'Date',
-    y = 'Quarterly Average Comments') +
+    y = 'Comments',
+    title = 'Quarterly Average Comments per Post') +
   theme_minimal() 
 
 girafe(ggobj = gg_point_comments_quarterly)
 ```
+:::
+
+There has been a recent increase in the number of total comments each quarter, with an increase starting around 2024 for all three colleges. This indicates that more students and prospective students are using Reddit than previously to connect with each respective college community.
+
+In 2024 Q2, there was a sharp increase in the total and average comments in the Williams subreddit. This corresponds to an increase in posts related to college decisions, with a large number of posts during that period being from prospective students asking questions about Williams. One of these posts received a total of 78 comments.
+
+Around that same time, there was an increase in the average comments per post in the Middlebury subreddit, also corresponding to an increase in posts asking questions about Middlebury.
+
+In 2024 Q4, the total number of comments posted in a time period to the Amherst subreddit peaked. Around this time, Amherst early decisions were released, with many mixed feelings. Some students posted to connect with other admitted students in the comments, many were rejected, and a many asked questions about their financial aid package.
+
+## College Application Keywords
+
+To analyze subreddit activity related to college applications, we created a custom vector of keywords related to college admissions and then calculated the total and average frequency of these words per quarter.
 
 ```{r}
-# Over time analysis for QUARTERLY admissions keywords per subreddit
+#| echo: true 
+#| eval: false
+#| label: keywords-list
+application_keywords <- c(
+  "waitlist",  "waitlisted", "waitlisting",
+  "accept",    "accepted",   "acceptance",
+  "apply",     "applied",    "applying", 
+  "application", "admission", "admissions",
+  "defer",     "deferred",   "deferral",
+  "reject",    "rejected",   "rejection",
+  "enroll",    "enrolled",   "enrollment",  
+  "matriculate", "matriculated", "stats")
+```
+
+::: panel-tabset
+### Total
+
+```{r}
+# Over time analysis for QUARTERLY total admissions keywords per subreddit
+
+gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
+  geom_point_interactive(aes(x = quarter, 
+                             y = total_keywords, 
+                             tooltip = total_keywords)) + 
+  geom_line(aes(x = quarter, 
+                y = total_keywords)) +
+  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+  scale_x_date(
+    date_breaks  = "1 year", # one tick on the x per year
+    date_labels  = "%Y" # just showing the year, not month or days
+  ) +
+  labs(
+    x = 'Date',
+    y = 'Keywords',
+    title = 'Quarterly Total Keywords'
+  ) +
+  theme_minimal() 
+
+girafe(ggobj = gg_point_keywords_quarterly)
+```
+
+### Average
+
+```{r}
+# Over time analysis for QUARTERLY avg admissions keywords per subreddit
 
 gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
@@ -76,10 +168,22 @@ gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
   ) +
   labs(
     x = 'Date',
-    y = 'Quarterly Average Keywords per Post'
+    y = 'Keywords',
+    title = 'Quarterly Average Keywords per Post'
   ) +
   theme_minimal() 
 
 girafe(ggobj = gg_point_keywords_quarterly)
+```
+:::
+
+
+```{r, eval = FALSE}
+
+test <- sentiment_posts |>
+  filter(
+    subreddit == "Amherst College",
+    date_utc > as.Date("2024-08-30") & date_utc < as.Date("2025-01-01")
+  )
 ```
 

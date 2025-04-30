@@ -173,5 +173,33 @@
     "title": "Term Frequency - Inverse Document Frequency Analysis",
     "section": "Williams College",
     "text": "Williams College\nThe Williams subreddit is about “williamstown,” the town of Williams, so it is likely they talk much more about its location. Terms such as “loci” (probably an abbreviation for “Letter of Continued Interest”), “supplement,” and “previews” indicate a high level of involvement with the admissions procedure. The existence of “ephs” (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs."
+  },
+  {
+    "objectID": "time-series.html",
+    "href": "time-series.html",
+    "title": "Time Series",
+    "section": "",
+    "text": "For this analysis, we categorized posts by their date into four quarters: Q1 (January, February, March), Q2 (April, May, June), Q3 (July, August, September) and Q4 (October, November, December)\n(we might change quarters to better match the school year if there is a way to make custom quarters in R)"
+  },
+  {
+    "objectID": "time-series.html#college-application-keywords",
+    "href": "time-series.html#college-application-keywords",
+    "title": "Time Series",
+    "section": "College Application Keywords",
+    "text": "College Application Keywords\nTo analyze subreddit activity related to college applications, we created a custom vector of keywords related to college admissions and then calculated the total and average frequency of these words per quarter.\n\napplication_keywords &lt;- c(\n  \"waitlist\",  \"waitlisted\", \"waitlisting\",\n  \"accept\",    \"accepted\",   \"acceptance\",\n  \"apply\",     \"applied\",    \"applying\", \n  \"application\", \"admission\", \"admissions\",\n  \"defer\",     \"deferred\",   \"deferral\",\n  \"reject\",    \"rejected\",   \"rejection\",\n  \"enroll\",    \"enrolled\",   \"enrollment\",  \n  \"matriculate\", \"matriculated\", \"stats\")\n\n\nTotalAverage"
+  },
+  {
+    "objectID": "time-series.html#engagement-through-comments-panel-tabset",
+    "href": "time-series.html#engagement-through-comments-panel-tabset",
+    "title": "Time Series",
+    "section": "",
+    "text": ":::"
+  },
+  {
+    "objectID": "time-series.html#sentiments",
+    "href": "time-series.html#sentiments",
+    "title": "Time Series",
+    "section": "",
+    "text": "ab"
   }
 ]
