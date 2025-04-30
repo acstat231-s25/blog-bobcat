@@ -145,5 +145,33 @@
     "title": "Term Frequency - Inverse Document Frequency Analysis",
     "section": "Williams College",
     "text": "Williams College\nThe Williams subreddit is about “williamstown,” the town of Williams, so it is likely they talk much more about its location. Terms such as “loci” (probably an abbreviation for “Letter of Continued Interest”), “supplement,” and “previews” indicate a high level of involvement with the admissions procedure. The existence of “ephs” (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs."
+  },
+  {
+    "objectID": "tf-idf.html",
+    "href": "tf-idf.html",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "",
+    "text": "Term Frequency - Inverse Document Frequency (TF-IDF) is a measure of how important a word is in a document, adjusted for the fact that some words appear more frequently in general. In colloquial terms, the TF-IDF of a word is high when it appears frequently in a document but rarely in the corpus (collection of all documents)."
+  },
+  {
+    "objectID": "tf-idf.html#amherst-college",
+    "href": "tf-idf.html#amherst-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Amherst College",
+    "text": "Amherst College\nThe most important TF-IDF keyword is “amherst’s”, as it stands for the strong link that such posts share with the local institutional discussions. Other important ones such as “umass,” “statistics,” and “sem” (probably an abbreviation of “seminar” or “semester”) imply that academic conversations are key. Terms such as “soccer” and “paper” refer both to co-curricular and to course-related subjects. Thus, this combination of academic and student life language demonstrates full engagement with the integral and daily aspects of Amherst as one institution."
+  },
+  {
+    "objectID": "tf-idf.html#middlebury-college",
+    "href": "tf-idf.html#middlebury-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Middlebury College",
+    "text": "Middlebury College\nThe notable term in this context is “midd,” an abbreviation for Middlebury known by its community; its high TF-IDF suggests great internal use of the term that could not be so much outside the school. Other terms such as “Vermont,” “MIIS” (Middlebury Institute of International Studies), and “immersion” point toward the institution’s linguistic offerings and geographical flavor. These terms, therefore, become important to denote a subreddit that is exploring local culture, international academic ventures, and even the branding of the university."
+  },
+  {
+    "objectID": "tf-idf.html#williams-college",
+    "href": "tf-idf.html#williams-college",
+    "title": "Term Frequency - Inverse Document Frequency Analysis",
+    "section": "Williams College",
+    "text": "Williams College\nThe Williams subreddit is about “williamstown,” the town of Williams, so it is likely they talk much more about its location. Terms such as “loci” (probably an abbreviation for “Letter of Continued Interest”), “supplement,” and “previews” indicate a high level of involvement with the admissions procedure. The existence of “ephs” (the mascot of Williams). The subreddit seems to be very busy throughout the admissions period and centered on unique community slang and customs."
   }
 ]
