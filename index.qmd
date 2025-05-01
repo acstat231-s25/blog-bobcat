@@ -44,6 +44,9 @@ load('./data/word_freqs.Rdata')
 # What's going on here?
 
 ```{r}
+#| label: fig-word-cloud
+#| width: 100%
+#| fig-cap: "Most common words across all subreddits"
 # Word cloud will rearrange each time unless seed is set
 set.seed(42)
 
@@ -59,7 +62,7 @@ word_freqs |>
                  # Plot the words in a NON random order
                  random.order = FALSE,
                  # Specify the range of the size of the words
-                 scale = c(2, 0.6),
+                 scale = c(3, 0.6),
                  # Specify proportion of words with 90 degree rotation
                  rot.per = 0.4,
                  # Color words from least to most frequent
