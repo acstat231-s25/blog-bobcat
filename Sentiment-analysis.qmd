@@ -17,6 +17,21 @@ library(tidyverse)
 
 # What's engagement and sentiment like across subreddits?
 
+
+```{r}
+#| fig-align: center
+#| fig-link: "https://giphy.com/gifs/insecurehbo-3og0IT6sIWd1eh7bJm"
+#| out-width: 30%
+#| out-height: 50px
+#| layout: [[1,1,1]]
+ 
+ include_graphics("https://upload.wikimedia.org/wikipedia/en/thumb/6/65/Amherst_College_Seal.svg/1200px-Amherst_College_Seal.svg.png")
+ include_graphics("https://upload.wikimedia.org/wikipedia/en/thumb/1/16/Williams_Ephs_2021_logo.svg/1200px-Williams_Ephs_2021_logo.svg.png")
+ 
+ include_graphics("https://www.interfolio.com/wp-content/uploads/Middlebury-04.png")
+```
+ 
+
 ```{r}
 #| label: anova-results
 #| tbl-cap: "ANOVA report: subreddit sentiment & engagement"
