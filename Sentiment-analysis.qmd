@@ -33,7 +33,10 @@ load('./data/aov_tukey_results.Rdata')
 subreddit_summaries |>
   kable(digits=2, 
         col.names = c('Subreddit', 'Post Count','Score (tot)', 
-                      'Comments (tot)', 'Score (avg)', 'Comments (avg)'))
+                      'Comments (tot)', 'Score (avg)', 'Comments (avg)')) |>
+  row_spec(1, background = "#b7a5d3", color = 'white') |>
+  row_spec(3, background = "#FFBE0A", color = 'white') |>
+  row_spec(2, background = "#37538C", color='white')
 
 aov_sent_res |> 
   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2)
@@ -49,21 +52,30 @@ We fit a two one way ANOVA models to our dataset, one to test for statiscially s
 ```{r}
 #| label: tukey-results
 #| tbl-cap: "Tukey's HSD: Pairwise differences across subreddits"
-#| layout: [[1,1]] 
+#| layout: [[1, -1, 1]] 
 
 
 tukey_sent |>
   select(-term, -null.value) |>
   kable(digits=2, 
         col.names = c('Subreddit Pair', 'est', 'low','high', 'p'),
-        caption="Tukey's HSD: subreddit sentiment")
+        caption="Tukey's HSD: subreddit sentiment") |>
+  row_spec(1, background = "#b7a5d3", color = 'white') |>
+  row_spec(3, background = "#FFBE0A", color = 'white')
+
+
 
 tukey_comments |> 
   select(-term, -null.value) |>
   kable(col.names = c('Subreddit Pair', 'est', 'low','high', 'p'), 
         caption = "Tukey's HSD: subreddit comment count",
-        digits=2)
+        digits=2) |>
+   row_spec(1, background = "#b7a5d3", color = 'white') |>
+   row_spec(2, background = "#FFBE0A", color = 'white') |>
+   row_spec(3, background = "#FFBE0A", color = 'white')
+  
+  
 
 ```
 
-The results, see TABLE, were conclusive! Both Amherst (p < 0.001) and Williams (p < 0.001) held a significantly higher average sentiment score per post over Middlebury. Notably, Amherst and Williams did not differ signifcantly by this same metric (p = 0.56). As far as engagement goes, Amherst (p < 0.001) and Williams (p < 0.001) yet again out-performed Middlebury in average comments per post, while Williams convincingly exceeded the mean of Amherst as well (p < 0.001). Again, for more information on the gritty details involved in performing Tukey's HSD, see this valuable resource, which was helpful for the work present here: @Tukey. Unfortunately, Williams emerges victorious in this competition by tying Amherst in post positivity and edging us in post engagement. We wish we could fudge the numbers but that would be statistical malpractice.
+The results, see TABLE, were conclusive! Each row in the table above holds the results of a Tukey's HSD comparison between two college subreddits; we colored each row by the college that, according to the test, was deemed to have a significantly higher average (purple for Amherst, gold for Williams, and white for a 'tie'). Both Amherst (p < 0.001) and Williams (p < 0.001) held a significantly higher average sentiment score per post over Middlebury. Notably, Amherst and Williams did not differ signifcantly by this same metric (p = 0.56). As far as engagement goes, Amherst (p < 0.001) and Williams (p < 0.001) yet again out-performed Middlebury in average comments per post, while Williams convincingly exceeded the mean of Amherst as well (p < 0.001). Again, for more information on the gritty details involved in performing Tukey's HSD, see this valuable resource, which was helpful for the work present here: @Tukey. Unfortunately gold holds the majority of victories in these pairwise comparisons, and Williams emerges as the champion of this competition by tying Amherst in post positivity and edging us in post engagement. We wish we could fudge the numbers but that would be statistical malpractice.
