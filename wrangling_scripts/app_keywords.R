@@ -17,14 +17,14 @@ load('.././raw_data/all_college_posts.Rdata')
 # define a vector of application related keywords
 
 application_keywords <- c(
-  "waitlist",  "waitlisted", "waitlisting",
+  "waitlist",  "waitlisted", "waitlisting", "wl",
   "accept",    "accepted",   "acceptance",
   "apply",     "applied",    "applying", 
   "application", "admission", "admissions",
   "defer",     "deferred",   "deferral",
   "reject",    "rejected",   "rejection",
   "enroll",    "enrolled",   "enrollment",  
-  "matriculate", "matriculated", "stats"
+  "ed", "early decision", "rd", "regular decision", "sat" 
 )
 
 # calculate # of keyword occurrences for each subreddit
