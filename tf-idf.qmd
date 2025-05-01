@@ -26,7 +26,7 @@ load('./data/top_bigram_tfidf.Rdata')
 
 ```
 
-Term Frequency - Inverse Document Frequency (TF-IDF) is a measure of how important a word is in a document, adjusted for the fact that some words appear more frequently in general. In colloquial terms, the TF-IDF of a word is high when it appears frequently in a document but rarely in the corpus (collection of all documents).
+[Term Frequency-Inverse Document Frequency](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) (TF-IDF) is a measure of how important a word is in a document, adjusted for the fact that some words appear more frequently in general. In colloquial terms, the TF-IDF of a word is high when it appears frequently in a document but rarely in the corpus (collection of all documents).
 
 # Word Analysis
 
@@ -45,7 +45,7 @@ top_word_tfidf |>
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
-       title = "Top 10 Words by Tf-Idf for Each Subreddit") +
+       title = "Top 10 Words by TF-IDF for Each Subreddit") +
   scale_fill_viridis('magma')
 
 

@@ -57,7 +57,7 @@ top_bigram_tfidf <- bigram_tfidf |>
 
 save(top_word_tfidf, file='.././data/top_word_tfidf.Rdata')
 save(top_bigram_tfidf, file='.././data/top_bigram_tfidf.Rdata')
-
+save(word_freqs, file='.././data/word_freqs.Rdata')
 # visualize
 plot_word_tfidf <- top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
@@ -82,3 +82,4 @@ plot_bigram_tfidf <- top_bigram_tfidf |>
        y = "TF-IDF",
        title = "Top 10 Bigrams by Tf-Idf for Each Subreddit") +
   scale_fill_viridis('magma')
+

@@ -19,7 +19,7 @@ website:
         text: "Time Series Analysis"
         icon: graph-up
       - href: Sentiment-analysis.qmd
-        text: "Sentiment Analysis"
+        text: "Sentiment ANOVAs"
         icon: emoji-smile
         
 format:
