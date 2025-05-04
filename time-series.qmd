@@ -26,13 +26,19 @@ load("./data/keyword_posts_quarterly.Rdata")
 
 ```
 
-# How do sentiments, engagement, and topics change over each calendar quarter?
+# How do sentiments and engagement change over each calendar quarter?
 
 For this analysis, we categorized posts by their date into the four quarters of the year: Q1 (January, February, March), Q2 (April, May, June), Q3 (July, August, September) and Q4 (October, November, December). We then calculated the average point value and total point value for the quarter as necessary.
 
 When should I focus on total value versus average value?
 
-The total value gives the magnitude *of subreddit performance* *per quarter*. Averages represent the central tendency of the quarter, showing the typical *post performance per quarter*. As a general tip, rising total + falling average -\> more posts but less discussion per post. On the contrary, rising average + flat total -\> fewer posts but each one sparks more discussion
+The total value gives the magnitude *of subreddit performance* *per quarter*. Averages represent the central tendency of the quarter, showing the typical *post performance per quarter*.
+
+Here are a few tips for interpreting total and average in conjunction for our engagement analyses:
+
+Higher total + lower average -\> more posts but less discussion per post
+
+Higher average + lower total -\> fewer posts but each one sparks more discussion
 
 ## Sentiments
 
@@ -59,14 +65,16 @@ gg_sentiment_quarterly <- ggplot(data = sentiment_posts_quarterly) +
     title = "Quarterly Average Sentiment Score",
     color = "Subreddit") +
   theme_minimal() +
-  scale_color_manual(values = c("#5e239d", "#be97c6", "#efbcd5"))
+  scale_color_manual(values = c("#b7a5d3", "#37538C", "#FFBE0A"))
 
 girafe(ggobj = gg_sentiment_quarterly)
 ```
 
 Sentiments in the Amherst subreddit fluctuate greatly from 20202-2022, level out around 2022-2024, and rise in recent years. Middlebury's subreddit has the lowest sentiment score in general :(. The Williams subreddit has consistently had sentiment scores from 3-7, indicating general positivity in the community. For all three subreddits, there is an recent upward trend in sentiment score, indicating that more people might be interested in liberal arts colleges.
 
-# Engagement Through Comments
+## Overall Comment Engagement
+
+Calculating the number of comments per quarter
 
 ::: panel-tabset
 ### Total
@@ -76,19 +84,22 @@ Sentiments in the Amherst subreddit fluctuate greatly from 20202-2022, level out
 gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                             y = total_comments, 
-                            tooltip = total_comments)) + 
+                            tooltip = total_comments,
+                            color = subreddit)) + 
   geom_line(aes(x = quarter, 
-                y = total_comments)) +
+                y = total_comments,
+                color = subreddit)) +
     scale_x_date(
     date_breaks  = "1 year", # one tick on the x per year
     date_labels  = "%Y" # just showing the year, not month or days
   ) +
-  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+ # facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   labs(
     x = "Date",
     y = "Comments",
     title = "Quarterly Total Comments") +
-  theme_minimal() 
+  theme_minimal() +
+  scale_color_manual(values = c("#b7a5d3", "#37538C", "#FFBE0A"))
 
 girafe(ggobj = gg_point_comments_quarterly)
 ```
@@ -100,19 +111,22 @@ girafe(ggobj = gg_point_comments_quarterly)
 gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                             y = avg_comments, 
-                            tooltip = avg_comments)) + 
+                            tooltip = avg_comments,
+                            color = subreddit)) + 
   geom_line(aes(x = quarter, 
-                y = avg_comments)) +
+                y = avg_comments,
+                color = subreddit)) +
     scale_x_date(
     date_breaks  = "1 year", # one tick on the x per year
     date_labels  = "%Y" # just showing the year, not month or days
   ) +
-  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+#  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   labs(
     x = "Date",
     y = "Comments",
     title = "Quarterly Average Comments per Post") +
-  theme_minimal() 
+  theme_minimal()  +
+  scale_color_manual(values = c("#b7a5d3", "#37538C", "#FFBE0A"))
 
 girafe(ggobj = gg_point_comments_quarterly)
 ```
@@ -126,7 +140,9 @@ Around that same time, there was an increase in the average comments per post in
 
 In 2024 Q4, the total number of comments posted in a time period to the Amherst subreddit peaked. Around this time, Amherst early decisions were released, with many mixed feelings. Some students posted to connect with other admitted students in the comments, many were rejected, and a many asked questions about their financial aid package.
 
-## College Application Keywords
+## College Application Engagement
+
+Calculating the number of keywords per quarter
 
 To analyze subreddit activity related to college applications, we created a custom vector of keywords related to college admissions and then calculated the total and average frequency of these words per quarter.
 
@@ -154,10 +170,12 @@ application_keywords <- c(
 gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                              y = total_keywords, 
-                             tooltip = total_keywords)) + 
+                             tooltip = total_keywords,
+                             color = subreddit)) + 
   geom_line(aes(x = quarter, 
-                y = total_keywords)) +
-  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+                y = total_keywords,
+                color = subreddit)) +
+#  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   scale_x_date(
     date_breaks  = "1 year", # one tick on the x per year
     date_labels  = "%Y" # just showing the year, not month or days
@@ -167,7 +185,8 @@ gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
     y = "Keywords",
     title = "Quarterly Total Keywords"
   ) +
-  theme_minimal() 
+  theme_minimal()   +
+  scale_color_manual(values = c("#b7a5d3", "#37538C", "#FFBE0A"))
 
 girafe(ggobj = gg_point_keywords_quarterly)
 ```
@@ -180,10 +199,12 @@ girafe(ggobj = gg_point_keywords_quarterly)
 gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
   geom_point_interactive(aes(x = quarter, 
                              y = avg_keywords, 
-                             tooltip = avg_keywords)) + 
+                             tooltip = avg_keywords,
+                             color = subreddit)) + 
   geom_line(aes(x = quarter, 
-                y = avg_keywords)) +
-  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
+                y = avg_keywords,
+                color = subreddit)) +
+#  facet_wrap(~subreddit, scales = "fixed", ncol=1) +
   scale_x_date(
     date_breaks  = "1 year", # one tick on the x per year
     date_labels  = "%Y" # just showing the year, not month or days
@@ -193,7 +214,8 @@ gg_point_keywords_quarterly <- ggplot(data = keyword_posts_quarterly) +
     y = "Keywords",
     title = "Quarterly Average Keywords per Post"
   ) +
-  theme_minimal() 
+  theme_minimal()   +
+  scale_color_manual(values = c("#b7a5d3", "#37538C", "#FFBE0A"))
 
 girafe(ggobj = gg_point_keywords_quarterly)
 ```
