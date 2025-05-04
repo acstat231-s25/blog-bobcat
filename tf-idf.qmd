@@ -32,13 +32,20 @@ load('./data/top_bigram_tfidf.Rdata')
 
 ```{r}
 #| label: fig-word_tfidf
-
-
-
+#| fig-cap: "Pay careful attention to the scales!"
 
 top_word_tfidf |>
-  ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
+  ggplot(aes(x = reorder_within(word, tf_idf, subreddit),
+             y = tf_idf,
+             fill = subreddit)) +
   geom_col() +
+  scale_fill_manual(
+    values = c(
+      "Amherst College" = "#b7a5d3", # changing to match school colors
+      "Williams College" = "#FFBE0A",             
+      "Middlebury College" = "#37538C"              
+    )
+  ) +
   coord_flip() +
   theme(legend.position = "none") +
   facet_wrap(~subreddit, ncol = 3, scales = "free") +
@@ -46,8 +53,8 @@ top_word_tfidf |>
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 Words by TF-IDF for Each Subreddit") +
-  scale_fill_viridis('magma')
-
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)) # rotating numbers
 
 ```
 
@@ -67,11 +74,21 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
 
 ```{r}
 #| label: fig-bigram_tfidf
+#| fig-cap: "Pay careful attention to the scales!"
 
 
  top_bigram_tfidf |>
-  ggplot(aes(x = reorder_within(bigram, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
+  ggplot(aes(x = reorder_within(bigram, tf_idf, subreddit),
+             y = tf_idf,
+             fill = subreddit)) +
   geom_col() +
+  scale_fill_manual(
+    values = c(
+      "Amherst College" = "#b7a5d3", # changing to match school colors
+      "Williams College" = "#FFBE0A",             
+      "Middlebury College" = "#37538C"               
+    )
+  ) +
   coord_flip() +
   theme(legend.position = "none") +
   facet_wrap(~subreddit, ncol = 3, scales = "free") +
@@ -79,7 +96,8 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 Bigrams by TF-IDF for Each Subreddit") +
-  scale_fill_viridis('magma')
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)) # rotating numbers
 
 ```
 
