@@ -9,7 +9,7 @@
 <meta name="author" content="Fynn Hayton-Ruffner">
 <meta name="author" content="Shekinah Ninziza">
 <meta name="author" content="Kinglee Tham">
-<meta name="dcterms.date" content="2025-05-01">
+<meta name="dcterms.date" content="2025-05-04">
 
 <title>Which NESCAC Reigns Supreme? – Bobcat</title>
 <style>
@@ -127,15 +127,25 @@ div.csl-indent {
   }
 }</script>
 <link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
 <script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
+
 <script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
+
 <script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+
 <link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+
 <script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
 
 
 <link rel="stylesheet" href="styles.css">
@@ -208,7 +218,7 @@ div.csl-indent {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Which NESCAC Reigns Supreme?</h1>
-<p class="subtitle lead">Assessing the sentiments, engagement and prominent themes of the Amherst, Williams, and Middlebury College subreddits</p>
+<p class="subtitle lead">Assessing the sentiments, engagement and prominent themes of the Amherst, Middlebury, and Williams College subreddits</p>
 </div>
 
 
@@ -227,7 +237,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 1, 2025</p>
+      <p class="date">May 4, 2025</p>
     </div>
   </div>
   
@@ -237,7 +247,7 @@ div.csl-indent {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>How does sentiment flow through the online communities of college students? What topics are most important to each group, and how have these conditions fluctuated with time? In this project, we dive into the world of Reddit, analyzing the emotional tone, engagement, and content of posts across three NESCAC college subreddits: Amherst, Williams, and Middlebury. By obtaining data in real-time using the <span class="citation" data-cites="rivera_ivan">Rivera (<a href="#ref-rivera_ivan" role="doc-biblioref">2025</a>)</span> RedditExtractoR scraping package, we examine positive negative valence, comment count, and content themes both over time and as a totality across the three forums. The goal is to explore within and cross subreddit patterns together to see if any discrepancies or global similarities emerge. Through text analysis and statistical modeling, we study how the words of students manifest the sentiment and thematic spectrum of their communities and how sentiment translates to engagement, with a particular focus on dicussions surrounding the admissions process.</p>
+    <p>How does sentiment flow through the online communities of college students? What topics are most important to each group, and how have these conditions fluctuated with time? In this project, we dive into the world of Reddit, analyzing the emotional tone, engagement, and content of posts across three NESCAC college subreddits: Amherst, Middlebury, and Williams. By obtaining data in real-time using the <span class="citation" data-cites="rivera_ivan">Rivera (<a href="#ref-rivera_ivan" role="doc-biblioref">2025</a>)</span> RedditExtractoR scraping package, we examine positive negative valence, comment count, and content themes both over time and as a totality across the three forums. The goal is to explore within and cross subreddit patterns together to see if any discrepancies or global similarities emerge. Through text analysis and statistical modeling, we study how the words of students manifest the sentiment and thematic spectrum of their communities and how sentiment translates to engagement, with a particular focus on dicussions surrounding the admissions process.</p>
   </div>
 </div>
 
@@ -261,7 +271,28 @@ Figure&nbsp;1: Most common words across all subreddits
 </div>
 </div>
 </div>
-<p>If you are unfamiliar with <a href="https://www.reddit.com/">Reddit.com</a>, we may have to begin by inquiring about the rock you’ve been living under for nigh-on two decades. In all seriousness (don’t stop reading, we’re sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: <a href="https://www.reddit.com/r/amherstcollege/">Amherst College</a>, <a href="https://www.reddit.com/r/WilliamsCollege/">Williams College</a>, and <a href="https://www.reddit.com/r/middlebury/">Middlebury College</a>. Specifically, we aim to compare the sentiments meaningfully of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, and track mentions of the admissions process.</p>
+<p>If you are unfamiliar with <a href="https://www.reddit.com/">Reddit.com</a>, we may have to begin by inquiring about the rock you’ve been living under for nigh-on two decades. In all seriousness (don’t stop reading, we’re sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: <a href="https://www.reddit.com/r/amherstcollege/">Amherst College</a>, <a href="https://www.reddit.com/r/middlebury/">Middlebury College</a>, and <a href="https://www.reddit.com/r/WilliamsCollege/">Williams College</a>. Specifically, we aim to compare the sentiments meaningfully of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, and track mentions of the admissions process.</p>
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout-align="center" data-layout="[[1,1,1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/WydIOUS.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/0Au7pMT.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
 <p>You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit’s perspective).</p>
 </section>
 <section id="redditextractor" class="level1">

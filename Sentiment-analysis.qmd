@@ -20,15 +20,15 @@ library(tidyverse)
 
 ```{r}
 #| fig-align: center
-#| fig-link: "https://giphy.com/gifs/insecurehbo-3og0IT6sIWd1eh7bJm"
 #| out-width: 30%
 #| out-height: 50px
 #| layout: [[1,1,1]]
  
- include_graphics("https://upload.wikimedia.org/wikipedia/en/thumb/6/65/Amherst_College_Seal.svg/1200px-Amherst_College_Seal.svg.png")
- include_graphics("https://upload.wikimedia.org/wikipedia/en/thumb/1/16/Williams_Ephs_2021_logo.svg/1200px-Williams_Ephs_2021_logo.svg.png")
- 
- include_graphics("https://www.interfolio.com/wp-content/uploads/Middlebury-04.png")
+ include_graphics("https://i.imgur.com/WydIOUS.png") # Amherst icon
+  include_graphics("https://i.imgur.com/0Au7pMT.png") # Middlebury icon
+ include_graphics("https://i.imgur.com/FA3VX3Y.png") # Williams icon
+
+
 ```
  
 
@@ -50,8 +50,8 @@ subreddit_summaries |>
         col.names = c('Subreddit', 'Post Count','Score (tot)', 
                       'Comments (tot)', 'Score (avg)', 'Comments (avg)')) |>
   row_spec(1, background = "#b7a5d3", color = 'white') |>
-  row_spec(3, background = "#FFBE0A", color = 'white') |>
-  row_spec(2, background = "#37538C", color='white')
+  row_spec(2, background = "#37538C", color='white') |>
+  row_spec(3, background = "#FFBE0A", color = 'white')
 
 aov_sent_res |> 
   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2)
