@@ -207,8 +207,8 @@ div.csl-indent {
   <ul>
   <li><a href="#whats-going-on-here" id="toc-whats-going-on-here" class="nav-link active" data-scroll-target="#whats-going-on-here">What’s going on here?</a></li>
   <li><a href="#redditextractor" id="toc-redditextractor" class="nav-link" data-scroll-target="#redditextractor">RedditExtractoR</a></li>
-  <li><a href="#methods-for-sentiment-analysis" id="toc-methods-for-sentiment-analysis" class="nav-link" data-scroll-target="#methods-for-sentiment-analysis">Methods for sentiment analysis</a></li>
-  <li><a href="#raw-data-reference" id="toc-raw-data-reference" class="nav-link" data-scroll-target="#raw-data-reference">Raw data reference</a></li>
+  <li><a href="#methods-for-sentiment-analysis" id="toc-methods-for-sentiment-analysis" class="nav-link" data-scroll-target="#methods-for-sentiment-analysis">Methods for Sentiment Analysis</a></li>
+  <li><a href="#raw-data-reference" id="toc-raw-data-reference" class="nav-link" data-scroll-target="#raw-data-reference">Raw Data Reference</a></li>
   </ul>
 </nav>
     </div>
@@ -275,7 +275,7 @@ Figure&nbsp;1: Most common words across all subreddits
 <div>
 
 </div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout="[[1,1,1]]">
+<div class="cell quarto-layout-panel" data-layout="[[1,1,1]]" data-layout-align="center">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
@@ -288,6 +288,13 @@ Figure&nbsp;1: Most common words across all subreddits
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://i.imgur.com/0Au7pMT.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/FA3VX3Y.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
 </figure>
 </div>
 </div>
@@ -305,11 +312,11 @@ Figure&nbsp;1: Most common words across all subreddits
 </div>
 </section>
 <section id="methods-for-sentiment-analysis" class="level1">
-<h1>Methods for sentiment analysis</h1>
+<h1>Methods for Sentiment Analysis</h1>
 <p>Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see <span class="citation" data-cites="Zhang">Zhang (<a href="#ref-Zhang" role="doc-biblioref">n.d.</a>)</span>). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see <a href="#fig-raw-data" class="quarto-xref">Figure&nbsp;2</a> at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!</p>
 </section>
 <section id="raw-data-reference" class="level1">
-<h1>Raw data reference</h1>
+<h1>Raw Data Reference</h1>
 <div class="cell">
 <div id="fig-raw-data" class="cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
