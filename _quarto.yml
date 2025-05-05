@@ -5,8 +5,10 @@ project:
 # Can customize this section with options from the following page:
 # https://quarto.org/docs/websites/website-navigation.html
 website:
-  title: "Bobcat"
+  title: "Bobcat Blog"
   navbar:
+    logo: images/bobcat.jpg
+    logo-href: index.qmd          # ← where clicking the logo/title will go
     left:
       - href: index.qmd # Must be included as index.qmd
         text: "About"
