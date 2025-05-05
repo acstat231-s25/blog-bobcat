@@ -207,7 +207,7 @@ div.csl-indent {
 <div>
 
 </div>
-<div class="cell quarto-layout-panel" data-layout-align="center" data-layout="[[1,1,1]]">
+<div class="cell quarto-layout-panel" data-layout="[[1,1,1]]" data-layout-align="center">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
@@ -315,12 +315,12 @@ Table&nbsp;1: Subreddit sentiment &amp; engagement
 <section id="the-solution-welchs-anova" class="level2">
 <h2 class="anchored" data-anchor-id="the-solution-welchs-anova">The Solution: Welch’s ANOVA</h2>
 <p>Welch’s ANOVA is a variation of the standard ANOVA that can be conducted when the equal variance assumption is violated, which made it perfect for our use!</p>
-<p>We fit two one-way Welch-ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, available in <a href="#tbl-welch-anova-results" class="quarto-xref">Table&nbsp;2</a>, were conclusive. indicated there was a least one pairwise difference between subreddit post sentiment average (p &lt; 0.001) and comment count (p &lt; 0.001). The logical follow up was to conduct a post-hoc Tukey’s Honestly Significant Difference (HSD), which assess differences between each pair of subreddit means.</p>
+<p>We fit two one-way Welch-ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, available in <a href="#tbl-welch-anova-results" class="quarto-xref">Table&nbsp;2</a>, were conclusive. At least one statistically significant difference betweeen subreddit sentiment means (p &lt; 0.001) <a href="#tbl-welch-anova-results-1" class="quarto-xref">Table&nbsp;2 (a)</a> and average comment counts (p &lt; 0.001) <a href="#tbl-welch-anova-results-2" class="quarto-xref">Table&nbsp;2 (b)</a> was detected in both tests. Since ANOVA tests only indicate the presence of one pairwise difference in the groups you are interested in, the logical follow up was to conduct a series of post-hoc tests. For Welch’s ANOVA, the standard procedure is to use the Games-Howell Test CITE, which can assess mean differences across all groups without relying on equal variance.</p>
 <div class="cell" data-layout="[[1,-1,1]]">
 <div id="tbl-welch-anova-results" class="quarto-layout-panel anchored">
 <figure class="quarto-float quarto-float-tbl figure">
 <figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-welch-anova-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: Welch-ANOVA results: cross subreddit comparisons
+Table&nbsp;2: Welch-ANOVA results: Cross Subreddit Comparisons
 </figcaption>
 <div aria-describedby="tbl-welch-anova-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="quarto-layout-row">
