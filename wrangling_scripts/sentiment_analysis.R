@@ -55,25 +55,24 @@ subreddit_summaries <- sentiment_posts |>
     avg_post_sent = round(mean(sentiment), 2),
     avg_comments_per_post = round(mean(comments), 2)
     
-  )
+)
 
+library(car)
 library(broom)
+
+# sentiment equal variance
+sent_var_results <- tidy(leveneTest(sentiment ~ subreddit, data = sentiment_posts))
+
+# engagement equal variance
+com_var_results <- tidy(leveneTest(comments ~ subreddit, data = sentiment_posts))
+
+
 # now lets see if these differences are significant
-aov_sent <- aov(sentiment~subreddit, data = sentiment_posts)
-aov_sent_res <- tidy(aov_sent)
-
-aov_comments <- aov(comments~subreddit, data=sentiment_posts)
-aov_comments_res <- tidy(aov_comments)
-
-tukey_sent <- tidy(TukeyHSD(aov_sent))
-
-tukey_comments <- tidy(TukeyHSD(aov_comments))
-tukey_comments
 
 
 # save to publishable data folder
-save(aov_sent_res, aov_comments_res, tukey_sent, tukey_comments,
-     file='.././data/aov_tukey_results.Rdata')
+save(sent_var_results, com_var_results,
+     file='.././data/levene_results.Rdata')
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
 save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
 
@@ -141,6 +140,38 @@ gg_point_comments_quarterly <- ggplot(data = sentiment_posts_quarterly) +
 
 girafe(ggobj = gg_point_comments_quarterly)
 
+
+
+
+
+# ```{r}
+# #| label: tbl-summary
+# #| tbl-cap: "ANOVA report: subreddit sentiment & engagement"
+# #| tbl-subcap:
+#   #|   - "Summary statistics for cross subreddit comparison"
+#   #|   - "ANOVA: average sentiment across subreddit"
+# #|   - "ANOVA: average comments across subreddit"
+# #| layout: [[1], [4, -1, 4]] 
+# 
+# 
+# load('./data/subreddit_summaries.Rdata')
+# load('./data/aov_tukey_results.Rdata')
+# 
+# subreddit_summaries |>
+#   kable(digits=2, 
+#         col.names = c('Subreddit', 'Post Count','Score (tot)', 
+#                       'Comments (tot)', 'Score (avg)', 'Comments (avg)')) |>
+#   row_spec(1, background = "#b7a5d3", color = 'white') |>
+#   row_spec(2, background = "#37538C", color='white') |>
+#   row_spec(3, background = "#FFBE0A", color = 'white')
+# 
+# aov_sent_res |> 
+#   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2)
+# 
+# aov_comments_res |> 
+#   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2) 
+# ```
+# 
 
 
 

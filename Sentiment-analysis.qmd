@@ -42,17 +42,10 @@ library(tidyverse)
  
 
 ```{r}
-#| label: anova-results
-#| tbl-cap: "ANOVA report: subreddit sentiment & engagement"
-#| tbl-subcap:
-#|   - "Summary statistics for cross subreddit comparison"
-#|   - "ANOVA: average sentiment across subreddit"
-#|   - "ANOVA: average comments across subreddit"
-#| layout: [[1], [4, -1, 4]] 
-
+#| label: tbl-summary
+#| tbl-cap: "Subreddit sentiment & engagement"
 
 load('./data/subreddit_summaries.Rdata')
-load('./data/aov_tukey_results.Rdata')
 
 subreddit_summaries |>
   kable(digits=2, 
@@ -62,43 +55,80 @@ subreddit_summaries |>
   row_spec(2, background = "#37538C", color='white') |>
   row_spec(3, background = "#FFBE0A", color = 'white')
 
-aov_sent_res |> 
-  kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2)
-
-aov_comments_res |> 
-  kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2) 
 ```
 
-Let's compare the subreddits! The first @anova-results above shows the summary statistics for each subreddit. The values were found by grouping the original dataset by subreddit and calculating sums and averages of post count, comment count, and sentiment score. If you want to explore the data further check out the full dataset [here](index.qmd#fig-raw-data). The total post counts were comparable, which is what we expected given their similar ages. For sentiment, Middlebury clearly stands out as more negative (2.95/post) compared to Amherst (5.26) and Williams (4.81). Amherst and Williams also tend to have higher engagement: 4.40 and 6.28 respectively relative to Midd (2.36). These numbers are fun to compare, but, to assess the statistical significance of these potential differences, you have to go a few steps further.
+Let's compare the subreddits! @tbl-summary above shows the summary statistics for each subreddit. The values were found by grouping our scraped, sentiment-annotated datasetby subreddit and calculating sums and averages of post count, comment count, and sentiment score. If you want to explore the data further to see how this table came to be check out the full dataset [here](index.qmd#fig-raw-data). The total post counts were comparable, which is what we expected given their similar ages. For sentiment, Middlebury clearly seems stands out as more negative (2.95/post) compared to Amherst (5.26) and Williams (4.81). Amherst and Williams also tend to have higher engagement: 4.40 and 6.28 respectively relative to Midd (2.36). These numbers are fun to compare, but, to assess the statistical significance of these potential differences, you have to go a few steps further.
+
+To make any conclusions about whether significant differences exist between the average sentiment scores and comment counts of posts on these subreddits, we needed to use an ANOVA test...or did we?? Unfortunately, ANOVA relies on a few pesky assumptions that must hold true for reliable interpretation. If you trust us, feel free to skip down to the results, but we encourage any curious or statistically inclined reader to hold us accountable and step through our process of checking the assumptions below.
+
+## ANOVA (Analysis of Variance Tests)
+
+### Independence of Observations
+
+This assumption would only violated if the sentiment scores and comment counts of posts were somehow influenced by each other. Since this was not the case, we were able to move past this assumption without too much stress. 
+
+### Normality
+
+The next assumption for ANOVA is normality, which in our case requires the sampling distribution of the mean sentiment score and comment count for each subreddit to follow a normal distribution. We'll use the example of one subreddit's sentiment score to make this more clear, but note that the following applies to all subreddits and both means of interest. If you were to take a large number of post samples, each of size N from the Amherst subreddit, calculate the mean sentiment score and comment count for each sample, and plot those means on a graph, the sampling distribution of the mean sentiment score of the Amherst subreddit would be normal if it looked something like this:
+
+```{r}
+#| fig-align: center
+#| out-width: 100%
+
+ 
+include_graphics("https://www.msicertified.com/wp-content/uploads/2023/01/Standard_deviation_diagram.png")
+
+
+```
+
+ANOVA tries to assess whether or not there are any significant differences between the means of three or more groups, and it requires the sampling distribution of each mean for each group resemble that bell curve above. So how can we tell if this sampling distribution is normal if we just have one sample of posts per subreddit? Quite fortunately, in our case, we were able to rely on the Central Limit Theorem. This theorem states that as long as the sample size is greater than 30, the sampling distribution of the mean of a group will be normal CITE HERE. In our case, our sample sizes for each subreddit far exceeded thirty, so we could safely assume the normality assumption is satisfied here.
+
+### Equal Variances
+
+With normality accounted for, we approached the question of equal variances across subreddit. Variance is simply the average squared difference from the mean of all points in a dataset. There are multiple visual and computational methods to compare the variances of each group, but we decided to use Levine's Test CITE HERE, a metric that only relies on independent observations,
+a continuous dependent variable (we have sentiment score and comment count), and a categorical grouping variable (we have subreddit). We already satisfied independence, so it was valid to perform this test of equal variance. The results of Levine's test can is available in REFERENCE. Unfortunately, the tests indicated that both sentiment score (p < 0.001) and comment count (p < 0.001) had different variances across the subreddit groupings, meaning the equal variance assumption would be violated if we conducted a standard ANOVA test for either variable. Foiled right at the end!
+
+## The Solution: Welch's ANOVA
+
+Welch's ANOVA is a variation of the standard ANOVA that can be conducted when the equal variance assumption is violated, which made it perfect for our use.
+
+
+
+
+
+
+
+
+
 
 We fit a two one way ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, see TABLE, indicated there was a least one pairwise difference between subreddit post sentiment average (p < 0.001) and comment count (p < 0.001). For more information about what an analysis of variance is doing under the hood, a good reference is provided by @ANOVA. The logical follow up was to conduct a post-hoc Tukey's Honestly Significant Difference (HSD), which assess differences between each pair of subreddit means. 
 
 ```{r}
-#| label: tukey-results
-#| tbl-cap: "Tukey's HSD: Pairwise differences across subreddits"
-#| layout: [[1, -1, 1]] 
-
-
-tukey_sent |>
-  select(-term, -null.value) |>
-  kable(digits=2, 
-        col.names = c('Subreddit Pair', 'est', 'low','high', 'p'),
-        caption="Tukey's HSD: subreddit sentiment") |>
-  row_spec(1, background = "#b7a5d3", color = 'white') |>
-  row_spec(3, background = "#FFBE0A", color = 'white')
-
-
-
-tukey_comments |> 
-  select(-term, -null.value) |>
-  kable(col.names = c('Subreddit Pair', 'est', 'low','high', 'p'), 
-        caption = "Tukey's HSD: subreddit comment count",
-        digits=2) |>
-   row_spec(1, background = "#b7a5d3", color = 'white') |>
-   row_spec(2, background = "#FFBE0A", color = 'white') |>
-   row_spec(3, background = "#FFBE0A", color = 'white')
-  
-  
+# #| label: tukey-results
+# #| tbl-cap: "Tukey's HSD: Pairwise differences across subreddits"
+# #| layout: [[1, -1, 1]] 
+# 
+# 
+# tukey_sent |>
+#   select(-term, -null.value) |>
+#   kable(digits=2, 
+#         col.names = c('Subreddit Pair', 'est', 'low','high', 'p'),
+#         caption="Tukey's HSD: subreddit sentiment") |>
+#   row_spec(1, background = "#b7a5d3", color = 'white') |>
+#   row_spec(3, background = "#FFBE0A", color = 'white')
+# 
+# 
+# 
+# tukey_comments |> 
+#   select(-term, -null.value) |>
+#   kable(col.names = c('Subreddit Pair', 'est', 'low','high', 'p'), 
+#         caption = "Tukey's HSD: subreddit comment count",
+#         digits=2) |>
+#    row_spec(1, background = "#b7a5d3", color = 'white') |>
+#    row_spec(2, background = "#FFBE0A", color = 'white') |>
+#    row_spec(3, background = "#FFBE0A", color = 'white')
+#   
+#   
 
 ```
 
