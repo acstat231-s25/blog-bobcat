@@ -78,9 +78,9 @@ If you are unfamiliar with [Reddit.com](https://www.reddit.com/), we may have to
 #| out-width: 30%
 #| out-height: 25px
 #| layout: [[1,1,1]]
- include_graphics("https://i.imgur.com/WydIOUS.png") # Amherst icon
- include_graphics("https://i.imgur.com/0Au7pMT.png") # Middlebury icon
- include_graphics("https://i.imgur.com/FA3VX3Y.png") # Williams icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/mammoth.png") # Amherst icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/middlebury.png") # Middlebury icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/williams.png") # Williams icon
 ```
 
 You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective).

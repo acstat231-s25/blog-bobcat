@@ -33,9 +33,9 @@ library(tidyverse)
 #| out-height: 50px
 #| layout: [[1,1,1]]
  
- include_graphics("https://i.imgur.com/WydIOUS.png") # Amherst icon
-  include_graphics("https://i.imgur.com/0Au7pMT.png") # Middlebury icon
- include_graphics("https://i.imgur.com/FA3VX3Y.png") # Williams icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/mammoth.png") # Amherst icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/middlebury.png") # Middlebury icon
+include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/williams.png") # Williams icon
 
 
 ```
