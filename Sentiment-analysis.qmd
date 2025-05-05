@@ -90,24 +90,29 @@ a continuous dependent variable (we have sentiment score and comment count), and
 
 ## The Solution: Welch's ANOVA
 
-Welch's ANOVA is a variation of the standard ANOVA that can be conducted when the equal variance assumption is violated, which made it perfect for our use.
+Welch's ANOVA is a variation of the standard ANOVA that can be conducted when the equal variance assumption is violated, which made it perfect for our use!
 
-
-
-
-
-
-
-
-
-
-We fit a two one way ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, see TABLE, indicated there was a least one pairwise difference between subreddit post sentiment average (p < 0.001) and comment count (p < 0.001). For more information about what an analysis of variance is doing under the hood, a good reference is provided by @ANOVA. The logical follow up was to conduct a post-hoc Tukey's Honestly Significant Difference (HSD), which assess differences between each pair of subreddit means. 
+We fit two one-way Welch-ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, available in @tbl-welch-anova-results, were conclusive. indicated there was a least one pairwise difference between subreddit post sentiment average (p < 0.001) and comment count (p < 0.001). The logical follow up was to conduct a post-hoc Tukey's Honestly Significant Difference (HSD), which assess differences between each pair of subreddit means. 
 
 ```{r}
-# #| label: tukey-results
-# #| tbl-cap: "Tukey's HSD: Pairwise differences across subreddits"
-# #| layout: [[1, -1, 1]] 
-# 
+#| label: tbl-welch-anova-results
+#| tbl-cap: "Welch-ANOVA results: Cross Subreddit Comparisons"
+#| tbl-subcap: 
+#|    - "Average sentiment per post by subreddit"
+#|    - "Average comment count per post by subreddit"
+#| layout: [[1, -1, 1]] 
+load('./data/welch_results.Rdata')
+
+
+welch_com |>
+  select(-method) |>
+  kable(digits=2,
+        col.names = c('Df', 'Den Df', 'Statistic', 'p'))
+  
+welch_sent |>
+  select(-method) |>
+  kable(digits=2,
+        col.names = c('Df', 'Den Df', 'Statistic', 'p'))
 # 
 # tukey_sent |>
 #   select(-term, -null.value) |>

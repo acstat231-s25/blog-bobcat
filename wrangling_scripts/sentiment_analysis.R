@@ -7,7 +7,7 @@ library(viridis)
 library(DT)
 
 # ===============================================================================
-# General Sentiment Analysis
+# General Sentiment Analysis, comparing mean sentiment and comment count 
 # ===============================================================================
 
 load('.././raw_data/all_college_posts.Rdata')
@@ -59,7 +59,7 @@ subreddit_summaries <- sentiment_posts |>
 
 library(car)
 library(broom)
-
+library(rstatix)
 # sentiment equal variance
 sent_var_results <- tidy(leveneTest(sentiment ~ subreddit, data = sentiment_posts))
 
@@ -67,13 +67,28 @@ sent_var_results <- tidy(leveneTest(sentiment ~ subreddit, data = sentiment_post
 com_var_results <- tidy(leveneTest(comments ~ subreddit, data = sentiment_posts))
 
 
-# now lets see if these differences are significant
+# now lets see if these differences are significant using WELCH's ANOVA
+
+
+welch_sent <- tidy(oneway.test(sentiment ~ subreddit, 
+                               data = sentiment_posts, var.equal = FALSE))
+
+welch_com <- tidy(oneway.test(comments ~ subreddit, 
+                              data = sentiment_posts, var.equal = FALSE))
+
+sent_howell <- games_howell_test(sentiment ~ subreddit, data=sentiment_posts)
+com_howell <- games_howell_test(comments ~ subreddit, data=sentiment_posts)
 
 
 # save to publishable data folder
 save(sent_var_results, com_var_results,
      file='.././data/levene_results.Rdata')
+
+save(welch_sent, welch_com, file = '.././data/welch_results.Rdata')
+save(sent_howell, com_howell, file = '.././data/ghowell_results.Rdata')
+
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
+
 save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
 
 # ===============================================================================
