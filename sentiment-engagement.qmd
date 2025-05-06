@@ -84,13 +84,13 @@ load('./data/kruskal_results.Rdata')
 kruskal_sent |>
    select(-method, -p.value, parameter, statistic,p.value) |>
    kable(digits=2,
-         col.names = c('Parameter', 'Statistic', 'p'))
+         col.names = c('Parameter', 'H Statistic', 'p'))
 
 # display the main result of the kruskal wallis test for engagement
 kruskal_com |>
   select(-method, -p.value, parameter, statistic,p.value) |>
    kable(digits=2,
-         col.names = c('Parameter', 'Statistic', 'p'))
+         col.names = c('Parameter', 'H Statistic', 'p'))
 ```
 
 The results of the Kruskal-Wallis tests for both subreddit sentiment and engagement were quite conclusive! A significant difference between the post sentiment scores for at least one pair of subreddits was detected (H = 2, p \< 0.001) @tbl-kw-results-1. The same outcome was found for post comment count (H = 2, p \< 0.001) @tbl-kw-results-2. With such damming results, we turned to **Dunn's Test** to find which subreddits differed by what metric!
@@ -115,7 +115,7 @@ load('./data/dunn_results.Rdata')
 dunn_sent |>
   select(-.y., -n1,-n2) |>
   kable(digits=2,
-        col.names = c('Sub 1', 'Sub2', 'Statistic', 'p', 'p adj', 'Sig')) |>
+        col.names = c('Sub 1', 'Sub2', 'H Statistic', 'p', 'p adj', 'Sig')) |>
   row_spec(1, background = "#b7a5d3", color = 'white') |>
   row_spec(3, background = "#FFBE0A", color = 'white') 
 
@@ -123,7 +123,7 @@ dunn_sent |>
 dunn_com |>
   select(-.y., -n1,-n2) |>
   kable(digits=2,
-        col.names = c('Sub 1', 'Sub2', 'Statistic', 'p', 'p adj', 'Sig')) |>
+        col.names = c('Sub 1', 'Sub2', 'H Statistic', 'p', 'p adj', 'Sig')) |>
   row_spec(1, background = "#b7a5d3", color = 'white') |>
   row_spec(2, background = "#FFBE0A", color = 'white') |>
   row_spec(3, background = "#FFBE0A", color = 'white') 
