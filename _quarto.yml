@@ -18,7 +18,7 @@ website:
         text: "TF-IDF"
         icon: textarea-t 
       - href: time-series.qmd
-        text: "Time Series Analysis"
+        text: "Time Series"
         icon: graph-up
       - href: Sentiment-analysis.qmd
         text: "Sentiment ANOVAs"
