@@ -54,7 +54,7 @@ set.seed(42)
 
 # Create word cloud
 # Choose color palette from color brewer
-my_palette <- c("#ffe4ed", "#efbcd5", "#be97c6", "#be97c6", "#5e239d")
+my_palette <- c("#B589D6", "#9969C7", "#804FB3", "#6A359C", "#5e239d")
 
 word_freqs |>
   with(wordcloud(words = word, 
@@ -73,7 +73,7 @@ word_freqs |>
                  family = "sans"))
 ```
 
-If you are unfamiliar with [Reddit.com](https://www.reddit.com/), we may have to begin by inquiring about the rock you've been living under for nigh-on two decades. In all seriousness (don't stop reading, we're sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of unfiltered content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: [Amherst College](https://www.reddit.com/r/amherstcollege/), [Middlebury College](https://www.reddit.com/r/middlebury/), and [Williams College](https://www.reddit.com/r/WilliamsCollege/). Specifically, we aim meaningfully to compare the sentiment and engagement of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, track mentions of the admissions process.
+If you are unfamiliar with [Reddit.com](https://www.reddit.com/), we may have to begin by inquiring about the rock you've been living under for nigh-on two decades. In all seriousness (don't stop reading, we're sorry), along with X, the forum-based social media platform is a primary hub for commentary on any issue you could think of (for better or for worse). It is this plethora of content that makes Reddit a commonly visited site for web scrapers and data scientist nerds alike with a variety of goals including but not limited to: theme and topic discovery, sentiment and engagement analysis, and user activity research. Our current data science project is spurred by similar motivations; we look to extract key topics and conduct sentiment analysis (positive or negative valence of a text) for three individual subreddits: [Amherst College](https://www.reddit.com/r/amherstcollege/), [Middlebury College](https://www.reddit.com/r/middlebury/), and [Williams College](https://www.reddit.com/r/WilliamsCollege/). Specifically, we aim meaningfully to compare the sentiment and engagement of each subreddit, as both a per-post average and a totality, examine temporal trends in sentiment and comment engagement, extract the most frequently discussed topics, and, because we are looking at colleges here, track mentions of the admissions process.
 
 ```{r}
 #| fig-align: center
@@ -85,7 +85,7 @@ include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/re
 include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/williams.png") # Williams icon
 ```
 
-You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analysis provides insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective).
+You may be wondering why we picked these specific subreddits and what this project can tell us in the grand scheme of things. As students at Amherst College, we thought it would be particularly fun to compare our own subreddit to that of some of our least favorite sister schools in the NESCAC. On a more practical basis, these three subreddits were small enough for us to be able to scrape all posts until January 2020 with no issues. In regards to our purpose, even if you are not a current student in the NESCAC who may get a kick out of pitting Amherst, Middlebury, and Williams against each other, our analyses provide insights into what is being discussed and prioritized at these different institutions, along with an assessment of their varying levels of positivity. We think of prospective students as one group who might be interested in our results, as well as anyone curious about the state of the small liberal arts colleges (at least from Reddit's perspective).
 
 # RedditExtractoR
 
@@ -96,7 +96,7 @@ Web scraping is a notoriously error-laden path. As websites increasingly deploy 
 #| eval: false
 #| label: scrape-demo
 #example on how we scrapped data from the RedditExtractoR package
-# to get individual data from each college's subreddit in a certain time range 
+# to get individual data from each college's subreddit in a certain time range
 # in our case, from 2020-2025
 library(RedditExtractoR)
 amherst_posts_raw <- find_thread_urls(
@@ -105,12 +105,11 @@ amherst_posts_raw <- find_thread_urls(
 
 # Methods for Sentiment Analysis
 
-Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see @Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see @fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!
+Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the AFINN Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see @Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see @fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!
 
-# What Now?
+# What now?
 
-If you want to see the words and phrases most import to each subreddit, head over to 
-[Tf-Idf page](tf-idf.qmd). If you want to see the evolution of sentiment and engagement over time for these forums, see [our time-series work](time-series.qmd). And finally, if you want to know which is the best college subreddit, check out the stats-heavy [analysis page](Sentiment-analysis.qmd). Thanks for reading!
+If you want to see the words and phrases most import to each subreddit, head over to [TF-IDF page](tf-idf.qmd). If you want to see the evolution of sentiment and engagement over time for these forums, see [our time-series work](time-series.qmd). And finally, if you want to know which is the best college subreddit, check out the stats-heavy [analysis page](Sentiment-analysis.qmd). Thanks for reading!
 
 # Raw Data Reference
 
