@@ -33,6 +33,7 @@ library(tidyverse)
 #| out-height: 50px
 #| layout: [[1,1,1]]
  
+# just some images to liven it up a bit
 include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/mammoth.png") # Amherst icon
 include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/middlebury.png") # Middlebury icon
 include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/williams.png") # Williams icon
@@ -46,8 +47,11 @@ include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/re
 #| tbl-cap: "Subreddit sentiment & engagement"
 #| tbl-cap-location: 'bottom'
 
+# this file was wrangled and created in wrangling_scripts/sentiment_analysis.R
 load('./data/subreddit_summaries.Rdata')
 
+# display, average and med sentiment and engagement by subreddit, coloring the row
+# for each school by their main color
 subreddit_summaries |>
   kable(digits=2, 
         col.names = c('Subreddit', 'Post Count', 'Sentiment (avg)','Sentiment (med)',
@@ -73,14 +77,16 @@ To make any conclusions about whether significant differences exist between the 
 #|    - "Comment count per post by subreddit"
 #| layout-ncol: 2
 
+# this file was wrangled and created in wrangling_scripts/sentiment_analysis.R
 load('./data/kruskal_results.Rdata')
  
- 
+# display the main result of the kruskal-wallis test for sentiment
 kruskal_sent |>
    select(-method, -p.value, parameter, statistic,p.value) |>
    kable(digits=2,
          col.names = c('Parameter', 'Statistic', 'p'))
 
+# display the main result of the kruskal wallis test for engagement
 kruskal_com |>
   select(-method, -p.value, parameter, statistic,p.value) |>
    kable(digits=2,
@@ -100,9 +106,12 @@ The results of the Kruskal-Wallis tests for both subreddit sentiment and egageme
 #|    - "Comment count per post by subreddit"
 #| layout-nrow: 2
 
+# this file was wrangled and created in wrangling_scripts/sentiment_analysis.R
 load('./data/dunn_results.Rdata')
 
-
+# main results of pairwise subreddit sentiment & engagement comparison with Dunn's test
+# if a significant difference was found, the school with the higher value 'wins'
+# that row and it is colored by their colors
 dunn_sent |>
   select(-.y., -n1,-n2) |>
   kable(digits=2,
@@ -110,6 +119,7 @@ dunn_sent |>
   row_spec(1, background = "#b7a5d3", color = 'white') |>
   row_spec(3, background = "#FFBE0A", color = 'white') 
 
+# same process just with engagement (comments)
 dunn_com |>
   select(-.y., -n1,-n2) |>
   kable(digits=2,

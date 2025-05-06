@@ -5,11 +5,15 @@ library(textdata)
 library(lubridate)
 library(viridis)
 library(DT)
+library(car)
+library(broom)
+library(rstatix)
+library(stringi)
 
 # ===============================================================================
 # General Sentiment Analysis, comparing mean sentiment and comment count 
 # ===============================================================================
-
+# raw data file with all college posts
 load('.././raw_data/all_college_posts.Rdata')
 
 afinn_lexicon <- get_sentiments('afinn')
@@ -34,7 +38,7 @@ sentiment_posts <- all_posts |>
   mutate(sentiment = map_dbl(content, get_sentiment)) 
 
 # force every character into valid UTF-8, needed for datatable display
-library(stringi)
+ 
 rownames(sentiment_posts) <- NULL
 
 sentiment_posts <- sentiment_posts |>
@@ -57,18 +61,18 @@ subreddit_summaries <- sentiment_posts |>
     
 )
 
-library(car)
-library(broom)
-library(rstatix)
-# sentiment equal variance
+ 
+# testing sentiment equal variance
 sent_var_results <- leveneTest(sentiment ~ subreddit, data = sentiment_posts)
 
-# engagement equal variance
+# testing engagement equal variance
 com_var_results <- leveneTest(comments ~ subreddit, data = sentiment_posts)
 
+# saving kruskal wallis results to be loaded into sentiment_analysis.qmd
 kruskal_sent <- tidy(kruskal.test(sentiment ~ subreddit, data = sentiment_posts))
 kruskal_com <- tidy(kruskal.test(comments ~ subreddit, data = sentiment_posts))
 
+# saving dunn results to be loaded into sentiment_analysis.qmd
 dunn_sent <- dunn_test(sentiment  ~ subreddit, data=sentiment_posts,  
                        p.adjust.method = "bonferroni")
 
@@ -80,8 +84,9 @@ dunn_com <-  dunn_test(comments ~ subreddit, data=sentiment_posts,
 save(kruskal_sent, kruskal_com, file='../data/kruskal_results.Rdata')
 save(dunn_sent, dunn_com, file='../data/dunn_results.Rdata')
 
+# save the subreddit summary table
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
-
+# save the wrangled sentiment post datset
 save(sentiment_posts, file='.././data/sentiment_posts.Rdata')
 
 # ===============================================================================
@@ -107,7 +112,7 @@ save(sentiment_posts_quarterly, file='.././data/sentiment_posts_quarterly.Rdata'
 cor(sentiment_posts$sentiment, sentiment_posts$comments)
 
 # ===============================================================================
-#  Analysis visualizations (to put in time series analysis)
+#  testing Analysis visualizations (to put in time series analysis)
 # ===============================================================================
 
 library(ggiraph)

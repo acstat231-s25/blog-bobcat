@@ -24,8 +24,10 @@ word_freqs  <- all_posts |>
   # gets occurences of each word within each subreddit
   count(word)
 
+# bigram frequencies
 bigram_freqs <- all_posts |>
   unnest_tokens(output = bigram, input = content, token="ngrams", n=2) |>
+  # separate to isolate stop words
   separate(bigram, into = c("w1","w2"), sep = " ") |>
   filter(!w1 %in% stop_words$word,
          !w2 %in% stop_words$word) |>
@@ -38,9 +40,11 @@ word_tfidf <- word_freqs |>
   # gets tf, idf, and tf-idf all in one
   bind_tf_idf(term = word, document = subreddit, n = n) 
 
+# same for bigrams
 bigram_tfidf <- bigram_freqs |>
   bind_tf_idf(term = bigram, document = subreddit, n = n)
 
+# get top 10 words by tf-idf for each subreddit
 top_word_tfidf <- word_tfidf |>
   # arrange in descending order to get highest tf-dfs 
   group_by(subreddit) |>
@@ -48,6 +52,7 @@ top_word_tfidf <- word_tfidf |>
   # slices the top 10 from each subreddit
   slice(1:10) 
 
+# same but for bigrams
 top_bigram_tfidf <- bigram_tfidf |>
   # arrange in descending order to get highest tf-dfs 
   group_by(subreddit) |>
@@ -55,10 +60,12 @@ top_bigram_tfidf <- bigram_tfidf |>
   # slices the top 10 from each subreddit
   slice(1:10) 
 
+# save the top word/bigram/freq files to the data folder
 save(top_word_tfidf, file='.././data/top_word_tfidf.Rdata')
 save(top_bigram_tfidf, file='.././data/top_bigram_tfidf.Rdata')
 save(word_freqs, file='.././data/word_freqs.Rdata')
-# visualize
+
+# PRACTICE VISUALIZATIONS (see more on tf-idf.qmd)
 plot_word_tfidf <- top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit), y = tf_idf, fill = tf_idf)) +
   geom_col() +

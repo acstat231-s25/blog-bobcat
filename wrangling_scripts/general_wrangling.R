@@ -44,6 +44,7 @@ all_posts$content <- all_posts$content |>
 
 
 
-# save the polished data set
+# save the polished data set, still to raw file since we haven't 
+# added sentiment annotations (see sentiment_analysis.R)
 save(all_posts,
      file = '.././raw_data/all_college_posts.Rdata')
