@@ -36,7 +36,7 @@ library(viridis)
 library(DT)
 # interactive graph
 library(ggiraph)
-
+# The .Rdata files were created in "fynn-scratch.R" from "our-work" folder
 load('./data/sentiment_posts.Rdata')
 load('./data/word_freqs.Rdata')
 ```
@@ -62,7 +62,7 @@ word_freqs |>
                  # Plot the words in a NON random order
                  random.order = FALSE,
                  # Specify the range of the size of the words
-                 scale = c(3, 0.6),
+                 scale = c(4, 1),
                  # Specify proportion of words with 90 degree rotation
                  rot.per = 0.4,
                  # Color words from least to most frequent
@@ -93,7 +93,9 @@ Web scraping is a notoriously error-laden path. As websites increasingly deploy 
 #| echo: true 
 #| eval: false
 #| label: scrape-demo
-
+#example on how we scrapped data from the RedditExtractoR package
+# to get individual data from each college's subreddit in a certain time range 
+# in our case, from 2020-2025
 library(RedditExtractoR)
 amherst_posts_raw <- find_thread_urls(
   subreddit = "amherstcollege", sort_by = "new", period = "day")
@@ -109,6 +111,9 @@ Once we scraped each subreddit, we joined all the posts into one big dataset and
 #| label: fig-raw-data
 #| fig-cap: "Our scraped data: all subreddit posts"
 
+# Made a table that gives an idea of what kind of data we're working with by showing
+# content which has text from posts , date posted, number of comments on each post,  
+# the college subreddit it's from and the overall sentiment score of the post.
 sentiment_posts |>
   select(-month_num) |>
 datatable(
