@@ -1,12 +1,8 @@
 # for text analysis
 library(tidytext)
 library(tidyverse)
-library(wordcloud)
-library(RColorBrewer)
-library(ggthemes)
 library(textdata)
 library(lubridate)
-library(viridis)
 
 # ===============================================================================
 # MORE INITIAL WRANGLING

@@ -1,16 +1,6 @@
 # for extracting reddit posts
 library(RedditExtractoR)
 
-# for text analysis
-library(tidytext)
-library(tidyverse)
-library(wordcloud)
-library(RColorBrewer)
-library(ggthemes)
-library(textdata)
-library(lubridate)
-library(viridis)
-
 # ===============================================================================
 # Scraping the sub-reddits 
 # ===============================================================================
