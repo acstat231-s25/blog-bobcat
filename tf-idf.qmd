@@ -32,7 +32,7 @@ load('./data/top_bigram_tfidf.Rdata')
 
 ```{r}
 #| label: fig-word_tfidf
-#| fig-cap: "Pay careful attention to the scales!"
+#| fig-cap: " Term Frequency-Inverse Document Frequency analysis of common single words for Amherst,Williams and Middleburry subreddits( Note: pay careful attention to the scales!)"
 
 top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit),
@@ -74,7 +74,7 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
 
 ```{r}
 #| label: fig-bigram_tfidf
-#| fig-cap: "Pay careful attention to the scales!"
+#| fig-cap: "Term Frequency-Inverse Document Frequency analysis of common two-word combinations for Amherst, Williams and Middleburry subreddits(Note: pay careful attention to the scales!)"
 
 
  top_bigram_tfidf |>
