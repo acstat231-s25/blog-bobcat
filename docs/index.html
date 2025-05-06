@@ -9,7 +9,7 @@
 <meta name="author" content="Fynn Hayton-Ruffner">
 <meta name="author" content="Shekinah Ninziza">
 <meta name="author" content="Kinglee Tham">
-<meta name="dcterms.date" content="2025-05-05">
+<meta name="dcterms.date" content="2025-05-06">
 
 <title>Which NESCAC Reigns Supreme? – Bobcat Blog</title>
 <style>
@@ -125,25 +125,15 @@ div.csl-indent {
   }
 }</script>
 <link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
-
 <script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-
 <script src="site_libs/datatables-binding-0.33/datatables.js"></script>
-
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
-
 <link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet">
-
 <script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
-
 <link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
-
 <script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
-
 
 
 <link rel="stylesheet" href="styles.css">
@@ -182,12 +172,12 @@ div.csl-indent {
   <li class="nav-item">
     <a class="nav-link" href="./time-series.html"> <i class="bi bi-graph-up" role="img">
 </i> 
-<span class="menu-text">Time Series Analysis</span></a>
+<span class="menu-text">Time Series</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./Sentiment-analysis.html"> <i class="bi bi-emoji-smile" role="img">
 </i> 
-<span class="menu-text">Sentiment ANOVAs</span></a>
+<span class="menu-text">Sentiment &amp; Engagement</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -237,7 +227,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Last updated</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2025</p>
+      <p class="date">May 6, 2025</p>
     </div>
   </div>
   
@@ -306,9 +296,12 @@ Figure&nbsp;1: Most common words across all subreddits
 <h1>RedditExtractoR</h1>
 <p>Web scraping is a notoriously error-laden path. As websites increasingly deploy dynamically rendered data and IP address blocking, it has never been harder to get the data you want. Luckily, we found a tool that could scrape up to 1000 posts per request. The <span class="citation" data-cites="rivera_ivan">Rivera (<a href="#ref-rivera_ivan" role="doc-biblioref">2025</a>)</span> RedditExtractoR scraping package gives a post’s title, content, number of comments, and date, all in as little as 3 lines of R code:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(RedditExtractoR)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>amherst_posts_raw <span class="ot">&lt;-</span> <span class="fu">find_thread_urls</span>(</span>
-<span id="cb1-3"><a href="#cb1-3"></a>  <span class="at">subreddit =</span> <span class="st">"amherstcollege"</span>, <span class="at">sort_by =</span> <span class="st">"new"</span>, <span class="at">period =</span> <span class="st">"day"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#example on how we scrapped data from the RedditExtractoR package</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># to get individual data from each college's subreddit in a certain time range </span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># in our case, from 2020-2025</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">library</span>(RedditExtractoR)</span>
+<span id="cb1-5"><a href="#cb1-5"></a>amherst_posts_raw <span class="ot">&lt;-</span> <span class="fu">find_thread_urls</span>(</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  <span class="at">subreddit =</span> <span class="st">"amherstcollege"</span>, <span class="at">sort_by =</span> <span class="st">"new"</span>, <span class="at">period =</span> <span class="st">"day"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="methods-for-sentiment-analysis" class="level1">
