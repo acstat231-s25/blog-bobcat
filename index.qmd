@@ -107,6 +107,11 @@ amherst_posts_raw <- find_thread_urls(
 
 Once we scraped each subreddit, we joined all the posts into one big dataset and assigned a sentiment score to the content of each post. This score was calculated using the Afinn Lexicon, which maps words to integer values between -5 and 5 based on their positive-negative valence (for more information, see @Zhang). The score for each post simply became the sum of the sentiments for the words that comprised it. Further documentation of our methods will be laid out as we delve into our specific efforts below, but if you want to explore the general dataset that we created and used throughout the project, see @fig-raw-data at the end of this blog. What you are seeing here are the results of recent, applicable, and primary-sourced data!
 
+# What Now?
+
+If you want to see the words and phrases most import to each subreddit, head over to 
+[Tf-Idf page](tf-idf.qmd). If you want to see the evolution of sentiment and engagement over time for these forums, see [our time-series work](time-series.qmd). And finally, if you want to know which is the best college subreddit, check out the stats-heavy [analysis page](Sentiment-analysis.qmd). Thanks for reading!
+
 # Raw Data Reference
 
 ```{r}
