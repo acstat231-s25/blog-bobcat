@@ -20,7 +20,7 @@ website:
       - href: time-series.qmd
         text: "Time Series"
         icon: graph-up
-      - href: Sentiment-analysis.qmd
+      - href: sentiment-engagement.qmd
         text: "Sentiment & Engagement" 
         icon: emoji-smile
         

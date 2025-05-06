@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Fynn Hayton-Ruffner">
+<meta name="author" content="Shekinah Ninziza">
+<meta name="author" content="Kinglee Tham">
+<meta name="dcterms.date" content="2025-05-06">
+
+<title>A Cross Subreddit Sentiment &amp; Engagement Analysis – Bobcat Blog</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./images/bobcat.jpg" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Bobcat Blog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> <i class="bi bi-house" role="img">
+</i> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./tf-idf.html"> <i class="bi bi-textarea-t" role="img">
+</i> 
+<span class="menu-text">TF-IDF</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./time-series.html"> <i class="bi bi-graph-up" role="img">
+</i> 
+<span class="menu-text">Time Series</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./sentiment-engagement.html" aria-current="page"> <i class="bi bi-emoji-smile" role="img">
+</i> 
+<span class="menu-text">Sentiment &amp; Engagement</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#whats-sentiment-and-engagement-like-across-subreddits" id="toc-whats-sentiment-and-engagement-like-across-subreddits" class="nav-link active" data-scroll-target="#whats-sentiment-and-engagement-like-across-subreddits">What’s sentiment and engagement like across subreddits?</a>
+  <ul class="collapse">
+  <li><a href="#sec-results" id="toc-sec-results" class="nav-link" data-scroll-target="#sec-results">Kruskal-Wallis Test of Significant Difference</a></li>
+  <li><a href="#dunns-test-for-subreddit-by-subreddit-differences" id="toc-dunns-test-for-subreddit-by-subreddit-differences" class="nav-link" data-scroll-target="#dunns-test-for-subreddit-by-subreddit-differences">Dunn’s Test for Subreddit by Subreddit Differences</a></li>
+  <li><a href="#who-was-the-winner" id="toc-who-was-the-winner" class="nav-link" data-scroll-target="#who-was-the-winner">Who was the Winner?</a></li>
+  <li><a href="#sec-assumptions" id="toc-sec-assumptions" class="nav-link" data-scroll-target="#sec-assumptions">Our Checking of ANOVA Assumptions (not for the faint of heart)</a>
+  <ul class="collapse">
+  <li><a href="#independence-of-observations" id="toc-independence-of-observations" class="nav-link" data-scroll-target="#independence-of-observations">Independence of Observations</a></li>
+  <li><a href="#normality" id="toc-normality" class="nav-link" data-scroll-target="#normality">Normality</a></li>
+  <li><a href="#equal-variances" id="toc-equal-variances" class="nav-link" data-scroll-target="#equal-variances">Equal Variances</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A Cross Subreddit Sentiment &amp; Engagement Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fynn Hayton-Ruffner </p>
+             <p>Shekinah Ninziza </p>
+             <p>Kinglee Tham </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Last updated</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 6, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="whats-sentiment-and-engagement-like-across-subreddits" class="level1">
+<h1>What’s sentiment and engagement like across subreddits?</h1>
+<div>
+
+</div>
+<div class="cell quarto-layout-panel" data-layout="[[1,1,1]]" data-layout-align="center">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/mammoth.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/middlebury.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/refs/heads/main/images/williams.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-tbl-cap-location="bottom">
+<div id="tbl-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="bottom">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Subreddit</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Post Count</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sentiment (avg)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Sentiment (med)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Comments (avg)</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Comments (med)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">Amherst College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">521</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">5.26</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">3</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">4.40</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">Middlebury College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">675</td>
+<td style="text-align: right; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">2.95</td>
+<td style="text-align: right; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">1</td>
+<td style="text-align: right; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">2.36</td>
+<td style="text-align: right; color: white !important; background-color: rgba(55, 83, 140, 255) !important;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Williams College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">622</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">4.81</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">3</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">6.28</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">4</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Subreddit sentiment &amp; engagement
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Let’s compare the subreddits! <a href="#tbl-summary" class="quarto-xref">Table&nbsp;1</a> above depicts sentiment score and comment count per post measured by both the mean and median. These values were found by grouping our scraped, sentiment-annotated dataset by subreddit and calculating averages and medians of comment coun and sentiment score. If you want to explore the data further to see how this table came to be check out the full dataset <a href="./index.html#fig-raw-data">here</a>. The post count was comparable, which was unsurprising given that we scraped the subreddits from the same time frame. For sentiment, Middlebury clearly seems to stand out as more negative (2.95/post, med = 1) compared to Amherst (5.26, med = 3) and Williams (4.81, med = 3). Amherst and Williams also tend to have higher engagement: (4.40, med = 3) and (6.28, med = 3) respectively relative to Midd (2.36, med = 0). These numbers are fun to compare, but, to assess the statistical significance of these potential differences, you have to go a few steps further.</p>
+<p>To make any conclusions about whether significant differences exist between the per post sentiment scores and comment counts (refer to <a href="#tbl-summary" class="quarto-xref">Table&nbsp;1</a>) on these subreddits, one would typically rely on an ANOVA (analysis of variance) test. This method looks for significant differences between the group means, but unfortunately, it relies on a few pesky assumptions about the data it applies to (<span class="citation" data-cites="anova">Navarro (<a href="#ref-anova" role="doc-biblioref">2019</a>)</span>). Two of the three main assumptions - normality and equal variance - were found to be highly questionable for our data, so we chose to rely on the <strong>Kruskal-Wallis</strong> test, a handy tool for analysis unbounded by parametric assumptions. For a deep dive into the test itself, refer to <span class="citation" data-cites="kruskal">Navarro (<a href="#ref-kruskal" role="doc-biblioref">2020</a>)</span>, and if you are curious about how we came to the decision to use it (good for you!), skip down to <a href="#sec-assumptions" class="quarto-xref">Section&nbsp;1.4</a></p>
+<section id="sec-results" class="level2">
+<h2 class="anchored" data-anchor-id="sec-results">Kruskal-Wallis Test of Significant Difference</h2>
+<div id="tbl-kw-results" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-kw-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-kw-results" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-kw-results-1" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-kw-results-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sentiment per post by subreddit
+</figcaption>
+<div aria-describedby="tbl-kw-results-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-kw-results-1" class="do-not-create-environment caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: right;">Statistic</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">56.73</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-kw-results" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-kw-results-2" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-kw-results-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Comment count per post by subreddit
+</figcaption>
+<div aria-describedby="tbl-kw-results-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-kw-results-2" class="do-not-create-environment caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Parameter</th>
+<th style="text-align: right;">Statistic</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">378.43</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-kw-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: Kruskal-Wallis results: Engagement &amp; Sentiment Subreddit Comparisons
+</figcaption>
+</figure>
+</div>
+<p>The results of the Kruskal-Wallis tests for both subreddit sentiment and egagement were quite conclusive! A significant difference between the post sentiment scores for at least one pair of subreddits was detected (H = 2, p &lt; 0.001) <a href="#tbl-kw-results-1" class="quarto-xref">Table&nbsp;2 (a)</a>. The same outcome was found for post comment count (H = 2, p &lt; 0.001) <a href="#tbl-kw-results-2" class="quarto-xref">Table&nbsp;2 (b)</a>. With such damming results, we turned to <strong>Dunn’s Test</strong> to find which subreddits differed by what metric!</p>
+</section>
+<section id="dunns-test-for-subreddit-by-subreddit-differences" class="level2">
+<h2 class="anchored" data-anchor-id="dunns-test-for-subreddit-by-subreddit-differences">Dunn’s Test for Subreddit by Subreddit Differences</h2>
+<div class="cell" data-layout-nrow="2" data-tbl-cap-location="bottom">
+<div id="tbl-dunn-results" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-dunn-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-dunn-results" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-dunn-results-1" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-dunn-results-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sentiment per post by subreddit
+</figcaption>
+<div aria-describedby="tbl-dunn-results-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-dunn-results-1" class="do-not-create-environment caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sub 1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sub2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Statistic</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p adj</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">Amherst College</td>
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">Middlebury College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">-6.65</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">0.00</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">0</td>
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">****</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Amherst College</td>
+<td style="text-align: left;">Williams College</td>
+<td style="text-align: right;">-0.75</td>
+<td style="text-align: right;">0.46</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ns</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Middlebury College</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Williams College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">6.18</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0.00</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">****</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+
+
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-dunn-results" style="flex-basis: 100.0%;justify-content: center;">
+<div id="tbl-dunn-results-2" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored" data-quarto-postprocess="true">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-dunn-results-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Comment count per post by subreddit
+</figcaption>
+<div aria-describedby="tbl-dunn-results-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-dunn-results-2" class="do-not-create-environment caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sub 1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sub2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Statistic</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">p adj</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">Amherst College</td>
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">Middlebury College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">-12.89</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">0</td>
+<td style="text-align: right; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">0</td>
+<td style="text-align: left; color: white !important; background-color: rgba(183, 165, 211, 255) !important;">****</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Amherst College</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Williams College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">4.99</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">****</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Middlebury College</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">Williams College</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">18.85</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0</td>
+<td style="text-align: right; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">0</td>
+<td style="text-align: left; color: white !important; background-color: rgba(255, 190, 10, 255) !important;">****</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+
+
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-dunn-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: Dunn results: Pairwise Subreddit Comparisons
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Dunn’s test is the standard follow up procedure when a significant Kruskal-Wallis test is observed (<span class="citation" data-cites="dunn">Dinno (<a href="#ref-dunn" role="doc-biblioref">2015</a>)</span>). It tests for pairwise differences between groups, which in our case, are the subreddits.</p>
+<p>Just like our Kruskal-Wallis results, these tests (<a href="#tbl-dunn-results" class="quarto-xref">Table&nbsp;3</a>) were quite convincing! For sentiment, both Amherst and Middlebury (p &lt; 0.001) and Middlebury and Williams (p &lt; 0.001) had significantly different post scores. The row colors in <a href="#tbl-dunn-results-1" class="quarto-xref">Table&nbsp;3 (a)</a> illustrate the direction of these differences, with the color of the school with the higher sentiment scores filling the row for each pairwise comparison. Since no significant difference was found between the sentiment scores of Amherst and Williams, their row is left white to signify a tie.</p>
+<p>We also saw significant differences across all groups when testing comment count <a href="#tbl-dunn-results-2" class="quarto-xref">Table&nbsp;3 (b)</a>: Amherst-Middlebury (p &lt; 0.001), Amherst-Williams (p &lt; 0.001), and Middlebury-Williams (p &lt; 0.001).</p>
+</section>
+<section id="who-was-the-winner" class="level2">
+<h2 class="anchored" data-anchor-id="who-was-the-winner">Who was the Winner?</h2>
+<p>Unfortunately, while it was a close-run thing, <strong>Williams College won the general subreddit battle</strong>; while no difference was found between our post sentiment scores in <a href="#tbl-dunn-results-1" class="quarto-xref">Table&nbsp;3 (a)</a>, they edged us convincingly in post comments (<a href="#tbl-dunn-results-2" class="quarto-xref">Table&nbsp;3 (b)</a>). On the other hand, Middlebury doesn’t get off the hook for being the worst subreddit BY FAR on these two metrics. Though gold won the day, we can still make them pay.</p>
+</section>
+<section id="sec-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="sec-assumptions">Our Checking of ANOVA Assumptions (not for the faint of heart)</h2>
+<p>To reiterate, the assumptions for ANOVA are <strong>independence</strong> of observations, <strong>normality</strong>, and <strong>equal variance</strong> across groups (<span class="citation" data-cites="anova">Navarro (<a href="#ref-anova" role="doc-biblioref">2019</a>)</span>).</p>
+<section id="independence-of-observations" class="level3">
+<h3 class="anchored" data-anchor-id="independence-of-observations">Independence of Observations</h3>
+<p>This assumption would only violated if the sentiment scores and comment counts of posts were somehow influenced by each other. Since this was not the case, we were able to move past this assumption without too much stress.</p>
+</section>
+<section id="normality" class="level3">
+<h3 class="anchored" data-anchor-id="normality">Normality</h3>
+<p>In many cases when the data itself is not normally distributed, ANOVA tests can still conducted a degree of caution. Many cite the Central Limit Theorem, which states that the sampling distribution of the mean of any sample (which is the statistic of interest for ANOVA) will be approximately normal with a sample size &gt;= 30 (<span class="citation" data-cites="clt">Mordkoff (<a href="#ref-clt" role="doc-biblioref">2016</a>)</span>). While this did apply in our case as we collected far more than 30 posts from each subreddit, a few diagnostic tests gave us pause. For one, after fitting ANOVA modesl to predict sentiment and engagement from subreddit, we ran the standard diagnostic tests, whose output are below:</p>
+<div id="fig-norm-check" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-norm-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-norm-check" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-norm-check-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-norm-check-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-norm-check-1.png" class="img-fluid figure-img" data-ref-parent="fig-norm-check" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-norm-check-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Post Sentiment by Subreddit Model
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-norm-check" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-norm-check-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-norm-check-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-norm-check-2.png" class="img-fluid figure-img" data-ref-parent="fig-norm-check" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-norm-check-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Post Comment by Subreddit Model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-norm-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Q-Q ANOVA Diagnostics
+</figcaption>
+</figure>
+</div>
+<p>For normality, you want the points on the Q-Q plot to generally follow the line. The significant tail observable at the end of both plots in <a href="#fig-norm-check" class="quarto-xref">Figure&nbsp;1</a> suggests a high degree of non-normality to the data. In spite of this, we could have proceeded conducting ANOVA tests with extreme caution due to the central limit theorem, but another problem existed: the skewed nature of the data itself.</p>
+<div class="cell" data-layout-nrow="2" data-fig-cap-location="bottom">
+<div id="fig-data-hists" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-hists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-hists" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-data-hists-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-hists-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-data-hists-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-hists" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-hists-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Post sentiment frequency histograms for each subreddit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-hists" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-data-hists-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-hists-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-data-hists-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-hists" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-hists-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Post comment frequency histograms for each subreddit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-hists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Distributions of the quantitative data across subreddits
+</figcaption>
+</figure>
+</div>
+</div>
+<p>The quick-and-dirty histograms of <a href="#fig-data-hists" class="quarto-xref">Figure&nbsp;2</a> explore the raw sentiment and engagement distributions within each subreddit. Our main problem here was that most of these histograms exhibit skewness to some degree, especially for comment count <a href="#fig-data-hists-2" class="quarto-xref">Figure&nbsp;2 (b)</a>. If your data itself is skewed, the mean as a measure of central tendency is called into question. We ultimately decided to err on the side of caution and not use the mean (Kruskall-Wallis and Dunn’s Test make no inferential statements about actual group means).</p>
+</section>
+<section id="equal-variances" class="level3">
+<h3 class="anchored" data-anchor-id="equal-variances">Equal Variances</h3>
+<p>We began with a few visual explorations testing equal variance. The first is a visual diagnostic test on the error terms of fitted ANOVAs is called a residual vs fitted (predicted) plot.</p>
+<div id="fig-var-check" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-var-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-var-check" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-var-check-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-var-check-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-var-check-1.png" class="img-fluid figure-img" data-ref-parent="fig-var-check" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-var-check-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Post Sentiment by Subreddit Model
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-var-check" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-var-check-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-var-check-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-var-check-2.png" class="img-fluid figure-img" data-ref-parent="fig-var-check" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-var-check-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Post Comment by Subreddit Model
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-var-check-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Fitted vs.&nbsp;Residuals ANOVA Diagnostics
+</figcaption>
+</figure>
+</div>
+<p>For residual vs.&nbsp;fitted plots, the condition of equal variance tends to look promising if the points are scattered randomly above and below the 0 line. This is far from the case here in <a href="#fig-var-check" class="quarto-xref">Figure&nbsp;3</a>, as there is a clear, discrete pattern to the errors. Therefore, equal variance was already suspect. We looked at box plots next:</p>
+<div class="cell" data-layout-nrow="2" data-fig-cap-location="bottom">
+<div id="fig-data-boxplots" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-boxplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-boxplots" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-data-boxplots-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-boxplots-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-data-boxplots-1.png" class="img-fluid figure-img" data-ref-parent="fig-data-boxplots" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-boxplots-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Post sentiment variance for each subreddit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-data-boxplots" style="flex-basis: 100.0%;justify-content: flex-start;">
+<div id="fig-data-boxplots-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-data-boxplots-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="sentiment-engagement_files/figure-html/fig-data-boxplots-2.png" class="img-fluid figure-img" data-ref-parent="fig-data-boxplots" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-data-boxplots-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Post comment variance for each subreddit
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-boxplots-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Variance of the quantitative data across subreddits
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Our worries deepend as not only were the general spread of both comments (<a href="#fig-data-boxplots-2" class="quarto-xref">Figure&nbsp;4 (b)</a>) and sentiment (<a href="#fig-data-boxplots-1" class="quarto-xref">Figure&nbsp;4 (a)</a>) different across subreddits, but the prescence of a large number of outliers further supported our decision to not use the mean as our statistic of interest. To put the nail in the coffin, we formally tested equal variance with Levene’s Test <span class="citation" data-cites="equal-v"><span>“Homogeneity of variance”</span> (<a href="#ref-equal-v" role="doc-biblioref">n.d.</a>)</span>, a metric that only relies on the assumption of independent observations. A significant result on Levene’s Test suggests heterogeniety of variance across groups.</p>
+<div id="tbl-levenes-test" class="quarto-layout-panel anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-levenes-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-levenes-test" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-levenes-test-1" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-levenes-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Sentiment Across Subreddit Results
+</figcaption>
+<div aria-describedby="tbl-levenes-test-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-levenes-test-1" class="do-not-create-environment caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">df1</th>
+<th style="text-align: right;">df2</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1815</td>
+<td style="text-align: right;">10.5</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="tbl-levenes-test" style="flex-basis: 50.0%;justify-content: center;">
+<div id="tbl-levenes-test-2" class="do-not-create-environment quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-subfloat-caption quarto-subfloat-tbl" id="tbl-levenes-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Comment Count Across Subreddit Results
+</figcaption>
+<div aria-describedby="tbl-levenes-test-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table id="tbl-levenes-test-2" class="do-not-create-environment caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">df1</th>
+<th style="text-align: right;">df2</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1815</td>
+<td style="text-align: right;">14.68</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-levenes-test-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4: Levene’s Test for Equal Variance Results
+</figcaption>
+</figure>
+</div>
+<p>The results of Levene’s Tests (<a href="#tbl-levenes-test" class="quarto-xref">Table&nbsp;4</a>) confirmed what we had already suspected. The variance of both sentiment in <a href="#tbl-levenes-test-1" class="quarto-xref">Table&nbsp;4 (a)</a> and comment count in <a href="#tbl-levenes-test-2" class="quarto-xref">Table&nbsp;4 (b)</a> were found to strongly differ across subreddits (p &lt; 0.001 for both tests). And thus, as a result of our deep concerns for normality and the clear violation of the homogeneity of variance assumption, we decided to scrap the ANOVA project and continue with the Kruskal Wallis.</p>
+<p>Amazing work if you read down to the end, especially if you skipped the results section to read about assumptions! We calculated that only 5% of readers will care about ANOVA assumptions, so you’re in rare company. We’ll provide you with this <a href="#sec-results" class="quarto-xref">Section&nbsp;1.1</a> link if you want to go back up. Thanks for reading!</p>
+
+
+
+</section>
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-dunn" class="csl-entry" role="listitem">
+Dinno, A. (2015), <span>“Nonparametric pairwise multiple comparisons in independent groups using dunn’s test,”</span> <em>The Stata Journal: Promoting communications on statistics and Stata</em>, 15, 292–300. <a href="https://doi.org/10.1177/1536867X1501500117">https://doi.org/10.1177/1536867X1501500117</a>.
+</div>
+<div id="ref-equal-v" class="csl-entry" role="listitem">
+<span>“<a href="https://www.staringatr.com/statistical-analysis/analysis-of-variance/assumptions/2_homogeneity/">Homogeneity of variance</a>”</span> (n.d.).
+</div>
+<div id="ref-clt" class="csl-entry" role="listitem">
+Mordkoff, T. (2016), <span>“<a href="https://www2.psychology.uiowa.edu/faculty/mordkoff/GradStats/part%201/I.07%20normal.pdf">The assumption(s) of normality</a>.”</span>
+</div>
+<div id="ref-anova" class="csl-entry" role="listitem">
+<a href="https://stats.libretexts.org/Bookshelves/Applied_Statistics/Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/14%3A_Comparing_Several_Means_(One-way_ANOVA)/14.03%3A_How_ANOVA_Works">Navarro, D. (2019), <em>Statistics LibreTexts</em></a>.
+</div>
+<div id="ref-kruskal" class="csl-entry" role="listitem">
+<a href="https://stats.libretexts.org/Bookshelves/Applied_Statistics/Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/14%3A_Comparing_Several_Means_(One-way_ANOVA)/14.11%3A_Removing_the_Normality_Assumption">Navarro, D. (2020), <em>Statistics LibreTexts</em></a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
