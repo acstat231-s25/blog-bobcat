@@ -76,7 +76,7 @@ girafe(ggobj = gg_sentiment_quarterly)
 
 Sentiments in the Amherst subreddit fluctuate greatly from 20202-2022, level out around 2022-2024, and rise in recent years. Middlebury's subreddit has the lowest sentiment score in general :(. The Williams subreddit has consistently had sentiment scores from 3-7, indicating general positivity in the community. For all three subreddits, there is an recent upward trend in sentiment score, indicating that more people might be interested in liberal arts colleges.
 
-Nevertheless, are these results conclusive? We recommend you head over to our [Kruskal-Wallis Test results](sentiment-engagement.qmd#tbl-kw-results) to see if these differences are significant.
+Nevertheless, are these results conclusive? We recommend you head over to our [Dunn's Test results](sentiment-engagement.qmd#tbl-dunn-results) to see if these differences are significant.
 
 ## Overall Comment Engagement
 
