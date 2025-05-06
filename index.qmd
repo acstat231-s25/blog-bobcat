@@ -109,7 +109,7 @@ Once we scraped each subreddit, we joined all the posts into one big dataset and
 
 # What now?
 
-If you want to see the words and phrases most import to each subreddit, head over to [TF-IDF page](tf-idf.qmd). If you want to see the evolution of sentiment and engagement over time for these forums, see [our time-series work](time-series.qmd). And finally, if you want to know which is the best college subreddit, check out the stats-heavy [analysis page](Sentiment-analysis.qmd). Thanks for reading!
+If you want to see the words and phrases most import to each subreddit, head over to [TF-IDF page](tf-idf.qmd). If you want to see the evolution of sentiment and engagement over time for these forums, see [our time-series work](time-series.qmd). And finally, if you want to know which is the best college subreddit, check out the stats-heavy [analysis page](sentiment-engagement.qmd). Thanks for reading!
 
 # Raw Data Reference
 
