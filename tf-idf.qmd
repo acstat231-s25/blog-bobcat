@@ -35,30 +35,39 @@ load('./data/top_bigram_tfidf.Rdata')
 #| label: fig-word_tfidf
 #| fig-cap: " Term Frequency-Inverse Document Frequency analysis of common single words for Amherst,Williams and Middleburry subreddits( Note: pay careful attention to the scales!)"
 
-#plotting the word analysis tf-idf for the top 10 frequent words from each college
-# Using top_word_tfidf that has a word column with single words found in the college's 
-# subreddits and their corresponding tf-idf values
+#plotting the word analysis tf-idf for the top 10 frequent words from each college's subrredit
+# Using `top_word_tfidf` which contains single words from each subrredit and their tf-idf #scores
+
 top_word_tfidf |>
+# reordering words within each subreddit
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit),
              y = tf_idf,
+# coloring bars by subrredit           
              fill = subreddit)) +
+# drawing bar plots
   geom_col() +
   scale_fill_manual(
     values = c(
-      "Amherst College" = "#b7a5d3", # changing to match school colors
+  #coloring bars based on each college's official color 
+      "Amherst College" = "#b7a5d3",
       "Williams College" = "#FFBE0A",             
       "Middlebury College" = "#37538C"              
     )
   ) +
+# flipping axes to make horizantal bars   
   coord_flip() +
+# removing legend since colors are obvious  
   theme(legend.position = "none") +
+# make a plot per college/subreddit and free the y-axis scales  
   facet_wrap(~subreddit, ncol = 3, scales = "free") +
+# fix the x-axis labels after reordering  
   scale_x_reordered() +
   labs(x = NULL, 
        y = "TF-IDF",
        title = "Top 10 Words by TF-IDF for Each Subreddit") +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)) # rotating numbers
+  theme(  
+# rotate the x-axis text for better readability 
+    axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 ```
 
@@ -81,8 +90,10 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
 #| fig-cap: "Term Frequency-Inverse Document Frequency analysis of common two-word combinations for Amherst, Williams and Middleburry subreddits(Note: pay careful attention to the scales!)"
 
 #plotting the bigram analysis tf-idf for the top 10 bigrams from each college(subreddit)
-# top_bigram_tfidf has a bigram column with the two-word phrases from each subreddit and their 
-# corresponding tf-idf values
+# `top_bigram_tfidf` has a bigram column with the two-word phrases from each subreddit 
+# and their corresponding tf-idf  values
+
+# reordering bigrams within each subreddit and plotting
  top_bigram_tfidf |>
   ggplot(aes(x = reorder_within(bigram, tf_idf, subreddit),
              y = tf_idf,
@@ -90,11 +101,13 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
   geom_col() +
   scale_fill_manual(
     values = c(
-      "Amherst College" = "#b7a5d3", # changing to match school colors
+  # changing to match each college's official colors    
+      "Amherst College" = "#b7a5d3", 
       "Williams College" = "#FFBE0A",             
       "Middlebury College" = "#37538C"               
     )
   ) +
+# flip axes to make horizontal bars, remove legend and make a plot per subreddit   
   coord_flip() +
   theme(legend.position = "none") +
   facet_wrap(~subreddit, ncol = 3, scales = "free") +
@@ -103,7 +116,8 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
        y = "TF-IDF",
        title = "Top 10 Bigrams by TF-IDF for Each Subreddit") +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1)) # rotating numbers
+# rotate the x-axis text for better readability     
+    axis.text.x = element_text(angle = 45, hjust = 1)) 
 
 ```
 
