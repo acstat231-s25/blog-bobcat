@@ -36,8 +36,10 @@ library(viridis)
 library(DT)
 # interactive graph
 library(ggiraph)
-# The .Rdata files were created in "fynn-scratch.R" from "our-work" folder
+
+# this file was created in wrangling_scripts/sentiment_analysis.R
 load('./data/sentiment_posts.Rdata')
+# This Rdata file were creates in wrangling_scripts/tf-idf.R
 load('./data/word_freqs.Rdata')
 ```
 
@@ -119,11 +121,14 @@ sentiment_posts |>
 datatable(
           escape=FALSE, options = list(pageLength = 2, columnDefs = list(list(
   targets = 1,
+  # this complicated line just truncates posts to conserve space, you only see
+  # the first 200 characters
   render = JS(
     "function(data, type, row, meta) {",
     "return type === 'display' && data.length > 200 ?",
     "'<span title=\"' + data + '\">' + data.substr(0, 200) + '...</span>' : data;",
     "}")
 ))), callback = JS('table.page(0).draw(false);'),
+# changing col names for readability
 colnames = c('Content', 'Date', 'Comments', 'Subreddit', 'Year', 'Month','Sentiment Score'))
 ```
