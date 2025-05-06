@@ -21,6 +21,7 @@ library(viridis)
 library(ggiraph)
 
 # Data 
+# These Rdata files were creates in "fynn-scratch.R"
 load('./data/top_word_tfidf.Rdata')
 load('./data/top_bigram_tfidf.Rdata')
 
@@ -34,6 +35,9 @@ load('./data/top_bigram_tfidf.Rdata')
 #| label: fig-word_tfidf
 #| fig-cap: " Term Frequency-Inverse Document Frequency analysis of common single words for Amherst,Williams and Middleburry subreddits( Note: pay careful attention to the scales!)"
 
+#plotting the word analysis tf-idf for the top 10 frequent words from each college
+# Using top_word_tfidf that has a word column with single words found in the college's 
+# subreddits and their corresponding tf-idf values
 top_word_tfidf |>
   ggplot(aes(x = reorder_within(word, tf_idf, subreddit),
              y = tf_idf,
@@ -76,7 +80,9 @@ The Williams subreddit is about "williamstown," the town of Williams, so it is l
 #| label: fig-bigram_tfidf
 #| fig-cap: "Term Frequency-Inverse Document Frequency analysis of common two-word combinations for Amherst, Williams and Middleburry subreddits(Note: pay careful attention to the scales!)"
 
-
+#plotting the bigram analysis tf-idf for the top 10 bigrams from each college(subreddit)
+# top_bigram_tfidf has a bigram column with the two-word phrases from each subreddit and their 
+# corresponding tf-idf values
  top_bigram_tfidf |>
   ggplot(aes(x = reorder_within(bigram, tf_idf, subreddit),
              y = tf_idf,
