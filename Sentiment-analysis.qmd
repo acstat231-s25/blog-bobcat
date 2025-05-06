@@ -27,7 +27,7 @@ library(tidytext)
 library(tidyverse)
 ```
 
-# What's engagement and sentiment like across subreddits?
+# What's sentiment and engagement like across subreddits?
 
 
 ```{r}
