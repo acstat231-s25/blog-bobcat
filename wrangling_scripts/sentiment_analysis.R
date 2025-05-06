@@ -50,10 +50,10 @@ subreddit_summaries <- sentiment_posts |>
   group_by(subreddit)|>
   summarize(
     total_posts = n(),
-    total_sent = sum(sentiment),
-    total_comments = sum(comments),
     avg_post_sent = round(mean(sentiment), 2),
-    avg_comments_per_post = round(mean(comments), 2)
+    med_sent = round(median(sentiment), 2),
+    avg_comments_per_post = round(mean(comments), 2),
+    med_com = round(median(comments), 2)
     
 )
 
@@ -61,31 +61,24 @@ library(car)
 library(broom)
 library(rstatix)
 # sentiment equal variance
-sent_var_results <- tidy(leveneTest(sentiment ~ subreddit, data = sentiment_posts))
+sent_var_results <- leveneTest(sentiment ~ subreddit, data = sentiment_posts)
 
 # engagement equal variance
-com_var_results <- tidy(leveneTest(comments ~ subreddit, data = sentiment_posts))
+com_var_results <- leveneTest(comments ~ subreddit, data = sentiment_posts)
+
+kruskal_sent <- tidy(kruskal.test(sentiment ~ subreddit, data = sentiment_posts))
+kruskal_com <- tidy(kruskal.test(comments ~ subreddit, data = sentiment_posts))
+
+dunn_sent <- dunn_test(sentiment  ~ subreddit, data=sentiment_posts,  
+                       p.adjust.method = "bonferroni")
+
+dunn_com <-  dunn_test(comments ~ subreddit, data=sentiment_posts,
+                      p.adjust.method = 'bonferroni') 
 
 
-# now lets see if these differences are significant using WELCH's ANOVA
 
-
-welch_sent <- tidy(oneway.test(sentiment ~ subreddit, 
-                               data = sentiment_posts, var.equal = FALSE))
-
-welch_com <- tidy(oneway.test(comments ~ subreddit, 
-                              data = sentiment_posts, var.equal = FALSE))
-
-sent_howell <- games_howell_test(sentiment ~ subreddit, data=sentiment_posts)
-com_howell <- games_howell_test(comments ~ subreddit, data=sentiment_posts)
-
-
-# save to publishable data folder
-save(sent_var_results, com_var_results,
-     file='.././data/levene_results.Rdata')
-
-save(welch_sent, welch_com, file = '.././data/welch_results.Rdata')
-save(sent_howell, com_howell, file = '.././data/ghowell_results.Rdata')
+save(kruskal_sent, kruskal_com, file='../data/kruskal_results.Rdata')
+save(dunn_sent, dunn_com, file='../data/dunn_results.Rdata')
 
 save(subreddit_summaries, file='.././data/subreddit_summaries.Rdata')
 
@@ -159,34 +152,6 @@ girafe(ggobj = gg_point_comments_quarterly)
 
 
 
-# ```{r}
-# #| label: tbl-summary
-# #| tbl-cap: "ANOVA report: subreddit sentiment & engagement"
-# #| tbl-subcap:
-#   #|   - "Summary statistics for cross subreddit comparison"
-#   #|   - "ANOVA: average sentiment across subreddit"
-# #|   - "ANOVA: average comments across subreddit"
-# #| layout: [[1], [4, -1, 4]] 
-# 
-# 
-# load('./data/subreddit_summaries.Rdata')
-# load('./data/aov_tukey_results.Rdata')
-# 
-# subreddit_summaries |>
-#   kable(digits=2, 
-#         col.names = c('Subreddit', 'Post Count','Score (tot)', 
-#                       'Comments (tot)', 'Score (avg)', 'Comments (avg)')) |>
-#   row_spec(1, background = "#b7a5d3", color = 'white') |>
-#   row_spec(2, background = "#37538C", color='white') |>
-#   row_spec(3, background = "#FFBE0A", color = 'white')
-# 
-# aov_sent_res |> 
-#   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2)
-# 
-# aov_comments_res |> 
-#   kable(col.names = c('Factor', 'df', 'SSQ','MSQ', 'F', 'p'), digits=2) 
-# ```
-# 
 
 
 

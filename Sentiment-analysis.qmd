@@ -1,5 +1,5 @@
 ---
-title: "Sentiment Analysis ANOVAs"
+title: "A Cross Subreddit Sentiment & Engagement Analysis"
 author: 
 - "Fynn Hayton-Ruffner"
 - "Shekinah Ninziza"
@@ -12,7 +12,7 @@ author:
 #| include: false
 
 # Improve digit display and NA display for kable tables
-options(scipen = 1, knitr.kable.NA = "")
+options(scipen = 1, knitr.kable.NA = "", warn = -1)
 
 # Load necessary packages
 library(tidyverse)
@@ -44,24 +44,95 @@ include_graphics("https://raw.githubusercontent.com/acstat231-s25/blog-bobcat/re
 ```{r}
 #| label: tbl-summary
 #| tbl-cap: "Subreddit sentiment & engagement"
+#| tbl-cap-location: 'bottom'
 
 load('./data/subreddit_summaries.Rdata')
 
 subreddit_summaries |>
   kable(digits=2, 
-        col.names = c('Subreddit', 'Post Count','Score (tot)', 
-                      'Comments (tot)', 'Score (avg)', 'Comments (avg)')) |>
+        col.names = c('Subreddit', 'Post Count', 'Sentiment (avg)','Sentiment (med)',
+                      'Comments (avg)', 'Comments (med)')) |>
   row_spec(1, background = "#b7a5d3", color = 'white') |>
   row_spec(2, background = "#37538C", color='white') |>
   row_spec(3, background = "#FFBE0A", color = 'white')
 
 ```
 
-Let's compare the subreddits! @tbl-summary above shows the summary statistics for each subreddit. The values were found by grouping our scraped, sentiment-annotated datasetby subreddit and calculating sums and averages of post count, comment count, and sentiment score. If you want to explore the data further to see how this table came to be check out the full dataset [here](index.qmd#fig-raw-data). The total post counts were comparable, which is what we expected given their similar ages. For sentiment, Middlebury clearly seems stands out as more negative (2.95/post) compared to Amherst (5.26) and Williams (4.81). Amherst and Williams also tend to have higher engagement: 4.40 and 6.28 respectively relative to Midd (2.36). These numbers are fun to compare, but, to assess the statistical significance of these potential differences, you have to go a few steps further.
+Let's compare the subreddits! @tbl-summary above depicts sentiment score and comment count per post measured by both the mean and median. These values were found by grouping our scraped, sentiment-annotated dataset by subreddit and calculating averages and medians of comment coun and sentiment score. If you want to explore the data further to see how this table came to be check out the full dataset [here](index.qmd#fig-raw-data). The post count was comparable, which was unsurprising given that we scraped the subreddits from the same time frame. For sentiment, Middlebury clearly seems to stand out as more negative (2.95/post, med = 1) compared to Amherst (5.26, med = 3) and Williams (4.81, med = 3). Amherst and Williams also tend to have higher engagement: (4.40, med = 3) and (6.28, med = 3) respectively relative to Midd (2.36, med = 0). These numbers are fun to compare, but, to assess the statistical significance of these potential differences, you have to go a few steps further.
 
-To make any conclusions about whether significant differences exist between the average sentiment scores and comment counts of posts on these subreddits, we needed to use an ANOVA test...or did we?? Unfortunately, ANOVA relies on a few pesky assumptions that must hold true for reliable interpretation. If you trust us, feel free to skip down to the results, but we encourage any curious or statistically inclined reader to hold us accountable and step through our process of checking the assumptions below.
+To make any conclusions about whether significant differences exist between the per post sentiment scores and comment counts (refer to @tbl-summary) on these subreddits, one would typically rely on an ANOVA (analysis of variance) test. This method looks for significant differences between the group means, but unfortunately, it relies on a few pesky assumptions about the data it applies to (@anova). Two of the three main assumptions - normality and equal variance - were found to be highly questionable for our data, so we chose to rely on the Kruskal-Wallis test, a handy tool for analysis unbounded by parametric assumptions. For a deep dive into the test itself, refer to @kruskal, and if you are curious about how we came to the decision to use it (good for you!), skip down to @sec-assumptions
 
-## ANOVA (Analysis of Variance Tests)
+## Kruskal-Wallis Test of Significant Difference {#sec-results}
+
+```{r}
+#| label: tbl-kw-results
+#| tbl-cap: "Kruskal-Wallis results: Engagement & Sentiment Subreddit Comparisons"
+#| tbl-cap-location: 'bottom'
+#| tbl-subcap: 
+#|    - "Sentiment per post by subreddit"
+#|    - "Comment count per post by subreddit"
+#| layout-ncol: 2
+
+load('./data/kruskal_results.Rdata')
+ 
+ 
+kruskal_sent |>
+   select(-method, -p.value, parameter, statistic,p.value) |>
+   kable(digits=2,
+         col.names = c('Parameter', 'Statistic', 'p'))
+
+kruskal_com |>
+  select(-method, -p.value, parameter, statistic,p.value) |>
+   kable(digits=2,
+         col.names = c('Parameter', 'Statistic', 'p'))
+```
+
+The results of the Kruskal-Wallis tests for both subreddit sentiment and egagement were quite conclusive! A significant difference between the post sentiment scores for at least one pair of subreddits was detected (H = 2, p < 0.001) @tbl-kw-results-1. The same outcome was found for post comment count (H = 2, p < 0.001) @tbl-kw-results-2. With such damming results, we turned to the Dunn's Test to find which subreddits differed by what metric!
+
+
+## Dunn's Test for Subreddit by Subreddit Differences
+```{r}
+#| label: tbl-dunn-results
+#| tbl-cap: "Dunn results: Pairwise Subreddit Comparisons"
+#| tbl-cap-location: 'bottom'
+#| tbl-subcap: 
+#|    - "Sentiment per post by subreddit"
+#|    - "Comment count per post by subreddit"
+#| layout-nrow: 2
+
+load('./data/dunn_results.Rdata')
+
+
+dunn_sent |>
+  select(-.y., -n1,-n2) |>
+  kable(digits=2,
+        col.names = c('Sub 1', 'Sub2', 'Statistic', 'p', 'p adj', 'Sig')) |>
+  row_spec(1, background = "#b7a5d3", color = 'white') |>
+  row_spec(3, background = "#FFBE0A", color = 'white') 
+
+dunn_com |>
+  select(-.y., -n1,-n2) |>
+  kable(digits=2,
+        col.names = c('Sub 1', 'Sub2', 'Statistic', 'p', 'p adj', 'Sig')) |>
+  row_spec(1, background = "#b7a5d3", color = 'white') |>
+  row_spec(2, background = "#FFBE0A", color = 'white') |>
+  row_spec(3, background = "#FFBE0A", color = 'white') 
+
+
+```
+
+Dunn's test is the standard follow up procedure when a significant Kruskal-Wallis test is observed (@dunn). It tests for pairwise differences between groups, which in our case, are the subreddits. 
+
+Just like our Kruskal-Wallis results, these tests (@tbl-dunn-results) were quite convincing! For sentiment, both Amherst and Middlebury (p < 0.001) and Middlebury and Williams (p < 0.001) had significantly different post scores. The row colors in @tbl-dunn-results-1 illustrate the direction of these differences, with the color of the school with the higher sentiment scores filling the row for each pairwise comparison. Since no significant difference was found between the sentiment scores of Amherst and Williams, their row is left white to signify a tie.
+
+We saw significant differences across all groups when testing comment count @tbl-dunn-results-2: Amherst-Middlebury (p < 0.001), Amherst-Williams (p < 0.001), and Middlebury-Williams (p < 0.001).
+
+Unfortunately, while it was a close-run thing, Williams College wins the general subreddit battle; while no difference was found between our post sentiment scores in @tbl-dunn-results-1, they edged us convincingly in post comments (@tbl-dunn-results-2). On the other hand, Middlebury doesn't get off the hook for being the worst subreddit BY FAR on these two metrics. Though gold won the day, we still slay.
+
+## Our Checking of ANOVA Assumptions (not for the faint of heart) {#sec-assumptions}
+
+
+To reiterate, the assumptions for ANOVA are *independence* of observations, *normality*, and *equal variance* across groups (@anova).
 
 ### Independence of Observations
 
@@ -69,51 +140,79 @@ This assumption would only violated if the sentiment scores and comment counts o
 
 ### Normality
 
-The next assumption for ANOVA is normality, which in our case requires the sampling distribution of the mean sentiment score and comment count for each subreddit to follow a normal distribution. We'll use the example of one subreddit's sentiment score to make this more clear, but note that the following applies to all subreddits and both means of interest. If you were to take a large number of post samples, each of size N from the Amherst subreddit, calculate the mean sentiment score and comment count for each sample, and plot those means on a graph, the sampling distribution of the mean sentiment score of the Amherst subreddit would be normal if it looked something like this:
+In many cases when the data itself is not normally distributed, ANOVA tests can still conducted a degree of caution. Many cite the Central Limit Theorem, which states that the sampling distribution of the mean of any sample (which is the statistic of interest for ANOVA) will be approximately normal with a sample size >= 30 (@clt). While this did apply in our case as we collected far more than 30 posts from each subreddit, a few diagnostic tests gave us pause. For one, after fitting ANOVA modesl to predict sentiment and engagement from subreddit, we ran the standard diagnostic tests, whose output are below:
 
 ```{r}
-#| fig-align: center
-#| out-width: 100%
+#| label: aov-diagnostics
+#| layout-ncol: 2
 
- 
-include_graphics("https://www.msicertified.com/wp-content/uploads/2023/01/Standard_deviation_diagram.png")
+load('./data/sentiment_posts.Rdata')
 
+aov_sent <- aov(sentiment ~ subreddit, data=sentiment_posts)
+aov_com <- aov(comments ~ subreddit, data=sentiment_posts)
+
+plot(aov_sent, which=2)
+
+plot(aov_com, which=2)
 
 ```
+For normality, you want the points on the Q-Q plot to generally follow the line. The significant tail observable at the end of both plots suggests a high degree of non-normality to the data. In spite of this, we could have proceeded conducting ANOVA tests with extreme caution due to the central limit theorem, but another problem existed:
 
-ANOVA tries to assess whether or not there are any significant differences between the means of three or more groups, and it requires the sampling distribution of each mean for each group resemble that bell curve above. So how can we tell if this sampling distribution is normal if we just have one sample of posts per subreddit? Quite fortunately, in our case, we were able to rely on the Central Limit Theorem. This theorem states that as long as the sample size is greater than 30, the sampling distribution of the mean of a group will be normal CITE HERE. In our case, our sample sizes for each subreddit far exceeded thirty, so we could safely assume the normality assumption is satisfied here.
+```{r}
+#| label: abnormal-data
+#| layout-nrow: 2
+
+sentiment_posts |>
+  ggplot(aes(x = sentiment)) +
+  geom_histogram() +
+  facet_wrap(~subreddit)
+
+sentiment_posts |>
+  ggplot(aes(x = comments)) +
+  geom_histogram() +
+  facet_wrap(~subreddit)
+```
+These quick-and-dirty histograms explore the raw sentiment and engament distributions within each subreddit. Our main problem here was that most of these histograms exhibit skewness to some degree, especially for comment count. If our data itself was skewed, we questioned whether using the mean was a good measure of central tendency. We ultimately decided to err on the side of caution and not use the mean (Kruskall-Wallis and Dunn's Test make no inferential statements about group means). 
 
 ### Equal Variances
 
-With normality accounted for, we approached the question of equal variances across subreddit. Variance is simply the average squared difference from the mean of all points in a dataset. There are multiple visual and computational methods to compare the variances of each group, but we decided to use Levine's Test CITE HERE, a metric that only relies on independent observations,
-a continuous dependent variable (we have sentiment score and comment count), and a categorical grouping variable (we have subreddit). We already satisfied independence, so it was valid to perform this test of equal variance. The results of Levine's test can is available in REFERENCE. Unfortunately, the tests indicated that both sentiment score (p < 0.001) and comment count (p < 0.001) had different variances across the subreddit groupings, meaning the equal variance assumption would be violated if we conducted a standard ANOVA test for either variable. Foiled right at the end!
-
-## The Solution: Welch's ANOVA
-
-Welch's ANOVA is a variation of the standard ANOVA that can be conducted when the equal variance assumption is violated, which made it perfect for our use!
-
-We fit two one-way Welch-ANOVA models to our dataset, one to test for statiscially significant differences between the average sentiment score of each subreddit, and one to compare the average comment counts per post. The results, available in @tbl-welch-anova-results, were conclusive. At least one statistically significant difference betweeen subreddit sentiment means (p < 0.001) @tbl-welch-anova-results-1 and average comment counts (p < 0.001) @tbl-welch-anova-results-2 was detected in both tests. Since ANOVA tests only indicate the presence of one pairwise difference in the groups you are interested in, the logical follow up was to conduct a series of post-hoc tests. For Welch's ANOVA, the standard procedure is to use the Games-Howell Test CITE, which can assess mean differences across all groups without relying on equal variance.
+We began with a few visual explorations testing equal variance. The first is a diagnostic test on the error terms of fitted ANOVAs called a residual vs fitted (predicted) plot. 
 
 ```{r}
-#| label: tbl-welch-anova-results
-#| tbl-cap: "Welch-ANOVA results: Cross Subreddit Comparisons"
-#| tbl-subcap: 
-#|    - "Average sentiment per post by subreddit"
-#|    - "Average comment count per post by subreddit"
-#| layout: [[1, -1, 1]] 
-load('./data/welch_results.Rdata')
+#| label: equal-var-check
 
-
-welch_com |>
-  select(-method) |>
-  kable(digits=2,
-        col.names = c('Df', 'Den Df', 'Statistic', 'p'))
-  
-welch_sent |>
-  select(-method) |>
-  kable(digits=2,
-        col.names = c('Df', 'Den Df', 'Statistic', 'p'))
+plot(aov_sent, which=2)
+plot(aov_com, which=2)
 
 ```
+In the above plots, the condition of equal variance tends to look promising if the points are scattered randomly above and below the. This is far from the case here, so equal variance was already suspect. We looked at box plots next:
 
-The results, see TABLE, were conclusive! Each row in the table above holds the results of a Tukey's HSD comparison between two college subreddits; we colored each row by the college that, according to the test, was deemed to have a significantly higher average (purple for Amherst, gold for Williams, and white for a 'tie'). Both Amherst (p < 0.001) and Williams (p < 0.001) held a significantly higher average sentiment score per post over Middlebury. Notably, Amherst and Williams did not differ signifcantly by this same metric (p = 0.56). As far as engagement goes, Amherst (p < 0.001) and Williams (p < 0.001) yet again out-performed Middlebury in average comments per post, while Williams convincingly exceeded the mean of Amherst as well (p < 0.001). Again, for more information on the gritty details involved in performing Tukey's HSD, see this valuable resource, which was helpful for the work present here: @Tukey. Unfortunately gold holds the majority of victories in these pairwise comparisons, and Williams emerges as the champion of this competition by tying Amherst in post positivity and edging us in post engagement. We wish we could fudge the numbers but that would be statistical malpractice.
+```{r}
+#| label: box-plots
+#| layout-ncol: 2
+
+sentiment_posts |>
+  ggplot(aes(y = sentiment, x = subreddit)) +
+  geom_boxplot()
+
+sentiment_posts |>
+  ggplot(aes(y = comments, x = subreddit)) +
+  geom_boxplot()
+```
+Our worries deepend as not only were the general spread of both comments and sentiment different across subreddits, but the prescence of a large number of outliers were further supported our decision not to use the mean as our statistic of interest. To put the nail in the coffin, we formally tested equal variance with Levene's Test @equal-v, a metric that only relies on independent observations. A significant result on Levene's Test suggests heterogeniety of variance across groups.
+
+```{r}
+#| label: levenes-test
+#| layout-nrow: 2
+#| echo: FALSE
+
+library(rstatix)
+
+levene_test(sentiment~subreddit, data=sentiment_posts)
+levene_test(comments~subreddit, data=sentiment_posts)
+
+
+```
+Both p values were incredibly small, which lead us to conclude that the equal variance condition was severely violated. As a result of our strong concerns of normality and the clear violation of homogeneity of variance, we decided to scrap the ANOVA project and continue with the Kruskal Wallis. 
+
+Amazing work if you read down to the end, especially if you skipped the results section! We calculated that only 5% of readers will care about ANOVA assumptions, so you're in rare company. We'll provide you with this @sec-results link if you want to go back up. Thanks for reading!
